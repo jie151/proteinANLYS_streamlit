@@ -19,9 +19,10 @@ robjects.r('''
 
     #library(DEP, lib="./win-library/4.1/")
 
-    library(DOSE, lib="./win-library/4.1/")
+    #library(DOSE, lib="./win-library/4.1/")
+
+    library(enrichplot, lib="./win-library/4.1/")
     print("ddd")
-    #library(enrichplot, lib="./win-library/4.1/")
     #library(NormalyzerDE, lib="./win-library/4.1/")
     #library(SummarizedExperiment, lib="./win-library/4.1/")
 ''')
