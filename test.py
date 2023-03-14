@@ -13,6 +13,7 @@ robjects.r('''
     library(dplyr)
     library(ggplot2)
     library(httr)
+    print("hihi")
     library(clusterProfiler, lib="./win-library/4.1/")
     library(biomaRt, lib="./win-library/4.1/")
 
