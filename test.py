@@ -20,11 +20,9 @@ robjects.r('''
     library(enrichplot, lib="./win-library/4.1/")
     library(NormalyzerDE, lib="./win-library/4.1/")
     library(SummarizedExperiment, lib="./win-library/4.1/")
-   # library(biomaRt, lib="./win-library/4.1/")
-
-
 ''')
 
+# library(biomaRt, lib="./win-library/4.1/")
 # 在網頁顯示print的內容
 @contextmanager
 def st_capture(output_func):
