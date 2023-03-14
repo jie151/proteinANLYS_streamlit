@@ -26,7 +26,7 @@ robjects.r('''
     #library(NormalyzerDE, lib="./win-library/4.1/")
 
     library(SummarizedExperiment, lib="./win-library/4.1/")
-    print("ddd")
+    #print("ddd")
 ''')
 
 # library(biomaRt, lib="./win-library/4.1/")
