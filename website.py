@@ -24,7 +24,7 @@ robjects.r('''
     #library(enrichplot, lib="./win-library/4.1/")
 
     #library(NormalyzerDE, lib="./win-library/4.1/")
-    library(MatrixGenerics, lib = "./win-library/4.1/"")
+    library(MatrixGenerics, lib = "./win-library/4.1/")
     library(SummarizedExperiment, lib="./win-library/4.1/")
     #print("ddd")
 ''')
