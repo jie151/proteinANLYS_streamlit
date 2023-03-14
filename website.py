@@ -15,9 +15,10 @@ robjects.r('''
     library(ggplot2)
     library(httr)
     print("hihi")
-    library(clusterProfiler, lib="./win-library/4.1/")
+    #library(clusterProfiler, lib="./win-library/4.1/")
+
+    library(DEP, lib="./win-library/4.1/")
     print("ddd")
-    #library(DEP, lib="./win-library/4.1/")
     #library(DOSE, lib="./win-library/4.1/")
     #library(enrichplot, lib="./win-library/4.1/")
     #library(NormalyzerDE, lib="./win-library/4.1/")
