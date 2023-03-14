@@ -13,13 +13,14 @@ robjects.r('''
     library(dplyr)
     library(ggplot2)
     library(httr)
-    library(biomaRt, lib="./win-library/4.1/")
     library(clusterProfiler, lib="./win-library/4.1/")
+    library(biomaRt, lib="./win-library/4.1/")
+
     library(DEP, lib="./win-library/4.1/")
     library(DOSE, lib="./win-library/4.1/")
     library(enrichplot, lib="./win-library/4.1/")
     library(NormalyzerDE, lib="./win-library/4.1/")
-    library(SummarizedExperiment)
+    library(SummarizedExperiment, lib="./win-library/4.1/")
 ''')
 
 # 在網頁顯示print的內容
