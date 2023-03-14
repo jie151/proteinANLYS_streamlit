@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Draw a Single Boxplot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for grid.boxplot {ComplexHeatmap}"><tr><td>grid.boxplot {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Draw a Single Boxplot
+</h2>
+
+<h3>Description</h3>
+
+<p>Draw a Single Boxplot
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+grid.boxplot(value, pos, outline = TRUE, box_width = 0.6,
+    pch = 1, size = unit(2, "mm"), gp = gpar(fill = "#CCCCCC"),
+    direction = c("vertical", "horizontal"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>A vector of numeric values.</p>
+</td></tr>
+<tr valign="top"><td><code>pos</code></td>
+<td>
+<p>Position of the boxplot.</p>
+</td></tr>
+<tr valign="top"><td><code>outline</code></td>
+<td>
+<p>Whether draw outlines?</p>
+</td></tr>
+<tr valign="top"><td><code>box_width</code></td>
+<td>
+<p>width of the box.</p>
+</td></tr>
+<tr valign="top"><td><code>pch</code></td>
+<td>
+<p>Point type.</p>
+</td></tr>
+<tr valign="top"><td><code>size</code></td>
+<td>
+<p>Point size.</p>
+</td></tr>
+<tr valign="top"><td><code>gp</code></td>
+<td>
+<p>Graphic parameters.</p>
+</td></tr>
+<tr valign="top"><td><code>direction</code></td>
+<td>
+<p>Whether the box is vertical or horizontal.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>All the values are measured with <code>native</code> coordinate.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+lt = list(rnorm(100), rnorm(100))
+grid.newpage()
+pushViewport(viewport(xscale = c(0.5, 2.5), yscale = range(lt)))
+grid.boxplot(lt[[1]], pos = 1, gp = gpar(fill = "red"))
+grid.boxplot(lt[[2]], pos = 2, gp = gpar(fill = "green"))
+popViewport()
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

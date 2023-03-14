@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Calculates the expected error for the standard deviation of...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for multilevelError {fgsea}"><tr><td>multilevelError {fgsea}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Calculates the expected error for the standard deviation of the P-value logarithm.</h2>
+
+<h3>Description</h3>
+
+<p>Calculates the expected error for the standard deviation of the P-value logarithm.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+multilevelError(pval, sampleSize)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pval</code></td>
+<td>
+<p>P-value</p>
+</td></tr>
+<tr valign="top"><td><code>sampleSize</code></td>
+<td>
+<p>equivavlent to sampleSize in fgseaMultilevel</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The value of the expected error
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+expectedError &lt;- multilevelError(pval=1e-10, sampleSize=1001)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fgsea</em> version 1.20.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

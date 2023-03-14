@@ -1,0 +1,578 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Representation of chromatographic MS data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for Chromatogram {MSnbase}"><tr><td>Chromatogram {MSnbase}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Representation of chromatographic MS data</h2>
+
+<h3>Description</h3>
+
+<p>The <code>Chromatogram</code> class is designed to store
+chromatographic MS data, i.e. pairs of retention time and intensity
+values. Instances of the class can be created with the
+<code>Chromatogram</code> constructor function but in most cases the dedicated
+methods for <a href="../../MSnbase/help/OnDiskMSnExp-class.html">OnDiskMSnExp</a> and
+<a href="../../MSnbase/help/MSnExp-class.html">MSnExp</a> objects extracting chromatograms should be
+used instead (i.e. the <code><a href="../../MSnbase/help/chromatogram.html">chromatogram()</a></code> method).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+Chromatogram(
+  rtime = numeric(),
+  intensity = numeric(),
+  mz = c(NA_real_, NA_real_),
+  filterMz = c(NA_real_, NA_real_),
+  precursorMz = c(NA_real_, NA_real_),
+  productMz = c(NA_real_, NA_real_),
+  fromFile = integer(),
+  aggregationFun = character(),
+  msLevel = 1L
+)
+
+aggregationFun(object)
+
+## S4 method for signature 'Chromatogram'
+show(object)
+
+## S4 method for signature 'Chromatogram'
+rtime(object)
+
+## S4 method for signature 'Chromatogram'
+intensity(object)
+
+## S4 method for signature 'Chromatogram'
+mz(object, filter = FALSE)
+
+## S4 method for signature 'Chromatogram'
+precursorMz(object)
+
+## S4 method for signature 'Chromatogram'
+fromFile(object)
+
+## S4 method for signature 'Chromatogram'
+length(x)
+
+## S4 method for signature 'Chromatogram'
+as.data.frame(x)
+
+## S4 method for signature 'Chromatogram'
+filterRt(object, rt)
+
+## S4 method for signature 'Chromatogram'
+clean(object, all = FALSE, na.rm = FALSE)
+
+## S4 method for signature 'Chromatogram,ANY'
+plot(
+  x,
+  col = "#00000060",
+  lty = 1,
+  type = "l",
+  xlab = "retention time",
+  ylab = "intensity",
+  main = NULL,
+  ...
+)
+
+## S4 method for signature 'Chromatogram'
+msLevel(object)
+
+## S4 method for signature 'Chromatogram'
+isEmpty(x)
+
+## S4 method for signature 'Chromatogram'
+productMz(object)
+
+## S4 method for signature 'Chromatogram'
+bin(
+  x,
+  binSize = 0.5,
+  breaks = seq(floor(min(rtime(x))), ceiling(max(rtime(x))), by = binSize),
+  fun = max
+)
+
+## S4 method for signature 'Chromatogram'
+normalize(object, method = c("max", "sum"))
+
+## S4 method for signature 'Chromatogram'
+filterIntensity(object, intensity = 0, ...)
+
+## S4 method for signature 'Chromatogram,Chromatogram'
+alignRt(x, y, method = c("closest", "approx"), ...)
+
+## S4 method for signature 'Chromatogram,Chromatogram'
+compareChromatograms(
+  x,
+  y,
+  ALIGNFUN = alignRt,
+  ALIGNFUNARGS = list(),
+  FUN = cor,
+  FUNARGS = list(use = "pairwise.complete.obs"),
+  ...
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>rtime</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>numeric</code> with the retention times (length
+has to be equal to the length of <code>intensity</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>intensity</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>numeric</code> with the intensity values
+(length has to be equal to the length of <code>rtime</code>). For <code>filterIntensity</code>:
+<code>numeric(1)</code> or <code>function</code> to use to filter intensities. See description
+for details.</p>
+</td></tr>
+<tr valign="top"><td><code>mz</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>numeric(2)</code> representing the mz value range
+(min, max) on which the chromatogram was created. This is supposed to
+contain the <em>real</em> range of mz values in contrast to <code>filterMz</code>.
+If not applicable use <code>mzrange = c(0, 0)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>filterMz</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>numeric(2)</code> representing the mz value
+range (min, max) that was used to filter the original object on m/z
+dimension. If not applicable use <code>filterMz = c(0, 0)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>precursorMz</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>numeric(2)</code> for SRM/MRM transitions.
+Represents the mz of the precursor ion. See details for more information.</p>
+</td></tr>
+<tr valign="top"><td><code>productMz</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>numeric(2)</code> for SRM/MRM transitions.
+Represents the mz of the product. See details for more information.</p>
+</td></tr>
+<tr valign="top"><td><code>fromFile</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>integer(1)</code> the index of the file within
+the <code>OnDiskMSnExp</code> or <code>MSnExp</code> from which the chromatogram was extracted.</p>
+</td></tr>
+<tr valign="top"><td><code>aggregationFun</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>character</code> string specifying
+the function that was used to aggregate intensity values for the same
+retention time across the mz range. Supported are <code>"sum"</code> (total ion
+chromatogram), <code>"max"</code> (base peak chromatogram), <code>"min"</code> and <code>"mean"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>msLevel</code></td>
+<td>
+<p>for <code>Chromatogram</code>: <code>integer(1)</code> with the MS level from
+which the chromatogram was extracted.</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p><code>Chromatogram</code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>filter</code></td>
+<td>
+<p>for <code>mz</code>: <code>logical(1)</code> defining whether the m/z range to filter
+the originating object (e.g. <code>MSnExp</code> object) should be returned or the
+m/z range of the actual data. Defaults to <code>filter = FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p><code>Chromatogram</code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>rt</code></td>
+<td>
+<p>for <code>filterRt</code>: <code>numeric(2)</code> defining the lower and upper retention
+time to which the <code>Chromatogram</code> should be subsetted.</p>
+</td></tr>
+<tr valign="top"><td><code>all</code></td>
+<td>
+<p>for <code>clean</code>: <code>logical(1)</code> whether all 0 intensities should be
+removed. Defaults to <code>all = FALSE</code>. See <code><a href="../../MSnbase/help/clean.html">clean()</a></code> for details.</p>
+</td></tr>
+<tr valign="top"><td><code>na.rm</code></td>
+<td>
+<p>for <code>clean</code>: if all <code>NA</code> intensities should be removed before
+cleaning the <code>Chromatogram</code>. Defaults to <code>clean = FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>for <code>plot</code>: the color to be used for plotting.</p>
+</td></tr>
+<tr valign="top"><td><code>lty</code></td>
+<td>
+<p>for <code>plot</code>: the line type. See help page of <code>plot</code> in
+the <code>graphics</code> package for details.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>for <code>plot</code>: the type of plot. See help page of <code>plot</code> in
+the <code>graphics</code> package for details.</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>for <code>plot</code>: the x-axis label.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>for <code>plot</code>: the y-axis label.</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>for <code>plot</code>: the plot title. If not provided the mz range
+will be used as plot title.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>for <code>plot</code>: additional arguments to be passed to the
+base <code>plot</code> function. For <code>filterIntensity</code>: additional parameters passed
+along to the function provided with <code>intensity</code>.
+For <code>compareChromatograms</code>: ignored</p>
+</td></tr>
+<tr valign="top"><td><code>binSize</code></td>
+<td>
+<p>for <code>bin</code>: <code>numeric(1)</code> with the size of the bins
+(in seconds). Defaults to <code>binSize = 0.5</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>breaks</code></td>
+<td>
+<p>for <code>bin</code>: <code>numeric</code> defining the bins. Usually not
+required as the function calculates the bins automatically based on
+<code>binSize</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>for <code>bin</code>: function to be used to aggregate the intensity
+values falling within each bin. Defaults to <code>fun = max</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p><code>character(1)</code>. For <code>normalise</code>: defining whether each
+chromatogram should be normalized to its maximum signal
+(<code>method = "max"</code>) or total signal (<code>method = "sum"</code>).
+For <code>alignRt</code>: aligning approach that should be used (see description).
+Defaults to <code>method = "closest"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>for <code>alignRt</code>: <code>Chromatogram</code> against which <code>x</code> should be aligned
+against.</p>
+</td></tr>
+<tr valign="top"><td><code>ALIGNFUN</code></td>
+<td>
+<p>for <code>compareChromatograms</code>: function to align chromatogram
+<code>x</code> against chromatogram <code>y</code>. Defaults to <code>alignRt</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ALIGNFUNARGS</code></td>
+<td>
+<p><code>list</code> of parameters to be passed to <code>ALIGNFUN</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>FUN</code></td>
+<td>
+<p>for <code>compareChromatograms</code>: function to calculate a similarity
+score on the intensity values of the compared and aligned chromatograms.
+Defaults to <code>FUN = cor</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>FUNARGS</code></td>
+<td>
+<p>for <code>compareChromatograms</code>: <code>list</code> with additional parameters
+for <code>FUN</code>. Defaults to <code>FUNARGS = list(use = "pairwise.complete.obs")</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>mz</code>, <code>filterMz</code>, <code>precursorMz</code> and
+<code>productMz</code> are stored as a <code>numeric(2)</code> representing a range
+even if the chromatogram was generated for only a single ion (i.e. a
+single mz value). Using ranges for <code>mz</code> values allow this class to
+be used also for e.g. total ion chromatograms or base peak chromatograms.</p>
+<pre>The slots `precursorMz` and `productMz` allow to represent SRM
+(single reaction monitoring) and MRM (multiple SRM) chromatograms. As
+example, a `Chromatogram` for a SRM transition 273 -&gt; 153 will have
+a `@precursorMz = c(273, 273)` and a
+`@productMz = c(153, 153)`.
+</pre>
+
+
+<h3>Object creation</h3>
+
+<p><code>Chromatogram</code> objects can be extracted from an <code>MSnExp</code> or <code>OnDiskMSnExp</code>
+object with the <code>chromatogram()</code> function.
+</p>
+<p>Alternatively, the constructor function <code>Chromatogram</code> can be used, which
+takes arguments <code>rtime</code>, <code>intensity</code>, <code>mz</code>, <code>filterMz</code>, <code>precursorMz</code>,
+<code>productMz</code>, <code>fromFile</code>, <code>aggregationFun</code> and <code>msLevel</code>.
+</p>
+
+
+<h3>Data access and coercion</h3>
+
+
+<ul>
+<li> <p><code>aggregationFun</code>: gets the aggregation function used to create the
+<code>Chromatogram</code>.
+</p>
+</li>
+<li> <p><code>as.data.frame</code>: returns a <code>data.frame</code> with columns <code>"rtime"</code> and
+<code>"intensity"</code>.
+</p>
+</li>
+<li> <p><code>fromFile</code>: returns an <code>integer(1)</code> with the index of the originating file.
+</p>
+</li>
+<li> <p><code>intensity</code>: returns the intensities from the <code>Chromatogram</code>.
+</p>
+</li>
+<li> <p><code>isEmpty</code>: returns <code>TRUE</code> if the chromatogram is empty or has only <code>NA</code>
+intensities.
+</p>
+</li>
+<li> <p><code>length</code>: returns the length (i.e. number of data points) of the
+<code>Chromatogram</code>.
+</p>
+</li>
+<li> <p><code>msLevel</code>: returns an <code>integer(1)</code> with the MS level of the chromatogram.
+</p>
+</li>
+<li> <p><code>mz</code>: get the m/z (range) from the <code>Chromatogram</code>. The function returns
+a <code>numeric(2)</code> with the lower and upper boundaries. Parameter <code>filter</code>
+allows to specify whether the m/z range used to filter the originating
+object should be returned or the m/z range of the actual data.
+</p>
+</li>
+<li> <p><code>precursorMz</code>: get the m/z of the precursor ion. The function returns a
+<code>numeric(2)</code> with the lower and upper boundary.
+</p>
+</li>
+<li> <p><code>productMz</code>: get the m/z of the producto chromatogram/ion. The function
+returns a <code>numeric(2)</code> with the lower and upper m/z value.
+</p>
+</li>
+<li> <p><code>rtime</code>: returns the retention times from the <code>Chromatogram</code>.
+</p>
+</li></ul>
+
+
+
+<h3>Data subsetting and filtering</h3>
+
+
+<ul>
+<li> <p><code>filterRt</code>: filter/subset the <code>Chromatogram</code> to the specified retention
+time range (defined with parameter <code>rt</code>).
+</p>
+</li>
+<li> <p><code>filterIntensity</code>: filter a <code><a href="../../MSnbase/help/Chromatogram.html">Chromatogram()</a></code> object removing data
+points with intensities below a user provided threshold. If <code>intensity</code>
+is a <code>numeric</code> value, the returned chromatogram will only contain data
+points with intensities &gt; <code>intensity</code>. In addition it is possible to
+provide a function to perform the filtering.
+This function is expected to take the input <code>Chromatogram</code> (<code>object</code>) and
+to return a logical vector with the same length then there are data points
+in <code>object</code> with <code>TRUE</code> for data points that should be kept and <code>FALSE</code>
+for data points that should be removed. See examples below.
+</p>
+</li></ul>
+
+
+
+<h3>Data processing and manipulation</h3>
+
+
+<ul>
+<li> <p><code>alignRt</code>: Aligns chromatogram <code>x</code> against chromatogram <code>y</code>. The resulting
+chromatogram has the same length (number of data points) than <code>y</code> and the
+same retention times thus allowing to perform any pair-wise comparisons
+between the chromatograms. If <code>x</code> is a <code><a href="../../MSnbase/help/MChromatograms.html">MChromatograms()</a></code> object, each
+<code>Chromatogram</code> in it is aligned against <code>y</code>. Additional parameters (<code>...</code>)
+are passed along to the alignment functions (e.g. <code><a href="../../MsCoreUtils/html/matching.html">closest()</a></code>).
+</p>
+<p>Parameter <code>method</code> allows to specify which alignment method
+should be used. Currently there are the following options:
+</p>
+
+<ul>
+<li> <p><code>method = "closest"</code> (the default): match data points in the first
+chromatogram (<code>x</code>) to those of the second (<code>y</code>) based on the difference
+between their retention times: each data point in <code>x</code> is assigned to the
+data point in <code>y</code> with the smallest difference in their retention times
+if their difference is smaller than the minimum average difference
+between retention times in <code>x</code> or <code>y</code> (parameter <code>tolerance</code> for the
+call to the <code><a href="../../MsCoreUtils/html/matching.html">closest()</a></code> function).
+By setting <code>tolerance = 0</code> only exact retention times are matched against
+each other (i.e. only values are kept with exactly the same retention
+times between both chromatograms).
+</p>
+</li>
+<li> <p><code>method = "approx"</code>: uses the base R <code>approx</code> function to approximate
+intensities in <code>x</code> to the retention times in <code>y</code> (using linear
+interpolation). This should only be used for chromatograms that were
+measured in the same measurement run (e.g. MS1 and corresponding MS2
+chromatograms from SWATH experiments).
+</p>
+</li></ul>
+
+</li>
+<li> <p><code>bin</code>: aggregates intensity values from a chromatogram in discrete bins
+along the retention time axis and returns a <code>Chromatogram</code> object with
+the retention time representing the mid-point of the bins and the
+intensity the binned signal. Parameters <code>binSize</code> and <code>breaks</code> allow to
+define the binning, <code>fun</code> the function which should be used to aggregate
+the intensities within a bin.
+</p>
+</li>
+<li> <p><code>compareChromatograms</code>: calculates a similarity score between 2
+chromatograms after aligning them. Parameter <code>ALIGNFUN</code> allows to define
+a function that can be used to align <code>x</code> against <code>y</code> (defaults to
+<code>ALIGNFUN = alignRt</code>). Subsequently, the similarity is calculated on the
+aligned intensities with the function provided with parameter <code>FUN</code> which
+defaults to <code>cor</code> (hence by default the Pearson correlation is calculated
+between the aligned intensities of the two compared chromatograms).
+Additional parameters can be passed to the <code>ALIGNFUN</code> and <code>FUN</code> with the
+parameter <code>ALIGNFUNARGS</code> and <code>FUNARGS</code>, respectively.
+</p>
+</li>
+<li> <p><code>clean</code>: removes 0-intensity data points (and <code>NA</code> values). See <code><a href="../../MSnbase/help/clean.html">clean()</a></code>
+for details.
+</p>
+</li>
+<li> <p><code>normalize</code>, <code>normalise</code>: <em>normalises</em> the intensities of a chromatogram by
+dividing them either by the maximum intensity (<code>method = "max"</code>) or total
+intensity (<code>method = "sum"</code>) of the chromatogram.
+</p>
+</li></ul>
+
+
+
+<h3>Data visualization</h3>
+
+
+<ul>
+<li> <p><code>plot</code>: plots a <code>Chromatogram</code> object.
+</p>
+</li></ul>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Johannes Rainer
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="../../MSnbase/help/MChromatograms.html">MChromatograms</a> for combining <code>Chromatogram</code> in
+a two-dimensional matrix (rows being mz-rt ranges, columns samples).
+<code style="white-space: pre;">chromatogram()] for the method to extract chromatogram data from an </code>MSnExp<code>or</code>OnDiskMSnExp<code style="white-space: pre;">object. [clean()] for the method to *clean* a</code>Chromatogram' object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Create a simple Chromatogram object.
+ints &lt;- abs(rnorm(100, sd = 100))
+rts &lt;- seq_len(length(ints))
+chr &lt;- Chromatogram(rtime = rts, intensity = ints)
+chr
+
+## Extract intensities
+intensity(chr)
+
+## Extract retention times
+rtime(chr)
+
+## Extract the mz range - is NA for the present example
+mz(chr)
+
+## plot the Chromatogram
+plot(chr)
+
+## Create a simple Chromatogram object based on random values.
+chr &lt;- Chromatogram(intensity = abs(rnorm(1000, mean = 2000, sd = 200)),
+        rtime = sort(abs(rnorm(1000, mean = 10, sd = 5))))
+chr
+
+## Get the intensities
+head(intensity(chr))
+
+## Get the retention time
+head(rtime(chr))
+
+## What is the retention time range of the object?
+range(rtime(chr))
+
+## Filter the chromatogram to keep only values between 4 and 10 seconds
+chr2 &lt;- filterRt(chr, rt = c(4, 10))
+
+range(rtime(chr2))
+
+## Data manipulations:
+
+## normalize a chromatogram
+par(mfrow = c(1, 2))
+plot(chr)
+plot(normalize(chr, method = "max"))
+
+## Align chromatograms against each other
+
+chr1 &lt;- Chromatogram(rtime = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+    intensity = c(3, 5, 14, 30, 24, 6, 2, 1, 1, 0))
+chr2 &lt;- Chromatogram(rtime = c(2.5, 3.42, 4.5, 5.43, 6.5),
+    intensity = c(5, 12, 15, 11, 5))
+
+plot(chr1, col = "black")
+points(rtime(chr2), intensity(chr2), col = "blue", type = "l")
+
+## Align chr2 to chr1 without interpolation
+res &lt;- alignRt(chr2, chr1)
+rtime(res)
+intensity(res)
+points(rtime(res), intensity(res), col = "#00ff0080", type = "l")
+
+## Align chr2 to chr1 with interpolation
+res &lt;- alignRt(chr2, chr1, method = "approx")
+points(rtime(res), intensity(res), col = "#ff000080", type = "l")
+legend("topright", col = c("black", "blue", "#00ff0080","#ff000080"),lty = 1,
+    legend = c("chr1", "chr2", "chr2 matchRtime", "chr2 approx"))
+
+
+## Compare Chromatograms. Align chromatograms with `alignRt` and
+## method `"approx"`
+compareChromatograms(chr2, chr1, ALIGNFUNARGS = list(method = "approx"))
+
+## Data filtering
+
+chr1 &lt;- Chromatogram(rtime = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+    intensity = c(3, 5, 14, 30, 24, 6, 2, 1, 1, 0))
+
+## Remove data points with intensities below 10
+res &lt;- filterIntensity(chr1, 10)
+intensity(res)
+
+## Remove data points with an intensity lower than 10% of the maximum
+## intensity in the Chromatogram
+filt_fun &lt;- function(x, prop = 0.1) {
+    x@intensity &gt;= max(x@intensity, na.rm = TRUE) * prop
+}
+res &lt;- filterIntensity(chr1, filt_fun)
+intensity(res)
+
+## Remove data points with an intensity lower than half of the maximum
+res &lt;- filterIntensity(chr1, filt_fun, prop = 0.5)
+intensity(res)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MSnbase</em> version 2.20.1 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

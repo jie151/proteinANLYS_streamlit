@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Horizontally Add Heatmaps or Annotations to a Heatmap List</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for +.AdditiveUnit {ComplexHeatmap}"><tr><td>+.AdditiveUnit {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Horizontally Add Heatmaps or Annotations to a Heatmap List
+</h2>
+
+<h3>Description</h3>
+
+<p>Horizontally Add Heatmaps or Annotations to a Heatmap List
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'AdditiveUnit'
+x + y
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A <code><a href="../../ComplexHeatmap/help/Heatmap-class.html">Heatmap-class</a></code> object, a <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation-class.html">HeatmapAnnotation-class</a></code> object or a <code><a href="../../ComplexHeatmap/help/HeatmapList-class.html">HeatmapList-class</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>A <code><a href="../../ComplexHeatmap/help/Heatmap-class.html">Heatmap-class</a></code> object, a <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation-class.html">HeatmapAnnotation-class</a></code> object or a <code><a href="../../ComplexHeatmap/help/HeatmapList-class.html">HeatmapList-class</a></code> object.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>It is only a helper function. It actually calls
+<code><a href="../../ComplexHeatmap/help/add_heatmap+2CHeatmap-method.html">add_heatmap,Heatmap-method</a></code>, <code><a href="../../ComplexHeatmap/help/add_heatmap+2CHeatmapList-method.html">add_heatmap,HeatmapList-method</a></code> or
+<code><a href="../../ComplexHeatmap/help/add_heatmap+2CHeatmapAnnotation-method.html">add_heatmap,HeatmapAnnotation-method</a></code> depending on the class of the input
+objects.
+</p>
+<p>The <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation-class.html">HeatmapAnnotation-class</a></code> object to be added should only be row
+annotations. Column annotations should be added to the heatmap list by
+<code><a href="../../ComplexHeatmap/help/pct_v_pct.html">%v%</a></code>.
+</p>
+<p><code>x</code> and <code>y</code> can also be <code>NULL</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../ComplexHeatmap/help/HeatmapList-class.html">HeatmapList-class</a></code> object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Zuguang Gu &lt;z.gu@dkfz.de&gt;
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../ComplexHeatmap/help/pct_v_pct.html">%v%</a></code> operator is used for vertical heatmap list.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# There is no example
+NULL
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generate a results table</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for get_results {DEP}"><tr><td>get_results {DEP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate a results table</h2>
+
+<h3>Description</h3>
+
+<p><code>get_results</code> generates a results table from a proteomics dataset
+on which differential enrichment analysis was performed.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+get_results(dep)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dep</code></td>
+<td>
+<p>SummarizedExperiment,
+Data object for which differentially enriched proteins are annotated
+(output from <code><a href="../../DEP/help/test_diff.html">test_diff</a>()</code> and <code><a href="../../DEP/help/add_rejections.html">add_rejections</a>()</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A data.frame object
+containing all results variables from the performed analysis.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Load example
+data &lt;- UbiLength
+data &lt;- data[data$Reverse != "+" &amp; data$Potential.contaminant != "+",]
+data_unique &lt;- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+
+# Make SummarizedExperiment
+columns &lt;- grep("LFQ.", colnames(data_unique))
+exp_design &lt;- UbiLength_ExpDesign
+se &lt;- make_se(data_unique, columns, exp_design)
+
+# Filter, normalize and impute missing values
+filt &lt;- filter_missval(se, thr = 0)
+norm &lt;- normalize_vsn(filt)
+imputed &lt;- impute(norm, fun = "MinProb", q = 0.01)
+
+# Test for differentially expressed proteins
+diff &lt;- test_diff(imputed, "control", "Ctrl")
+dep &lt;- add_rejections(diff, alpha = 0.05, lfc = 1)
+
+# Get results
+results &lt;- get_results(dep)
+colnames(results)
+
+significant_proteins &lt;- results[results$significant,]
+nrow(significant_proteins)
+head(significant_proteins)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DEP</em> version 1.16.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

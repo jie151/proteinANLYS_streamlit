@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generic parameter class</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for Param {ProtGenerics}"><tr><td>Param {ProtGenerics}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generic parameter class</h2>
+
+<h3>Description</h3>
+
+<p>The 'Param' class is a virtual class which can be used as *base* class
+from which *parameter* classes can inherit.
+</p>
+<p>The methods implemented for the 'Param' class are:
+</p>
+<p>- 'as.list': coerces the 'Param' class to a 'list' with list elements
+representing the object's slot values, names the slot names. *Hidden*
+slots (i.e. those with a name starting with '.') are not returned. In
+addition, a 'Param' class can be coerced to a 'list' using
+'as(object, &quot;list&quot;)'.
+</p>
+<p>- 'show': prints the content of the 'Param' object (i.e. the individual
+slots and their value).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'Param'
+as.list(x, ...)
+
+## S4 method for signature 'Param'
+show(object)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>'Param' object.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>'Param' object.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Johannes Rainer
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ProtGenerics</em> version 1.26.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

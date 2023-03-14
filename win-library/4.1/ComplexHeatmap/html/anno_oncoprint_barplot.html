@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Barplot Annotation for oncoPrint</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for anno_oncoprint_barplot {ComplexHeatmap}"><tr><td>anno_oncoprint_barplot {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Barplot Annotation for oncoPrint
+</h2>
+
+<h3>Description</h3>
+
+<p>Barplot Annotation for oncoPrint
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+anno_oncoprint_barplot(type = NULL, which = c("column", "row"),
+    bar_width = 0.6, beside = FALSE, ylim = NULL, show_fraction = FALSE, axis = TRUE,
+    axis_param = if(which == "column") default_axis_param("column") else list(side = "top", labels_rot = 0),
+    width = NULL, height = NULL, border = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>A vector of the alteration types in the data. It can be a subset of all alteration types if you don't want to show them all.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>Is it a row annotation or a column annotation?</p>
+</td></tr>
+<tr valign="top"><td><code>bar_width</code></td>
+<td>
+<p>Width of the bars.</p>
+</td></tr>
+<tr valign="top"><td><code>beside</code></td>
+<td>
+<p>Will bars be stacked or be positioned beside each other?</p>
+</td></tr>
+<tr valign="top"><td><code>ylim</code></td>
+<td>
+<p>Data range.</p>
+</td></tr>
+<tr valign="top"><td><code>show_fraction</code></td>
+<td>
+<p>Whether to show the numbers or the fractions?</p>
+</td></tr>
+<tr valign="top"><td><code>axis</code></td>
+<td>
+<p>Whether draw axis?</p>
+</td></tr>
+<tr valign="top"><td><code>axis_param</code></td>
+<td>
+<p>Parameters for controlling axis.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>Width of the annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>Height of the annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>border</code></td>
+<td>
+<p>Whether draw the border?</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This annotation function should always be used with <code><a href="../../ComplexHeatmap/help/oncoPrint.html">oncoPrint</a></code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Zuguang Gu &lt;z.gu@dkfz.de&gt;
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# There is no example
+NULL
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

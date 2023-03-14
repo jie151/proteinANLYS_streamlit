@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Quantitative data normalisation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for normalizeMethods {MsCoreUtils}"><tr><td>normalizeMethods {MsCoreUtils}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Quantitative data normalisation</h2>
+
+<h3>Description</h3>
+
+<p>Function to normalise a matrix of quantitative omics data. The
+nature of the normalisation is controlled by the <code>method</code>
+argument, described below.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+normalizeMethods()
+
+normalize_matrix(x, method, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A matrix to be normalised.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p><code>character(1)</code> defining the normalisation
+method. See <code>normalizeMethods()</code> for available ones.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional parameters passed to the inner normalisation
+function.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>method</code> parameter can be one of <code>"sum"</code>, <code>"max"</code>, <code>"center.mean"</code>,
+<code>"center.median"</code>, <code>"div.mean"</code>, <code>"div.median"</code>, <code>"diff.meda"</code>,
+<code style="white-space: pre;">"quantiles</code>&quot;, <code style="white-space: pre;">"quantiles.robust</code>&quot; or <code>"vsn"</code>. The <code>normalizeMethods()</code>
+function returns a vector of available normalisation methods.
+</p>
+
+<ul>
+<li><p> For <code>"sum"</code> and <code>"max"</code>, each feature's intensity is divided by the
+maximum or the sum of the feature respectively. These two methods are
+applied along the features (rows).
+</p>
+</li>
+<li> <p><code>"center.mean"</code> and <code>"center.median"</code> center the respective sample
+(column) intensities by subtracting the respective column means or
+medians. <code>"div.mean"</code> and <code>"div.median"</code> divide by the column means or
+medians.
+</p>
+</li>
+<li> <p><code>"diff.median"</code> centers all samples (columns) so that they all match the
+grand median by subtracting the respective columns medians differences to
+the grand median.
+</p>
+</li>
+<li><p> Using <code>"quantiles"</code> or <code>"quantiles.robust"</code> applies (robust) quantile
+normalisation, as implemented in <code><a href="../../preprocessCore/help/normalize.quantiles.html">preprocessCore::normalize.quantiles()</a></code>
+and <code><a href="../../preprocessCore/help/normalize.quantiles.robust.html">preprocessCore::normalize.quantiles.robust()</a></code>. <code>"vsn"</code> uses the
+<code><a href="../../vsn/help/vsn2.html">vsn::vsn2()</a></code> function.  Note that the latter also glog-transforms the
+intensities.  See respective manuals for more details and function
+arguments.
+</p>
+</li></ul>
+
+
+
+<h3>Value</h3>
+
+<p>A normalised matrix of dimensions <code>dim(x)</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Laurent Gatto
+</p>
+
+
+<h3>See Also</h3>
+
+<p>The <code><a href="../../base/html/scale.html">scale()</a></code> function that centers (like <code>center.mean</code> above) and
+scales.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+normalizeMethods()
+
+## test data
+set.seed(42)
+m &lt;- matrix(rlnorm(60), 10)
+
+normalize_matrix(m, method = "sum")
+
+normalize_matrix(m, method = "max")
+
+normalize_matrix(m, method = "quantiles")
+
+normalize_matrix(m, method = "center.mean")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MsCoreUtils</em> version 1.6.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

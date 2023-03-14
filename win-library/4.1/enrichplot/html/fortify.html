@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: fortify</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for fortify.compareClusterResult {enrichplot}"><tr><td>fortify.compareClusterResult {enrichplot}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>fortify</h2>
+
+<h3>Description</h3>
+
+<p>convert compareClusterResult to a data.frame that ready for plot
+</p>
+<p>convert enrichResult object for ggplot2
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'compareClusterResult'
+fortify(
+  model,
+  data,
+  showCategory = 5,
+  by = "geneRatio",
+  split = NULL,
+  includeAll = TRUE
+)
+
+## S3 method for class 'enrichResult'
+fortify(
+  model,
+  data,
+  showCategory = 5,
+  by = "Count",
+  order = FALSE,
+  drop = FALSE,
+  split = NULL,
+  ...
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>'enrichResult' or 'compareClusterResult' object</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>not use here</p>
+</td></tr>
+<tr valign="top"><td><code>showCategory</code></td>
+<td>
+<p>Category numbers to show</p>
+</td></tr>
+<tr valign="top"><td><code>by</code></td>
+<td>
+<p>one of Count and GeneRatio</p>
+</td></tr>
+<tr valign="top"><td><code>split</code></td>
+<td>
+<p>separate result by 'split' variable</p>
+</td></tr>
+<tr valign="top"><td><code>includeAll</code></td>
+<td>
+<p>logical</p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p>logical</p>
+</td></tr>
+<tr valign="top"><td><code>drop</code></td>
+<td>
+<p>logical</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameter</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>data.frame
+</p>
+<p>data.frame
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Guangchuang Yu
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>enrichplot</em> version 1.14.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

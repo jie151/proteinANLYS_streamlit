@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Constructor Method for HeatmapAnnotation class</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for HeatmapAnnotation {ComplexHeatmap}"><tr><td>HeatmapAnnotation {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Constructor Method for HeatmapAnnotation class
+</h2>
+
+<h3>Description</h3>
+
+<p>Constructor Method for HeatmapAnnotation class
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+HeatmapAnnotation(...,
+    df, name, col, na_col = "grey",
+    annotation_legend_param = list(),
+    show_legend = TRUE,
+    which = c("column", "row"),
+    gp = gpar(col = NA),
+    border = FALSE,
+    gap = unit(1, "points"),
+    
+    show_annotation_name = TRUE,
+    annotation_label = NULL,
+    annotation_name_gp = gpar(),
+    annotation_name_offset = NULL,
+    annotation_name_side = ifelse(which == "column", "right", "bottom"),
+    annotation_name_rot = NULL,
+    annotation_name_align = FALSE,
+    
+    annotation_height = NULL,
+    annotation_width = NULL,
+    height = NULL,
+    width = NULL,
+    simple_anno_size = ht_opt$simple_anno_size,
+    simple_anno_size_adjust = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Name-value pairs where the names correspond to annotation names and values can be a vector, a matrix and an annotation function. Each pair is sent to <code><a href="../../ComplexHeatmap/help/SingleAnnotation.html">SingleAnnotation</a></code> to contruct a single annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>df</code></td>
+<td>
+<p>A data frame. Each column will be treated as a simple annotation. The data frame must have column names.</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>Name of the heatmap annotation, optional.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>A list of colors which contain color mapping to <code>df</code> or simple annotations defined in <code>...</code>.  See <code><a href="../../ComplexHeatmap/help/SingleAnnotation.html">SingleAnnotation</a></code> for how to set colors.</p>
+</td></tr>
+<tr valign="top"><td><code>na_col</code></td>
+<td>
+<p>Color for <code>NA</code> values in simple annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_legend_param</code></td>
+<td>
+<p>A list which contains parameters for annotation legends. See <code><a href="../../ComplexHeatmap/help/color_mapping_legend+2CColorMapping-method.html">color_mapping_legend,ColorMapping-method</a></code> for all possible options.</p>
+</td></tr>
+<tr valign="top"><td><code>show_legend</code></td>
+<td>
+<p>Whether show annotation legends. The value can be one single value or a vector.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>Are these row annotations or column annotations?</p>
+</td></tr>
+<tr valign="top"><td><code>gp</code></td>
+<td>
+<p>Graphic parameters for simple annotations (with <code>fill</code> parameter ignored).</p>
+</td></tr>
+<tr valign="top"><td><code>border</code></td>
+<td>
+<p>border of single annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>gap</code></td>
+<td>
+<p>Gap between annotations. It can be a single value or a vector of <code><a href="../../grid/help/unit.html">unit</a></code> objects.</p>
+</td></tr>
+<tr valign="top"><td><code>show_annotation_name</code></td>
+<td>
+<p>Whether show annotation names? For column annotation, annotation names are drawn either on the left or the right, and for row annotations, names are draw either on top or at the bottom. The value can be a vector.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_label</code></td>
+<td>
+<p>Labels for the annotations. By default it is the same as individual annotation names.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_name_gp</code></td>
+<td>
+<p>Graphic parameters for anntation names. Graphic paramters can be vectors.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_name_offset</code></td>
+<td>
+<p>Offset to the annotation names, a <code><a href="../../grid/help/unit.html">unit</a></code> object. The value can be a vector.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_name_side</code></td>
+<td>
+<p>Side of the annotation names.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_name_rot</code></td>
+<td>
+<p>Rotation of the annotation names. The value can be a vector.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_name_align</code></td>
+<td>
+<p>Whether to align the annotation names.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_height</code></td>
+<td>
+<p>Height of each annotation if annotations are column annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_width</code></td>
+<td>
+<p>Width of each annotation if annotations are row annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>Height of the whole column annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>Width of the whole heatmap annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>simple_anno_size</code></td>
+<td>
+<p>Size of the simple annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>simple_anno_size_adjust</code></td>
+<td>
+<p>Whether also adjust the size of simple annotations when adjusting the whole heatmap annotation.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For arguments <code>show_legend</code>, <code>border</code>, <code>annotation_name_offset</code>, <code>annotation_name_side</code>, <code>annotation_name_rot</code>,
+<code>show_annotation_name</code>, they can be set as named vectors to modify values for some of the annotations,
+e.g. assuming you have an annotation with name <code>foo</code>, you can specify <code>border = c(foo = TRUE)</code> in <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation.html">HeatmapAnnotation</a></code>.
+</p>
+<p>There are three ways to specify heatmap annotations:
+</p>
+<p>1. If the annotation is simply a vector or a matrix, it can be specified like <code>HeatmapAnnotation(foo = 1:10)</code>.
+2. If the annotations are already stored as a data frame, it can be specified like <code>HeatmapAnnotation(df = df)</code>.
+3. For complex annotations, users can use the pre-defined annotation functions such as <code><a href="../../ComplexHeatmap/help/anno_points.html">anno_points</a></code>: <code>HeatmapAnnotation(foo = anno_points(1:10))</code>.
+</p>
+<p>For more details and examples, please check <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html.">https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html.</a>
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation-class.html">HeatmapAnnotation-class</a></code> object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Zuguang Gu &lt;z.gu@dkfz.de&gt;
+</p>
+
+
+<h3>See Also</h3>
+
+<p>There are two helper functions: <code><a href="../../ComplexHeatmap/help/rowAnnotation.html">rowAnnotation</a></code> and <code><a href="../../ComplexHeatmap/help/columnAnnotation.html">columnAnnotation</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# There is no example
+NULL
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

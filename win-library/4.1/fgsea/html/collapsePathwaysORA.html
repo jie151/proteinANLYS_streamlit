@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Collapse list of enriched pathways to independent ones....</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for collapsePathwaysORA {fgsea}"><tr><td>collapsePathwaysORA {fgsea}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Collapse list of enriched pathways to independent ones. Version for ORA hypergeometric test.</h2>
+
+<h3>Description</h3>
+
+<p>Collapse list of enriched pathways to independent ones. Version for ORA hypergeometric test.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+collapsePathwaysORA(foraRes, pathways, genes, universe, pval.threshold = 0.05)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>foraRes</code></td>
+<td>
+<p>Table with results of running fgsea(), should be filtered
+by p-value, for example by selecting ones with padj &lt; 0.01.</p>
+</td></tr>
+<tr valign="top"><td><code>pathways</code></td>
+<td>
+<p>List of pathways, should contain all the pathways present in
+'fgseaRes'.</p>
+</td></tr>
+<tr valign="top"><td><code>genes</code></td>
+<td>
+<p>Set of query genes, same as in 'fora()'</p>
+</td></tr>
+<tr valign="top"><td><code>universe</code></td>
+<td>
+<p>A universe from whiche 'genes' were selected, same as in 'fora()'</p>
+</td></tr>
+<tr valign="top"><td><code>pval.threshold</code></td>
+<td>
+<p>Two pathways are considered dependent when p-value
+of enrichment of one pathways on background of another
+is greater then 'pval.threshold'.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Named list with two elments: 'mainPathways' containing IDs of pathways
+not reducable to each other, and 'parentPathways' with vector describing
+for all the pathways to which ones they can be reduced. For
+pathways from 'mainPathwyas' vector 'parentPathways' contains 'NA' values.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(examplePathways)
+data(exampleRanks)
+foraRes &lt;- fora(examplePathways, genes=tail(names(exampleRanks), 200), universe=names(exampleRanks))
+collapsedPathways &lt;- collapsePathwaysORA(foraRes[order(pval)][padj &lt; 0.01],
+                                             examplePathways,
+                                             genes=tail(names(exampleRanks), 200),
+                                             universe=names(exampleRanks))
+
+mainPathways &lt;- foraRes[pathway %in% collapsedPathways$mainPathways][
+                          order(pval), pathway]
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fgsea</em> version 1.20.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

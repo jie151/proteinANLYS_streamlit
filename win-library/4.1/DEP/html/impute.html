@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Impute missing values</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for impute {DEP}"><tr><td>impute {DEP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Impute missing values</h2>
+
+<h3>Description</h3>
+
+<p><code>impute</code> imputes missing values in a proteomics dataset.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+impute(se, fun = c("bpca", "knn", "QRILC", "MLE", "MinDet", "MinProb",
+  "man", "min", "zero", "mixed", "nbavg"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>se</code></td>
+<td>
+<p>SummarizedExperiment,
+Proteomics data (output from <code><a href="../../DEP/help/make_se.html">make_se</a>()</code> or
+<code><a href="../../DEP/help/make_se_parse.html">make_se_parse</a>()</code>). It is adviced to first remove
+proteins with too many missing values using <code><a href="../../DEP/help/filter_missval.html">filter_missval</a>()</code>
+and normalize the data using <code><a href="../../DEP/help/normalize_vsn.html">normalize_vsn</a>()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>&quot;bpca&quot;, &quot;knn&quot;, &quot;QRILC&quot;, &quot;MLE&quot;, &quot;MinDet&quot;,
+&quot;MinProb&quot;, &quot;man&quot;, &quot;min&quot;, &quot;zero&quot;, &quot;mixed&quot; or &quot;nbavg&quot;,
+Function used for data imputation based on <code><a href="../../DEP/help/manual_impute.html">manual_impute</a></code>
+and <code><a href="../../MSnbase/help/impute-methods.html">impute</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments for imputation functions as depicted in
+<code><a href="../../DEP/help/manual_impute.html">manual_impute</a></code> and <code><a href="../../MSnbase/help/impute-methods.html">impute</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An imputed SummarizedExperiment object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Load example
+data &lt;- UbiLength
+data &lt;- data[data$Reverse != "+" &amp; data$Potential.contaminant != "+",]
+data_unique &lt;- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+
+# Make SummarizedExperiment
+columns &lt;- grep("LFQ.", colnames(data_unique))
+exp_design &lt;- UbiLength_ExpDesign
+se &lt;- make_se(data_unique, columns, exp_design)
+
+# Filter and normalize
+filt &lt;- filter_missval(se, thr = 0)
+norm &lt;- normalize_vsn(filt)
+
+# Impute missing values using different functions
+imputed_MinProb &lt;- impute(norm, fun = "MinProb", q = 0.05)
+imputed_QRILC &lt;- impute(norm, fun = "QRILC")
+
+imputed_knn &lt;- impute(norm, fun = "knn", k = 10, rowmax = 0.9)
+imputed_MLE &lt;- impute(norm, fun = "MLE")
+
+imputed_manual &lt;- impute(norm, fun = "man", shift = 1.8, scale = 0.3)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DEP</em> version 1.16.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

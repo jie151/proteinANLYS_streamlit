@@ -1,0 +1,10 @@
+label,condition,replicate
+Reporter.intensity.corrected.1.AGE,A,1
+Reporter.intensity.corrected.2.AGE,A,2
+Reporter.intensity.corrected.5.AGE,A,3
+Reporter.intensity.corrected.6.AGE,B,1
+Reporter.intensity.corrected.7.AGE,B,2
+Reporter.intensity.corrected.8.AGE,B,3
+Reporter.intensity.corrected.9.AGE,C,1
+Reporter.intensity.corrected.10.AGE,C,2
+Reporter.intensity.corrected.11.AGE,C,3

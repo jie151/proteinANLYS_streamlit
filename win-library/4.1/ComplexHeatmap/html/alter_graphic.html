@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Automatically generate alter_fun</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for alter_graphic {ComplexHeatmap}"><tr><td>alter_graphic {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Automatically generate alter_fun
+</h2>
+
+<h3>Description</h3>
+
+<p>Automatically generate alter_fun
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+alter_graphic(graphic = c("rect", "point"),
+    width = 1, height = 1,
+    horiz_margin = unit(1, "pt"), vertical_margin = unit(1, "pt"),
+    fill = "red", col = NA, pch = 16, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graphic</code></td>
+<td>
+<p>Graphic to draw.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>Relative width of the rectangle.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>Relative height of the rectangle.</p>
+</td></tr>
+<tr valign="top"><td><code>horiz_margin</code></td>
+<td>
+<p>Horizontal margin. E.g. if you want 1mm margin on top and 1mm margin at bottom of the rectangle, set this value to <code>unit(1, 'mm')</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>vertical_margin</code></td>
+<td>
+<p>Vertical margin.</p>
+</td></tr>
+<tr valign="top"><td><code>fill</code></td>
+<td>
+<p>Filled color.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>Border color.</p>
+</td></tr>
+<tr valign="top"><td><code>pch</code></td>
+<td>
+<p>Pch for points</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Pass to <code><a href="../../grid/help/gpar.html">gpar</a></code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function aims to simplify the definition of functions in <code>alter_fun</code>. Now it only
+supports rectangles and points.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+mat = read.table(textConnection(
+"s1,s2,s3
+g1,snv;indel,snv,indel
+g2,,snv;indel,snv
+g3,snv,,indel;snv"), row.names = 1, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+mat = as.matrix(mat)
+col = c(snv = "red", indel = "blue")
+
+oncoPrint(mat, 
+	alter_fun = list(
+		snv = alter_graphic("rect", width = 0.9, height = 0.9, fill = col["snv"]),
+		indel = alter_graphic("rect", width = 0.9, height = 0.9, fill = col["indel"])
+	), col = col)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

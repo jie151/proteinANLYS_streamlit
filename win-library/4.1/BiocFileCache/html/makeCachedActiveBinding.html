@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: makeCachedActiveBinding</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for makeCachedActiveBinding {BiocFileCache}"><tr><td>makeCachedActiveBinding {BiocFileCache}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>makeCachedActiveBinding</h2>
+
+<h3>Description</h3>
+
+<p>Like <code><a href="../../base/html/bindenv.html">makeActiveBinding</a></code> but the value of the active
+binding gets only evaluated once and is &quot;remembered&quot;.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+makeCachedActiveBinding(sym, fun, env = .GlobalEnv, verbose = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>sym</code></td>
+<td>
+<p>See <code><a href="../../base/html/bindenv.html">makeActiveBinding</a></code> in the <span class="pkg">base</span>
+package.</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>See <code><a href="../../base/html/bindenv.html">makeActiveBinding</a></code> in the <span class="pkg">base</span>
+package.</p>
+</td></tr>
+<tr valign="top"><td><code>env</code></td>
+<td>
+<p>See <code><a href="../../base/html/bindenv.html">makeActiveBinding</a></code> in the <span class="pkg">base</span>
+package.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>Set to TRUE to see caching in action (useful for
+troubleshooting).</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+makeCachedActiveBinding("x", function() runif(1), verbose=TRUE)
+x
+x
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>BiocFileCache</em> version 2.2.1 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

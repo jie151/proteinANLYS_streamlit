@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Relaxed Value Matching</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for closest {MsCoreUtils}"><tr><td>closest {MsCoreUtils}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Relaxed Value Matching</h2>
+
+<h3>Description</h3>
+
+<p>These functions offer relaxed matching of one vector in another.
+In contrast to the similar <code><a href="../../base/html/match.html">match()</a></code> and <code><a href="../../base/html/match.html">%in%</a></code> functions they
+just accept <code>numeric</code> arguments but have an additional <code>tolerance</code>
+argument that allows relaxed matching.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+closest(
+  x,
+  table,
+  tolerance = Inf,
+  ppm = 0,
+  duplicates = c("keep", "closest", "remove"),
+  nomatch = NA_integer_,
+  .check = TRUE
+)
+
+common(
+  x,
+  table,
+  tolerance = Inf,
+  ppm = 0,
+  duplicates = c("keep", "closest", "remove"),
+  .check = TRUE
+)
+
+join(
+  x,
+  y,
+  tolerance = 0,
+  ppm = 0,
+  type = c("outer", "left", "right", "inner"),
+  .check = TRUE,
+  ...
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p><code>numeric</code>, the values to be matched. In contrast to
+<code><a href="../../base/html/match.html">match()</a></code> <code>x</code> has to be sorted in increasing order and must not contain any
+<code>NA</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>table</code></td>
+<td>
+<p><code>numeric</code>, the values to be matched against. In contrast to
+<code><a href="../../base/html/match.html">match()</a></code> <code>table</code> has to be sorted in increasing order and must not contain
+any <code>NA</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>tolerance</code></td>
+<td>
+<p><code>numeric</code>, accepted tolerance. Could be of length one or
+the same length as <code>x</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ppm</code></td>
+<td>
+<p><code>numeric(1)</code> representing a relative, value-specific
+parts-per-million (PPM) tolerance that is added to <code>tolerance</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>duplicates</code></td>
+<td>
+<p><code>character(1)</code>, how to handle duplicated matches. Has to be
+one of <code>c("keep", "closest", "remove")</code>. No abbreviations allowed.</p>
+</td></tr>
+<tr valign="top"><td><code>nomatch</code></td>
+<td>
+<p><code>integer(1)</code>, if the difference
+between the value in <code>x</code> and <code>table</code> is larger than
+<code>tolerance</code> <code>nomatch</code> is returned.</p>
+</td></tr>
+<tr valign="top"><td><code>.check</code></td>
+<td>
+<p><code>logical(1)</code> turn off checks for increasingly sorted <code>x</code> and
+<code>y</code>. This should just be done if it is ensured by other methods that <code>x</code> and
+<code>y</code> are sorted, see also <code><a href="../../MsCoreUtils/help/closest.html">closest()</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p><code>numeric</code>, the values to be joined. Should be sorted.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p><code>character(1)</code>, defines how <code>x</code> and <code>y</code> should be joined. See
+details for <code>join</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>ignored.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For <code>closest</code>/<code>common</code> the <code>tolerance</code> argument could be set to <code>0</code> to get
+the same results as for <code><a href="../../base/html/match.html">match()</a></code>/<code><a href="../../base/html/match.html">%in%</a></code>. If it is set to <code>Inf</code> (default)
+the index of the closest values is returned without any restriction.
+</p>
+<p>It is not guaranteed that there is a one-to-one matching for neither the
+<code>x</code> to <code>table</code> nor the <code>table</code> to <code>x</code> matching.
+</p>
+<p>If multiple elements in <code>x</code> match a single element in <code>table</code> all their
+corresponding indices are returned if <code>duplicates="keep"</code> is set (default).
+This behaviour is identical to <code><a href="../../base/html/match.html">match()</a></code>. For <code>duplicates="closest"</code> just
+the closest element in <code>x</code> gets the corresponding index in <code>table</code> and
+for <code>duplicates="remove"</code> all elements in <code>x</code> that match to the same element
+in <code>table</code> are set to <code>nomatch</code>.
+</p>
+<p>If a single element in <code>x</code> matches multiple elements in <code>table</code> the <em>closest</em>
+is returned for <code>duplicates="keep"</code> or <code>duplicates="closest"</code> (<em>keeping</em>
+multiple matches isn't possible in this case because the return value should
+be of the same length as <code>x</code>). If the differences between <code>x</code> and the
+corresponding matches in <code>table</code> are identical the lower index (the smaller
+element in <code>table</code>) is returned. There is one exception: if the lower index
+is already returned for another <code>x</code> with a smaller difference to this
+<code>index</code> the higher one is returned for <code>duplicates = "closer"</code>
+(but only if there is no other <code>x</code> that is closer to the higher one).
+For <code>duplicates="remove"</code> all multiple matches are returned as <code>nomatch</code> as
+above.
+</p>
+<p><code>.checks = TRUE</code> tests among other input validation checks for increasingly
+sorted <code>x</code> and <code>table</code> arguments that are mandatory assumptions for the
+<code>closest</code> algorithm. These checks require to loop through both vectors and
+compare each element against its precursor.
+Depending on the length and distribution of <code>x</code> and <code>table</code> these checks take
+equal/more time than the whole <code>closest</code> algorithm. If it is ensured by other
+methods that both arguments <code>x</code> and <code>table</code> are sorted the tests could be
+skipped by <code>.check = FALSE</code>. In the case that <code>.check = FALSE</code> is used
+and one of <code>x</code> and <code>table</code> is not sorted (or decreasingly sorted)
+the output would be incorrect in the best case and result in infinity
+loop in the average and worst case.
+</p>
+<p><code>join</code>: joins two <code>numeric</code> vectors by mapping values in <code>x</code> with
+values in <code>y</code> and <em>vice versa</em> if they are similar enough (provided the
+<code>tolerance</code> and <code>ppm</code> specified). The function returns a <code>matrix</code> with the
+indices of mapped values in <code>x</code> and <code>y</code>. Parameter <code>type</code> allows to define
+how the vectors will be joined: <code>type = "left"</code>: values in <code>x</code> will be
+mapped to values in <code>y</code>, elements in <code>y</code> not matching any value in <code>x</code> will
+be discarded. <code>type = "right"</code>: same as <code>type = "left"</code> but for <code>y</code>.
+<code>type = "outer"</code>: return matches for all values in <code>x</code> and in <code>y</code>.
+<code>type = "inner"</code>: report only indices of values that could be mapped.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>closest</code> returns an <code>integer</code> vector of the same length as <code>x</code>
+giving the closest position in <code>table</code> of the first match or <code>nomatch</code> if
+there is no match.
+</p>
+<p><code>common</code> returns a <code>logical</code> vector of length <code>x</code> that is <code>TRUE</code> if the
+element in <code>x</code> was found in <code>table</code>. It is similar to <code><a href="../../base/html/match.html">%in%</a></code>.
+</p>
+<p><code>join</code> returns a <code>matrix</code> with two columns, namely <code>x</code> and <code>y</code>,
+representing the index of the values in <code>x</code> matching the corresponding value
+in <code>y</code> (or <code>NA</code> if the value does not match).
+</p>
+
+
+<h3>Note</h3>
+
+<p><code>join</code> is based on <code>closest(x, y, tolerance, duplicates = "closest")</code>.
+That means for multiple matches just the closest one is reported.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Sebastian Gibb, Johannes Rainer
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../base/html/match.html">match()</a></code>
+</p>
+<p><code><a href="../../base/html/match.html">%in%</a></code>
+</p>
+<p>Other grouping/matching functions: 
+<code><a href="../../MsCoreUtils/help/bin.html">bin</a>()</code>,
+<code><a href="../../MsCoreUtils/help/gnps.html">gnps</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Define two vectors to match
+x &lt;- c(1, 3, 5)
+y &lt;- 1:10
+
+## Compare match and closest
+match(x, y)
+closest(x, y)
+
+## If there is no exact match
+x &lt;- x + 0.1
+match(x, y) # no match
+closest(x, y)
+
+## Some new values
+x &lt;- c(1.11, 45.02, 556.45)
+y &lt;- c(3.01, 34.12, 45.021, 46.1, 556.449)
+
+## Using a single tolerance value
+closest(x, y, tolerance = 0.01)
+
+## Using a value-specific tolerance accepting differences of 20 ppm
+closest(x, y, ppm = 20)
+
+## Same using 50 ppm
+closest(x, y, ppm = 50)
+
+## Sometimes multiple elements in `x` match to `table`
+x &lt;- c(1.6, 1.75, 1.8)
+y &lt;- 1:2
+closest(x, y, tolerance = 0.5)
+closest(x, y, tolerance = 0.5, duplicates = "closest")
+closest(x, y, tolerance = 0.5, duplicates = "remove")
+
+## Are there any common values?
+x &lt;- c(1.6, 1.75, 1.8)
+y &lt;- 1:2
+common(x, y, tolerance = 0.5)
+common(x, y, tolerance = 0.5, duplicates = "closest")
+common(x, y, tolerance = 0.5, duplicates = "remove")
+
+## Join two vectors
+x &lt;- c(1, 2, 3, 6)
+y &lt;- c(3, 4, 5, 6, 7)
+
+jo &lt;- join(x, y, type = "outer")
+jo
+x[jo$x]
+y[jo$y]
+
+jl &lt;- join(x, y, type = "left")
+jl
+x[jl$x]
+y[jl$y]
+
+jr &lt;- join(x, y, type = "right")
+jr
+x[jr$x]
+y[jr$y]
+
+ji &lt;- join(x, y, type = "inner")
+ji
+x[ji$x]
+y[ji$y]
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MsCoreUtils</em> version 1.6.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Peak Region Mask</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for .peakRegionMask {MsCoreUtils}"><tr><td>.peakRegionMask {MsCoreUtils}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Peak Region Mask</h2>
+
+<h3>Description</h3>
+
+<p>This function finds the mz region spanning by a peak. It creates an 0/1
+matrix used for multiplications in other functions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+.peakRegionMask(x, p, k = 30L)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p><code>numeric</code>, e.g. intensity values.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p><code>integer</code>, indices of identified peaks/local maxima.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p><code>integer(1)</code>: maximum number of values left and right of the
+peak that should be looked for valleys.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <code>matrix</code> with a column for each peak in <code>p</code> and <code>2 * k + 1</code>
+rows where the middle row <code>k + 1</code> is the peak centroid. If the values is <code>1</code>
+the index belongs to the peak region.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Sebastian Gibb
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other extreme value functions: 
+<code><a href="../../MsCoreUtils/help/localMaxima.html">localMaxima</a>()</code>,
+<code><a href="../../MsCoreUtils/help/refineCentroids.html">refineCentroids</a>()</code>,
+<code><a href="../../MsCoreUtils/help/valleys.html">valleys</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ints &lt;- c(5, 8, 12, 7, 4, 9, 15, 16, 11, 8, 3, 2, 3, 2, 9, 12, 14, 13, 8, 3)
+mzs &lt;- seq_along(ints)
+peaks &lt;- which(localMaxima(ints, hws = 3L))
+
+m &lt;- MsCoreUtils:::.peakRegionMask(ints, peaks, k = 5L)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MsCoreUtils</em> version 1.6.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

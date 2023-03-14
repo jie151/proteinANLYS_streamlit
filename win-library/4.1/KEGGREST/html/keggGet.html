@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Retrieves given database entries</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for keggGet {KEGGREST}"><tr><td>keggGet {KEGGREST}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Retrieves given database entries
+</h2>
+
+<h3>Description</h3>
+
+<p>Retrieves given database entries.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+keggGet(dbentries, option = c("aaseq", "ntseq", "mol", "kcf", 
+    "image", "kgml"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dbentries</code></td>
+<td>
+
+<p>One or more (up to a maximum of 10) KEGG identifiers.
+</p>
+</td></tr>
+<tr valign="top"><td><code>option</code></td>
+<td>
+
+<p><code>Optional.</code> Option governing the format of the output.
+<code>aaseq</code> is an amino acid sequence, <code>ntseq</code> is a nucleotide
+sequence. <code>image</code> returns an object which can be written
+to a PNG file, <code>kgml</code> returns a KGML document.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Retrieves all entries from the KEGG database for a set of KEGG identifers.
+</p>
+<p><code>keggGet</code>() can only return 10 result sets at once (this limitation
+is on the server side). If you supply more than 10 inputs to <code>keggGet()</code>,
+<code>KEGGREST</code> will warn that only the first 10 results will be returned.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list wrapping a KEGG flat file.
+If <code>option</code> is <code>aaseq</code>, an <code>AAStringSet</code> object.
+If <code>option</code> is <code>ntseq</code>, a <code>DNAStringSet</code> object.
+If <code>option</code> is <code>image</code>, an object which can be written
+to a PNG file.
+If <code>option</code> is <code>kgml</code>, a KGML document.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Dan Tenenbaum
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="https://www.kegg.jp/kegg/docs/keggapi.html">https://www.kegg.jp/kegg/docs/keggapi.html</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+res &lt;- keggGet(c("cpd:C01290", "gl:G00092")) ## retrieves a compound entry
+                                    ## and a glycan entry
+str(res)
+res &lt;- keggGet(c("C01290", "G00092")) ## same as above, without prefixes
+str(res)
+res &lt;- keggGet(c("hsa:10458", "ece:Z5100")) ## retrieves a human gene entry
+                                    ## and an E.coli O157 gene entry
+str(res)
+res &lt;- keggGet(c("hsa:10458", "ece:Z5100"), "aaseq") ## retrieves amino
+                                    ## acid sequences of a human gene and an 
+                                    ## E.coli O157 gene
+png &lt;- keggGet("hsa05130", "image") ## retrieves the image file of a
+                                    ## pathway map
+t &lt;- tempfile()
+library(png)
+writePNG(png, t)
+res &lt;- keggGet("hsa05130", "kgml")
+str(res)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>KEGGREST</em> version 1.34.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

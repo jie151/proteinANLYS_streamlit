@@ -1,0 +1,66 @@
+DEP                     DEP: A package for Differential Enrichment
+                        analysis of Proteomics data.
+DiUbi                   DiUbi - Ubiquitin interactors for different
+                        diubiquitin-linkages (UbIA-MS dataset)
+DiUbi_ExpDesign         Experimental design of the DiUbi dataset
+LFQ                     LFQ workflow
+TMT                     TMT workflow
+UbiLength               UbiLength - Ubiquitin interactors of different
+                        linear ubiquitin lengths (UbIA-MS dataset)
+UbiLength_ExpDesign     Experimental design of the UbiLength dataset
+add_rejections          Mark significant proteins
+analyze_dep             Differential expression analysis
+filter_missval          Filter on missing values
+filter_proteins         Filter proteins based on missing values
+get_df_long             Generate a long data.frame from a
+                        SummarizedExperiment
+get_df_wide             Generate a wide data.frame from a
+                        SummarizedExperiment
+get_prefix              Obtain the longest common prefix
+get_results             Generate a results table
+get_suffix              Obtain the longest common suffix
+import_IsobarQuant      Import from IsobarQuant
+import_MaxQuant         Import from MaxQuant
+impute                  Impute missing values
+make_se                 Data.frame to SummarizedExperiment object
+                        conversion using an experimental design
+make_se_parse           Data.frame to SummarizedExperiment object
+                        conversion using parsing from column names
+make_unique             Make unique names
+manual_impute           Imputation by random draws from a manually
+                        defined distribution
+meanSdPlot              Plot row standard deviations versus row means
+normalize_vsn           Normalization using vsn
+plot_all                Visualize the results in different types of
+                        plots
+plot_cond               Plot frequency of significant conditions per
+                        protein and the overlap in proteins between
+                        conditions
+plot_cond_freq          Plot frequency of significant conditions per
+                        protein
+plot_cond_overlap       Plot conditions overlap
+plot_cor                Plot correlation matrix
+plot_coverage           Plot protein coverage
+plot_detect             Visualize intensities of proteins with missing
+                        values
+plot_dist               Plot Gower's distance matrix
+plot_frequency          Plot protein overlap between samples
+plot_gsea               Plot enriched Gene Sets
+plot_heatmap            Plot a heatmap
+plot_imputation         Visualize imputation
+plot_missval            Plot a heatmap of proteins with missing values
+plot_normalization      Visualize normalization
+plot_numbers            Plot protein numbers
+plot_p_hist             Plot a P value histogram
+plot_pca                Plot PCA
+plot_single             Plot values for a protein of interest
+plot_volcano            Volcano plot
+process                 Proteomics data processing
+report                  Generate a markdown report
+run_app                 DEP shiny apps
+se2msn                  Deprecated Function to coerce
+                        SummarizedExperiment to MSnSet object
+test_diff               Differential enrichment test
+test_gsea               Gene Set Enrichment Analysis
+theme_DEP1              DEP ggplot theme 1
+theme_DEP2              DEP ggplot theme 2

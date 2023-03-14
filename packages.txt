@@ -1,0 +1,5 @@
+r-base
+r-cran-ggplot2
+r-cran-cowplot
+r-cran-httr
+r-cran-dplyr

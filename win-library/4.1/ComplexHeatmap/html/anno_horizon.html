@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Horizon chart Annotation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for anno_horizon {ComplexHeatmap}"><tr><td>anno_horizon {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Horizon chart Annotation
+</h2>
+
+<h3>Description</h3>
+
+<p>Horizon chart Annotation
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+anno_horizon(x, which = c("column", "row"),
+    gp = gpar(pos_fill = "#D73027", neg_fill = "#313695"),
+    n_slice = 4, slice_size = NULL, negative_from_top = FALSE,
+    normalize = TRUE, gap = unit(0, "mm"),
+    axis = TRUE, axis_param = default_axis_param(which),
+    width = NULL, height = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A matrix or a list. If <code>x</code> is a matrix or a data frame, columns correspond to observations.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>Whether it is a column annotation or a row annotation?</p>
+</td></tr>
+<tr valign="top"><td><code>gp</code></td>
+<td>
+<p>Graphic parameters for the boxes. The length of the graphic parameters should be one or the number of observations. There are two unstandard parameters specificly for horizon chart: <code>pos_fill</code> and <code>neg_fill</code> controls the filled color for positive values and negative values.</p>
+</td></tr>
+<tr valign="top"><td><code>n_slice</code></td>
+<td>
+<p>Number of slices on y-axis.</p>
+</td></tr>
+<tr valign="top"><td><code>slice_size</code></td>
+<td>
+<p>Height of the slice. If the value is not <code>NULL</code>, <code>n_slice</code> will be recalculated. </p>
+</td></tr>
+<tr valign="top"><td><code>negative_from_top</code></td>
+<td>
+<p>Whether the areas for negative values start from the top or the bottom of the plotting region?</p>
+</td></tr>
+<tr valign="top"><td><code>normalize</code></td>
+<td>
+<p>Whether normalize <code>x</code> by max(abs(x)).</p>
+</td></tr>
+<tr valign="top"><td><code>gap</code></td>
+<td>
+<p>Gap size of neighbouring horizon chart.</p>
+</td></tr>
+<tr valign="top"><td><code>axis</code></td>
+<td>
+<p>Whether to add axis?</p>
+</td></tr>
+<tr valign="top"><td><code>axis_param</code></td>
+<td>
+<p>parameters for controlling axis. See <code><a href="../../ComplexHeatmap/help/default_axis_param.html">default_axis_param</a></code> for all possible settings and default parameters.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Horizon chart as row annotation is only supported.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An annotation function which can be used in <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation.html">HeatmapAnnotation</a></code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#horizon-chart-annotation">https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#horizon-chart-annotation</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+lt = lapply(1:20, function(x) cumprod(1 + runif(1000, -x/100, x/100)) - 1)
+anno = anno_horizon(lt, which = "row")
+draw(anno, test = "horizon chart")
+anno = anno_horizon(lt, which = "row", 
+    gp = gpar(pos_fill = "orange", neg_fill = "darkgreen"))
+draw(anno, test = "horizon chart, col")
+anno = anno_horizon(lt, which = "row", negative_from_top = TRUE)
+draw(anno, test = "horizon chart + negative_from_top")
+anno = anno_horizon(lt, which = "row", gap = unit(1, "mm"))
+draw(anno, test = "horizon chart + gap")
+anno = anno_horizon(lt, which = "row", 
+    gp = gpar(pos_fill = rep(c("orange", "red"), each = 10),
+    neg_fill = rep(c("darkgreen", "blue"), each = 10)))
+draw(anno, test = "horizon chart, col")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

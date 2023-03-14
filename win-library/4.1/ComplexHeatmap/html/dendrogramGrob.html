@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Grob for Dendrogram</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for dendrogramGrob {ComplexHeatmap}"><tr><td>dendrogramGrob {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Grob for Dendrogram
+</h2>
+
+<h3>Description</h3>
+
+<p>Grob for Dendrogram
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dendrogramGrob(dend, facing = c("bottom", "top", "left", "right"),
+    order = c("normal", "reverse"), gp = gpar())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>A <code><a href="../../stats/html/dendrogram.html">dendrogram</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>facing</code></td>
+<td>
+<p>Facing of the dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p>If it is set to <code>reverse</code>, the first leaf is put on the right if the dendrogram is horizontal and it is put on the top if the dendrogram is vertical.</p>
+</td></tr>
+<tr valign="top"><td><code>gp</code></td>
+<td>
+<p>Graphic parameters for the dendrogram segments. If any of <code>col</code>, <code>lwd</code> or <code>lty</code> is set in the <code>edgePar</code> attribute of a node, the corresponding value defined in <code>gp</code> will be overwritten for this node, so <code>gp</code> is like global graphic parameters for dendrogram segments.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If <code>dend</code> has not been processed by <code><a href="../../ComplexHeatmap/help/adjust_dend_by_x.html">adjust_dend_by_x</a></code>, internally <code><a href="../../ComplexHeatmap/help/adjust_dend_by_x.html">adjust_dend_by_x</a></code> is called
+to add <code>x</code> attributes to each node/leaf.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../grid/html/grid.grob.html">grob</a></code> object which is contructed by <code><a href="../../grid/help/grid.segments.html">segmentsGrob</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# There is no example
+NULL
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

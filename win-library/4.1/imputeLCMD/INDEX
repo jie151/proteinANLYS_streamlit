@@ -1,0 +1,20 @@
+generate.ExpressionData
+                        Generate expression data
+generate.RollUpMap      Generate roll up map
+impute.MAR              imputation under MAR/MCAR hypothesis
+impute.MAR.MNAR         Imputation under MCAR and MNAR hypothesis
+impute.MinDet           Imputation with min value
+impute.MinProb          Imputation by random draws
+impute.QRILC            imputation based on quantile regression
+impute.ZERO             Imputation by 0.
+impute.wrapper.KNN      Imputation with KNN
+impute.wrapper.MLE      imputation using the EM algorithm
+impute.wrapper.SVD      imputation based on SVD algorithm
+insertMVs               Generates missing values in data.
+intensity_PXD000022     Dataset PXD000022 from ProteomeXchange.
+intensity_PXD000052     Dataset PXD000052 from ProteomeXchange.
+intensity_PXD000438     Dataset PXD000438 from ProteomeXchange.
+intensity_PXD000501     Dataset PXD000501 from ProteomeXchange.
+model.Selector          Identifies row in the data matrix affected by a
+                        MNAR missingness mechanism
+pep2prot                peptide to protein roll-up

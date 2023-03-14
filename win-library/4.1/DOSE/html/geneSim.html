@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: geneSim</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for geneSim {DOSE}"><tr><td>geneSim {DOSE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>geneSim</h2>
+
+<h3>Description</h3>
+
+<p>measuring similarities bewteen two gene vectors.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+geneSim(geneID1, geneID2 = NULL, measure = "Wang", combine = "BMA")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>geneID1</code></td>
+<td>
+<p>entrez gene vector</p>
+</td></tr>
+<tr valign="top"><td><code>geneID2</code></td>
+<td>
+<p>entrez gene vector</p>
+</td></tr>
+<tr valign="top"><td><code>measure</code></td>
+<td>
+<p>one of &quot;Wang&quot;, &quot;Resnik&quot;, &quot;Rel&quot;, &quot;Jiang&quot;, and &quot;Lin&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>combine</code></td>
+<td>
+<p>One of &quot;max&quot;, &quot;avg&quot;, &quot;rcmax&quot;, &quot;BMA&quot; methods, for combining semantic similarity scores of multiple DO terms associated with gene/protein.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>provide two entrez gene vectors, this function will calculate their similarity.
+</p>
+
+
+<h3>Value</h3>
+
+<p>score matrix
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Guangchuang Yu <a href="http://ygc.name">http://ygc.name</a>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>DOSE</em> version 3.20.1 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

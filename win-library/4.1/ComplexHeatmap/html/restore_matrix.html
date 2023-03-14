@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Restore the index vector to index matrix in layer_fun</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for restore_matrix {ComplexHeatmap}"><tr><td>restore_matrix {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Restore the index vector to index matrix in layer_fun
+</h2>
+
+<h3>Description</h3>
+
+<p>Restore the index vector to index matrix in layer_fun
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+restore_matrix(j, i, x, y)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>j</code></td>
+<td>
+<p>Column indices directly from <code>layer_fun</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>i</code></td>
+<td>
+<p>Row indices directly from <code>layer_fun</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Position on x-direction directly from <code>layer_fun</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>Position on y-direction directly from <code>layer_fun</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The values that are sent to <code>layer_fun</code> are all vectors (for the vectorization
+of the grid graphic functions), however, the heatmap slice where
+<code>layer_fun</code> is applied to, is still represented by a matrix, thus, it would be
+very convinient if all the arguments in <code>layer_fun</code> can be converted to the
+sub-matrix for the current slice. Here, as shown in above example,
+<code><a href="../../ComplexHeatmap/help/restore_matrix.html">restore_matrix</a></code> does the job. <code><a href="../../ComplexHeatmap/help/restore_matrix.html">restore_matrix</a></code> directly accepts the first
+four argument in <code>layer_fun</code> and returns an index matrix, where rows and
+columns correspond to the rows and columns in the current slice, from top to
+bottom and from left to right. The values in the matrix are the natural order
+of e.g. vector <code>j</code> in current slice.
+</p>
+<p>For following code:
+</p>
+<pre>
+    Heatmap(small_mat, name = "mat", col = col_fun,
+        row_km = 2, column_km = 2,
+        layer_fun = function(j, i, x, y, w, h, fill) {
+            ind_mat = restore_matrix(j, i, x, y)
+            print(ind_mat)
+        }
+    )  </pre>
+<p>The first output which is for the top-left slice:
+</p>
+<pre>
+         [,1] [,2] [,3] [,4] [,5]
+    [1,]    1    4    7   10   13
+    [2,]    2    5    8   11   14
+    [3,]    3    6    9   12   15  </pre>
+<p>As you see, this is a three-row and five-column index matrix where the first
+row corresponds to the top row in the slice. The values in the matrix
+correspond to the natural index (i.e. 1, 2, ...) in <code>j</code>, <code>i</code>, <code>x</code>, <code>y</code>,
+... in <code>layer_fun</code>. Now, if we want to add values on the second column in the
+top-left slice, the code which is put inside <code>layer_fun</code> would look like:
+</p>
+<pre>
+    for(ind in ind_mat[, 2]) {
+        grid.text(small_mat[i[ind], j[ind]], x[ind], y[ind], ...)
+    }  </pre>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(123)
+mat = matrix(rnorm(81), nr = 9)
+Heatmap(mat, row_km = 2, column_km = 2,
+    layer_fun = function(j, i, x, y, width, height, fill) {
+       ind_mat = restore_matrix(j, i, x, y)
+       print(ind_mat)
+})
+
+set.seed(123)
+mat = matrix(round(rnorm(81), 2), nr = 9)
+Heatmap(mat, row_km = 2, column_km = 2,
+    layer_fun = function(j, i, x, y, width, height, fill) {
+       ind_mat = restore_matrix(j, i, x, y)
+       ind = unique(c(ind_mat[2, ], ind_mat[, 3]))
+       grid.text(pindex(mat, i[ind], j[ind]), x[ind], y[ind])
+})
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

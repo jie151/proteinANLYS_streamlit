@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Grouping of numeric values by similarity</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for group {MsCoreUtils}"><tr><td>group {MsCoreUtils}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Grouping of numeric values by similarity</h2>
+
+<h3>Description</h3>
+
+<p>The <code>group</code> function groups numeric values by first ordering and then putting
+all values into the same group if their difference is smaller defined by
+parameters <code>tolerance</code> (a constant value) and <code>ppm</code> (a value-specific
+relative value expressed in parts-per-million).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+group(x, tolerance = 0, ppm = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>increasingly ordered <code>numeric</code> with the values to be grouped.</p>
+</td></tr>
+<tr valign="top"><td><code>tolerance</code></td>
+<td>
+<p><code>numeric(1)</code> with the maximal accepted difference between
+values in <code>x</code> to be grouped into the same entity.</p>
+</td></tr>
+<tr valign="top"><td><code>ppm</code></td>
+<td>
+<p><code>numeric(1)</code> defining a value-dependent maximal accepted
+difference between values in <code>x</code> expressed in parts-per-million.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>integer</code> of length equal to <code>x</code> with the groups.
+</p>
+
+
+<h3>Note</h3>
+
+<p>Since grouping is performed on pairwise differences between consecutive
+values (after ordering <code>x</code>), the difference between the smallest and largest
+value in a group can be larger than <code>tolerance</code> and <code>ppm</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Johannes Rainer, Sebastin Gibb
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Define a (sorted) numeric vector
+x &lt;- c(34, 35, 35, 35 + ppm(35, 10), 56, 56.05, 56.1)
+
+## With `ppm = 0` and `tolerance = 0` only identical values are grouped
+group(x)
+
+## With `tolerance = 0.05`
+group(x, tolerance = 0.05)
+
+## Also values 56, 56.05 and 56.1 were grouped into a single group,
+## although the difference between the smallest 56 and largest value in
+## this group (56.1) is 0.1. The (pairwise) difference between the ordered
+## values is however 0.05.
+
+## With ppm
+group(x, ppm = 10)
+
+## Same on an unsorted vector
+x &lt;- c(65, 34, 65.1, 35, 66, 65.2)
+group(x, tolerance = 0.1)
+
+## Values 65, 65.1 and 65.2 have been grouped into the same group.
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MsCoreUtils</em> version 1.6.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

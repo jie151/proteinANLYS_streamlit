@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Filter on missing values</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for filter_missval {DEP}"><tr><td>filter_missval {DEP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Filter on missing values</h2>
+
+<h3>Description</h3>
+
+<p><code>filter_missval</code> filters a proteomics dataset based on missing values.
+The dataset is filtered for proteins that have a maximum of
+'thr' missing values in at least one condition.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+filter_missval(se, thr = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>se</code></td>
+<td>
+<p>SummarizedExperiment,
+Proteomics data (output from <code><a href="../../DEP/help/make_se.html">make_se</a>()</code> or
+<code><a href="../../DEP/help/make_se_parse.html">make_se_parse</a>()</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>thr</code></td>
+<td>
+<p>Integer(1),
+Sets the threshold for the allowed number of missing values
+in at least one condition.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A filtered SummarizedExperiment object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Load example
+data &lt;- UbiLength
+data &lt;- data[data$Reverse != "+" &amp; data$Potential.contaminant != "+",]
+data_unique &lt;- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+
+# Make SummarizedExperiment
+columns &lt;- grep("LFQ.", colnames(data_unique))
+exp_design &lt;- UbiLength_ExpDesign
+se &lt;- make_se(data_unique, columns, exp_design)
+
+# Filter
+stringent_filter &lt;- filter_missval(se, thr = 0)
+less_stringent_filter &lt;- filter_missval(se, thr = 1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DEP</em> version 1.16.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>
