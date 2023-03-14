@@ -1,0 +1,128 @@
+Changes to Version 2.7-2
+
+  o Added xlim, ylim, and ... args to discretePlot() (suggestion of Beatriz Lacruz Casaucau).
+  
+  o Fixed a bug in reshapeL2W() that could cause the columns produced from the varying variable(s) in the long data set to be misnamed (reported by Tamas Ferenci).
+
+  o Duplicated quantiles in numSummary() now produce a warning and only unique quantiles are used (after report by Beatriz Lacruz Casaucau).
+  
+  o Fixed bug in Barplot() that produced misplaced text for counts/percents in many cases (also reported by  Beatriz Lacruz Casaucau).
+
+
+Changes to Version 2.7-1
+
+  o Added repeatedMeasuresPlot().
+  
+  o Added reshapeL2W() and reshapeW2L().
+  
+  o The stringsAsFactors argument to readSAS(), readSPSSS(), readStata(), and readXL() now defaults to FALSE.
+  
+  o Barplot(), discretePlot(), Dotplot(), Hist(), plotMeans() accommodate logical and character variables as grouping factor(s).
+
+Changes to Version 2.7-0
+
+  o Added discreteCounts() and piechart() (after suggestions of Ethan Harris).
+  
+  o Added counts/percents to bars in Barplot() (suggestion of Ethan Harris).
+  
+  o Fixed DeltaMethod() so that it doesn't ignore the level argument (reported by on de Haan).
+  
+  o Small improvements.
+
+Changes to Version 2.5-1
+
+  o Depend on R >= version 3.5.0 because of use of isFALSE() (at request of CRAN).
+
+Changes to Version 2.5-0
+
+  o Synchronize version numbers with minor versions of the Rcmdr package.
+  
+  o Show axis ticks at observed values in discretePlot() (suggestion of Beatriz Lacruz Casaucau).
+  
+  o binnedCounts() reports percentage as well as frequency distribution (suggestion of Beatriz Lacruz Casaucau).
+  
+  o indexplot() accepts groups argument.
+
+Changes to Version 1.0-10
+
+  o Make indexplot() compatible with car 3.0-0.
+
+Changes to Version 1.0-9
+
+  o Fixed bug in discretePlot() (reported by Felipe Rafael Ribeiro Melo).
+
+Changes to Version 1.0-8
+
+  o readSPSS() now can process value labels when haven::read_SPSS() is called; new use.value.labels argument, defaults to TRUE (after report by Manuel Munoz Marquez).
+
+Changes to Version 1.0-7
+
+  o No longer import print.rcorr from Hmisc.
+
+Changes to Version 1.0-6
+
+  o Added readSAS() for SAS b7dat files.
+  
+  o Added readStata() for improved input of Stata .dta files.
+  
+  o Added readSPSS() for reading SPSS .sav and .por files.
+  
+  o Improvements to plotMeans() legends.
+  
+  o Barplot() can now compute conditional percentages (suggestion of Beatriz Lacruz); other improvements.
+  
+  o Hist() now invisibly returns a "hist" object or list of "hist" objects (suggestion of Beatriz Lacruz).
+  
+  o renamed bin.var() as binVariable(), retaining bin.var() as a synomym.
+  
+  o Added discretePlot() for plotting distributions of discrete numeric variables (after a suggestion of Beatriz Lacruz).
+  
+  o Added plotBoot() for plotting bootstrap distributions.
+  
+  o indexplot() can now plot multiple variables (suggestion of Manuel Munoz).
+  
+  o Added binnedCounts() for binned frequency distribution of a numeric variable (suggestion of Manuel Munoz).
+  
+  o Added normalityTests() for various tests of normality.
+  
+  o Small bug fixes.
+
+Changes to Version 1.0-5
+
+  o Added connect argument to plotMeans() (suggestion of Graham Smith).
+  
+  o Added capability to plot regions under density functions to plotDistr().
+  
+  o Added *gumbel() functions for the Gumbel distribution, parametrized by location and scale.
+
+Changes to Version 1.0-4
+
+  o Added ... argument to Barplot (after Rcmdr bug reported by Fritz Leisch).
+  
+  o Added DeltaMethod().
+
+Changes to Version 1.0-3
+
+  o Fixed bug in rcorr.adjust() that didn't properly convert .000 to <.001 for pairwise-complete
+correlations (reported by Bob Muenchen).
+
+  o Added Barplot() and Dotplot().
+  
+  o Added readXL(), export excel_sheets(), both from readxl package.
+  
+  o Conform to new CRAN package import requirements.
+
+Changes to Version 1.0-2
+
+  o Updated the following inadvertently reverted functions (and docs): partial.cor(), numSummary(), Hist(), rcorr.adjust() (following bug report by Mark Dunning).
+
+  o Hist() reports a warning but doesn't fail for empty groups.
+
+Changes to Version 1.0-1
+
+  o Added "se(mean)" to numSummary().
+
+Changes to Version 1.0-0
+
+  o First version of the package, with functions moved from the Rcmdr package to make them more conveniently available to other CRAN packages (at the suggestion of Liviu Andronic).
+

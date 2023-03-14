@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class representing a dataset for statistical processing in...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for NormalyzerStatistics {NormalyzerDE}"><tr><td>NormalyzerStatistics {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class representing a dataset for statistical processing in NormalyzerDE</h2>
+
+<h3>Description</h3>
+
+<p>Is initialized with an annotation matrix, a data matrix and a design
+data frame. This object can subsequently be processed to generate statistical
+values and in turn used to write a full matrix with additional statistical
+information as well as a graphical report of the comparisons.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+NormalyzerStatistics(experimentObj, logTrans = FALSE)
+
+NormalyzerStatistics(experimentObj, logTrans = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>experimentObj</code></td>
+<td>
+<p>Instance of SummarizedExperiment containing matrix
+and design information as column data</p>
+</td></tr>
+<tr valign="top"><td><code>logTrans</code></td>
+<td>
+<p>Whether the input data should be log transformed</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>nds Generated NormalyzerStatistics instance
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>annotMat</code></dt><dd><p>Matrix containing annotation information</p>
+</dd>
+<dt><code>dataMat</code></dt><dd><p>Matrix containing (normalized) expression data</p>
+</dd>
+<dt><code>filteredDataMat</code></dt><dd><p>Filtered matrix with low-count rows removed</p>
+</dd>
+<dt><code>designDf</code></dt><dd><p>Data frame containing design conditions</p>
+</dd>
+<dt><code>filteringContrast</code></dt><dd><p>Vector showing which entries are filtered 
+(due to low count)</p>
+</dd>
+<dt><code>pairwiseCompsP</code></dt><dd><p>List with P-values for pairwise comparisons</p>
+</dd>
+<dt><code>pairwiseCompsFdr</code></dt><dd><p>List with FDR-values for pairwise comparisons</p>
+</dd>
+<dt><code>pairwiseCompsAve</code></dt><dd><p>List with average expression values</p>
+</dd>
+<dt><code>pairwiseCompsFold</code></dt><dd><p>List with log2 fold-change values for pairwise 
+comparisons</p>
+</dd>
+<dt><code>contrasts</code></dt><dd><p>Spot for saving vector of last used contrasts</p>
+</dd>
+<dt><code>condCol</code></dt><dd><p>Column containing last used conditions</p>
+</dd>
+<dt><code>batchCol</code></dt><dd><p>Column containing last used batch conditions</p>
+</dd>
+</dl>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(example_stat_summarized_experiment)
+nst &lt;- NormalyzerStatistics(example_stat_summarized_experiment)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

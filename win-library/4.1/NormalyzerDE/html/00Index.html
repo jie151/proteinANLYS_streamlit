@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Evaluation of normalization methods and calculation of
+differential expression analysis statistics</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Evaluation of normalization methods and calculation of
+differential expression analysis statistics
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;NormalyzerDE&rsquo; version 1.12.0</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+<li><a href="../NEWS">Package NEWS</a>.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="analyzeNormalizations.html">analyzeNormalizations</a></td>
+<td>Calculate measures for normalization results</td></tr>
+<tr><td style="width: 25%;"><a href="calculateContrasts.html">calculateContrasts</a></td>
+<td>Performs statistical comparisons between the supplied conditions. It uses the design matrix and data matrix in the supplied NormalyzerStatistics object. A column is supplied specifying which of the columns in the design matrix that is used for deciding the sample groups. The comparisons vector specifies which pairwise comparisons between condition levels that are to be calculated.</td></tr>
+<tr><td style="width: 25%;"><a href="calculateContrasts.html">calculateContrasts-method</a></td>
+<td>Performs statistical comparisons between the supplied conditions. It uses the design matrix and data matrix in the supplied NormalyzerStatistics object. A column is supplied specifying which of the columns in the design matrix that is used for deciding the sample groups. The comparisons vector specifies which pairwise comparisons between condition levels that are to be calculated.</td></tr>
+<tr><td style="width: 25%;"><a href="generateAnnotatedMatrix.html">generateAnnotatedMatrix</a></td>
+<td>Generate an annotated data frame from statistics object</td></tr>
+<tr><td style="width: 25%;"><a href="generatePlots.html">generatePlots</a></td>
+<td>Generates a number of visualizations for the performance measures calculated for the normalized matrices. These contain both general measures and direct comparisons for different normalization approaches.</td></tr>
+<tr><td style="width: 25%;"><a href="generateStatsReport.html">generateStatsReport</a></td>
+<td>Generate full output report plot document. Plots p-value histograms for each contrast in the NormalyzerStatistics instance and writes these to a PDF report.</td></tr>
+<tr><td style="width: 25%;"><a href="getRTNormalizedMatrix.html">getRTNormalizedMatrix</a></td>
+<td>Perform RT-segmented normalization by performing the supplied normalization over retention-time sliced data</td></tr>
+<tr><td style="width: 25%;"><a href="getSmoothedRTNormalizedMatrix.html">getSmoothedRTNormalizedMatrix</a></td>
+<td>Generate multiple RT time-window normalized matrices where one is shifted. Merge them using a specified method (mean or median) and return the result.</td></tr>
+<tr><td style="width: 25%;"><a href="getVerifiedNormalyzerObject.html">getVerifiedNormalyzerObject</a></td>
+<td>Verify that input data is in correct format, and if so, return a generated NormalyzerDE data object from that input data</td></tr>
+<tr><td style="width: 25%;"><a href="globalIntensityNormalization.html">globalIntensityNormalization</a></td>
+<td>The normalization divides the intensity of each variable in a sample with the sum of intensities of all variables in the sample and multiplies with the median of sum of intensities of all variables in all samples. The normalized data is then log2-transformed.</td></tr>
+<tr><td style="width: 25%;"><a href="loadData.html">loadData</a></td>
+<td>Load raw data into dataframe</td></tr>
+<tr><td style="width: 25%;"><a href="loadDesign.html">loadDesign</a></td>
+<td>Load raw design into dataframe</td></tr>
+<tr><td style="width: 25%;"><a href="meanNormalization.html">meanNormalization</a></td>
+<td>Intensity of each variable in a given sample is divided by the mean of sum of intensities of all variables in the sample and then multiplied by the mean of sum of intensities of all variables in all samples. The normalized data is then transformed to log2.</td></tr>
+<tr><td style="width: 25%;"><a href="medianNormalization.html">medianNormalization</a></td>
+<td>Intensity of each variable in a given sample is divided by the median of intensities of all variables in the sample and then multiplied by the mean of median of sum of intensities of all variables in all samples. The normalized data is then log2-transformed.</td></tr>
+<tr><td style="width: 25%;"><a href="normalyzer.html">normalyzer</a></td>
+<td>NormalyzerDE pipeline entry point</td></tr>
+<tr><td style="width: 25%;"><a href="normalyzerDE.html">normalyzerDE</a></td>
+<td>NormalyzerDE differential expression</td></tr>
+<tr><td style="width: 25%;"><a href="NormalyzerEvaluationResults.html">NormalyzerEvaluationResults</a></td>
+<td>Representation of evaluation results by calculating performance measures for an an NormalyzerResults instance</td></tr>
+<tr><td style="width: 25%;"><a href="NormalyzerResults.html">NormalyzerResults</a></td>
+<td>Representation of the results from performing normalization over a dataset</td></tr>
+<tr><td style="width: 25%;"><a href="NormalyzerStatistics.html">NormalyzerStatistics</a></td>
+<td>Class representing a dataset for statistical processing in NormalyzerDE</td></tr>
+<tr><td style="width: 25%;"><a href="normMethods.html">normMethods</a></td>
+<td>Perform normalizations on Normalyzer dataset</td></tr>
+<tr><td style="width: 25%;"><a href="performCyclicLoessNormalization.html">performCyclicLoessNormalization</a></td>
+<td>Cyclic Loess normalization</td></tr>
+<tr><td style="width: 25%;"><a href="performGlobalRLRNormalization.html">performGlobalRLRNormalization</a></td>
+<td>Global linear regression normalization</td></tr>
+<tr><td style="width: 25%;"><a href="performQuantileNormalization.html">performQuantileNormalization</a></td>
+<td>Quantile normalization is performed by the function "normalize.quantiles" from the package preprocessCore.</td></tr>
+<tr><td style="width: 25%;"><a href="performSMADNormalization.html">performSMADNormalization</a></td>
+<td>Median absolute deviation normalization Normalization subtracts the median and divides the data by the median absolute deviation (MAD).</td></tr>
+<tr><td style="width: 25%;"><a href="performVSNNormalization.html">performVSNNormalization</a></td>
+<td>Log2 transformed data is normalized using the function "justvsn" from the VSN package.</td></tr>
+<tr><td style="width: 25%;"><a href="reduceTechnicalReplicates.html">reduceTechnicalReplicates</a></td>
+<td>Remove technical replicates from data and design</td></tr>
+<tr><td style="width: 25%;"><a href="setupJobDir.html">setupJobDir</a></td>
+<td>Create empty directory for run</td></tr>
+<tr><td style="width: 25%;"><a href="setupRawContrastObject.html">setupRawContrastObject</a></td>
+<td>Prepare SummarizedExperiment object for statistics data</td></tr>
+<tr><td style="width: 25%;"><a href="setupRawDataObject.html">setupRawDataObject</a></td>
+<td>Prepare SummarizedExperiment object for raw data to be normalized containing data, design and annotation information</td></tr>
+<tr><td style="width: 25%;"><a href="writeNormalizedDatasets.html">writeNormalizedDatasets</a></td>
+<td>Write normalization matrices to file</td></tr>
+</table>
+</div></body></html>

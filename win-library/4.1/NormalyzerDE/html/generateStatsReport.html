@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generate full output report plot document. Plots p-value...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for generateStatsReport {NormalyzerDE}"><tr><td>generateStatsReport {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate full output report plot document. Plots p-value histograms
+for each contrast in the NormalyzerStatistics instance and writes these
+to a PDF report.</h2>
+
+<h3>Description</h3>
+
+<p>Generate full output report plot document. Plots p-value histograms
+for each contrast in the NormalyzerStatistics instance and writes these
+to a PDF report.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+generateStatsReport(
+  nst,
+  jobName,
+  jobDir,
+  sigThres = 0.1,
+  sigThresType = "fdr",
+  log2FoldThres = 0,
+  plotRows = 3,
+  plotCols = 4,
+  writeAsPngs = FALSE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nst</code></td>
+<td>
+<p>NormalyzerDE statistics object.</p>
+</td></tr>
+<tr valign="top"><td><code>jobName</code></td>
+<td>
+<p>Name of processing run.</p>
+</td></tr>
+<tr valign="top"><td><code>jobDir</code></td>
+<td>
+<p>Path to output directory.</p>
+</td></tr>
+<tr valign="top"><td><code>sigThres</code></td>
+<td>
+<p>Significance threshold for indicating as significant</p>
+</td></tr>
+<tr valign="top"><td><code>sigThresType</code></td>
+<td>
+<p>Type of significance threshold (FDR or p)</p>
+</td></tr>
+<tr valign="top"><td><code>log2FoldThres</code></td>
+<td>
+<p>log2 fold-change required for being counted as significant</p>
+</td></tr>
+<tr valign="top"><td><code>plotRows</code></td>
+<td>
+<p>Number of plot rows.</p>
+</td></tr>
+<tr valign="top"><td><code>plotCols</code></td>
+<td>
+<p>Number of plot columns.</p>
+</td></tr>
+<tr valign="top"><td><code>writeAsPngs</code></td>
+<td>
+<p>Output the report as separate PNG files instead of a 
+single PDF file</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>None
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(example_stat_summarized_experiment)
+statObj &lt;- NormalyzerStatistics(example_stat_summarized_experiment)
+statObj &lt;- calculateContrasts(statObj, comparisons=c("1-2", "2-3"), 
+  condCol="group", type="limma")
+outputDir &lt;- tempdir()
+generateStatsReport(statObj, "jobName", outputDir)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

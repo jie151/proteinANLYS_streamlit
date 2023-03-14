@@ -1,0 +1,41 @@
+Barplot                 Bar Plots
+DeltaMethod             Confidence Intervals by the Delta Method
+Dotplot                 Dot Plots
+Gumbel                  The Gumbel Distribution
+Hist                    Plot a Histogram
+KMeans                  K-Means Clustering Using Multiple Random Seeds
+assignCluster           Append a Cluster Membership Variable to a
+                        Dataframe
+binVariable             Bin a Numeric Varisible
+binnedCounts            Binned Frequency Distributions of Numeric
+                        Variables
+colPercents             Row, Column, and Total Percentage Tables
+discreteCounts          Frequency Distributions of Numeric Variables
+discretePlot            Plot Distribution of Discrete Numeric Variable
+indexplot               Index Plots
+lineplot                Plot a one or more lines.
+mergeRows               Function to Merge Rows of Two Data Frames.
+normalityTest           Normality Tests
+numSummary              Summary Statistics for Numeric Variables
+partial.cor             Partial Correlations
+piechart                Draw a Piechart With Percents or Counts in the
+                        Labels
+plotBoot                Plot Bootstrap Distributions
+plotDistr               Plot a probability density, mass, or
+                        distribution function.
+plotMeans               Plot Means for One or Two-Way Layout
+rcorr.adjust            Compute Pearson or Spearman Correlations with
+                        p-Values
+readSAS                 Read a SAS b7dat Data Set
+readSPSS                Read an SPSS Data Set
+readStata               Read a Stata Data Set
+readXL                  Read an Excel File
+reliability             Reliability of a Composite Scale
+repeatedMeasuresPlot    Plot Means for Repeated-Measures ANOVA Designs
+reshapeL2W              Reshape Repeated-Measures Data from Long to
+                        Wide Format
+reshapeW2L              Reshape Repeated-Measures Data from Wide to
+                        Long Format
+stepwise                Stepwise Model Selection
+summarySandwich         Linear Model Summary with Sandwich Standard
+                        Errors

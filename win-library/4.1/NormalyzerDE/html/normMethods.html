@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Perform normalizations on Normalyzer dataset</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for normMethods {NormalyzerDE}"><tr><td>normMethods {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Perform normalizations on Normalyzer dataset</h2>
+
+<h3>Description</h3>
+
+<p>Perform normalizations on Normalyzer dataset
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+normMethods(
+  nds,
+  forceAll = FALSE,
+  normalizeRetentionTime = TRUE,
+  quiet = FALSE,
+  rtStepSizeMinutes = 1,
+  rtWindowMinCount = 100,
+  rtWindowShifts = 1,
+  rtWindowMergeMethod = "mean",
+  noLogTransform = FALSE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nds</code></td>
+<td>
+<p>Normalyzer dataset object.</p>
+</td></tr>
+<tr valign="top"><td><code>forceAll</code></td>
+<td>
+<p>Force all methods to run despite not qualifying for thresholds.</p>
+</td></tr>
+<tr valign="top"><td><code>normalizeRetentionTime</code></td>
+<td>
+<p>Perform retention time based normalization methods.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>Prevent diagnostic output</p>
+</td></tr>
+<tr valign="top"><td><code>rtStepSizeMinutes</code></td>
+<td>
+<p>Retention time normalization window size.</p>
+</td></tr>
+<tr valign="top"><td><code>rtWindowMinCount</code></td>
+<td>
+<p>Minimum number of datapoints in each retention-time
+segment.</p>
+</td></tr>
+<tr valign="top"><td><code>rtWindowShifts</code></td>
+<td>
+<p>Number of layered retention time normalized windows.</p>
+</td></tr>
+<tr valign="top"><td><code>rtWindowMergeMethod</code></td>
+<td>
+<p>Merge approach for layered retention time windows.</p>
+</td></tr>
+<tr valign="top"><td><code>noLogTransform</code></td>
+<td>
+<p>Per default NormalyzerDE performs a log-transformation
+on the input data. If not needed, specify this option</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns Normalyzer results object with performed analyzes assigned
+as attributes
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(example_summarized_experiment)
+normObj &lt;- getVerifiedNormalyzerObject("job_name", example_summarized_experiment)
+normResults &lt;- normMethods(normObj)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>
