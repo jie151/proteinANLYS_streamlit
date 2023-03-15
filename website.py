@@ -16,7 +16,7 @@ robjects.r('''
     library(ggplot2)
     library(httr)
     print("!!!!!!!!!!!!!!!!! ")
-    library("XML", lib="./win-library/4.1")
+    library(XML, lib="./win-library/4.1")
     library(biomaRt, lib="./win-library/4.1/")
     print("!!!!!!!!!!!!!!!!! aft")
     library(clusterProfiler, lib="./win-library/4.1/")
