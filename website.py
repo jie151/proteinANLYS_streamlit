@@ -17,7 +17,7 @@ robjects.r('''
     library(httr)
     print("!!!!!!!!!!!!!!!!! ")
     library(biomaRt, lib="./win-library/4.1/")
-    print("!!!!!!!!!!!!!!!!! aft bio")
+    print("!!!!!!!!!!!!!!!!! aft")
     library(clusterProfiler, lib="./win-library/4.1/")
     library(DEP, lib="./win-library/4.1/")
     library(DOSE, lib="./win-library/4.1/")

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Steffen Durinck, Wolfgang Huber, Mike Smith" />
 
-<meta name="date" content="2022-02-06" />
+<meta name="date" content="2022-11-01" />
 
 <title>Using a BioMart other than Ensembl</title>
 
@@ -235,6 +235,7 @@ if (window.hljs) {
   }
 }
 </script>
+
 
 
 
@@ -621,6 +622,9 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
 </style>
 
 
@@ -637,8 +641,8 @@ summary {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -646,16 +650,9 @@ summary {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -709,9 +706,9 @@ function toggle_visibility(id1) {
 
 <h1 class="title toc-ignore">Using a BioMart other than Ensembl</h1>
 <p class="author-name">Steffen Durinck, Wolfgang Huber, Mike Smith</p>
-<h4 class="date">6 February 2022</h4>
+<h4 class="date">1 November 2022</h4>
 <h4 class="package">Package</h4>
-<p>biomaRt 2.50.3</p>
+<p>biomaRt 2.54.0</p>
 
 </div>
 
@@ -732,25 +729,25 @@ function toggle_visibility(id1) {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>In recent years a wealth of biological data has become available in public data repositories. Easy access to these valuable data resources and firm integration with data analysis is needed for comprehensive bioinformatics data analysis. The <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> package, provides an interface to a growing collection of databases implementing the <a href="http://www.biomart.org">BioMart software suite</a>. The package enables retrieval of large amounts of data in a uniform way without the need to know the underlying database schemas or write complex SQL queries. Examples of BioMart databases are Ensembl, Uniprot and HapMap. These major databases give <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> users direct access to a diverse set of data and enable a wide range of powerful online queries from R.</p>
+<p>In recent years a wealth of biological data has become available in public data repositories. Easy access to these valuable data resources and firm integration with data analysis is needed for comprehensive bioinformatics data analysis. The <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> package, provides an interface to a growing collection of databases implementing the <a href="http://www.biomart.org">BioMart software suite</a>. The package enables retrieval of large amounts of data in a uniform way without the need to know the underlying database schemas or write complex SQL queries. Examples of BioMart databases are Ensembl, Uniprot and HapMap. These major databases give <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> users direct access to a diverse set of data and enable a wide range of powerful online queries from R.</p>
 </div>
 <div id="using-a-biomart-other-than-ensembl" class="section level1">
 <h1><span class="header-section-number">2</span> Using a BioMart other than Ensembl</h1>
-<p>There are a small number of non-Ensembl databases that offer a BioMart interface to their data. The <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> package can be used to access these in a very similar fashion to Ensembl. The majority of <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> functions will work in the same manner, but the construction of the initial Mart object requires slightly more setup. In this section we demonstrate the setting requires to query <a href="https://parasite.wormbase.org/index.html">Wormbase ParaSite</a> and <a href="https://phytozome.jgi.doe.gov/pz/portal.html">Phytozome</a>. First we need to load <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em>.</p>
+<p>There are a small number of non-Ensembl databases that offer a BioMart interface to their data. The <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> package can be used to access these in a very similar fashion to Ensembl. The majority of <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> functions will work in the same manner, but the construction of the initial Mart object requires slightly more setup. In this section we demonstrate the setting requires to query <a href="https://parasite.wormbase.org/index.html">Wormbase ParaSite</a> and <a href="https://phytozome.jgi.doe.gov/pz/portal.html">Phytozome</a>. First we need to load <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em>.</p>
 <pre class="r"><code>library(biomaRt)</code></pre>
 <div id="wormbase" class="section level2">
 <h2><span class="header-section-number">2.1</span> Wormbase</h2>
-<p>To demonstrate the use of the <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> package with non-Ensembl databases the next query is performed using the Wormbase ParaSite BioMart. In this example, we use the <code>listMarts()</code> function to find the name of the available marts, given the URL of Wormbase. We use this to connect to Wormbase BioMart using the <code>useMart()</code> function.<label for="sidenote-1" class="sidenote-number">1</label><label for="sidenote-1" class="margin-toggle" onclick="toggle_visibility('sidenote-1')">1</label><span class="sidenote" id="sidenote-1"><span class="sidenote-number">1</span> Note that we use the <code>https</code> address and must provide the port as <code>443</code>. Queries to WormBase will fail without these options.</span></p>
+<p>To demonstrate the use of the <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> package with non-Ensembl databases the next query is performed using the Wormbase ParaSite BioMart. In this example, we use the <code>listMarts()</code> function to find the name of the available marts, given the URL of Wormbase. We use this to connect to Wormbase BioMart using the <code>useMart()</code> function.<label for="sidenote-1" class="sidenote-number">1</label><label for="sidenote-1" class="margin-toggle" onclick="toggle_visibility('sidenote-1')">1</label><span class="sidenote" id="sidenote-1"><span class="sidenote-number">1</span> Note that we use the <code>https</code> address and must provide the port as <code>443</code>. Queries to WormBase will fail without these options.</span></p>
 <pre class="r"><code>listMarts(host = &quot;parasite.wormbase.org&quot;)</code></pre>
 <pre><code>##         biomart      version
-## 1 parasite_mart WBPS 16 Mart</code></pre>
+## 1 parasite_mart WBPS 17 Mart</code></pre>
 <pre class="r"><code>wormbase &lt;- useMart(biomart = &quot;parasite_mart&quot;, 
                     host = &quot;https://parasite.wormbase.org&quot;, 
                     port = 443)</code></pre>
 <p>We can then use functions described earlier in this vignette to find and select the gene dataset, and print the first 6 available attributes and filters. Then we use a list of gene names as filter and retrieve associated transcript IDs and the transcript biotype.</p>
 <pre class="r"><code>listDatasets(wormbase)</code></pre>
 <pre><code>##     dataset          description version
-## 1 wbps_gene All Species (WBPS16)      16</code></pre>
+## 1 wbps_gene All Species (WBPS17)      17</code></pre>
 <pre class="r"><code>wormbase &lt;- useDataset(mart = wormbase, dataset = &quot;wbps_gene&quot;)
 head(listFilters(wormbase))</code></pre>
 <pre><code>##                  name     description
@@ -775,11 +772,9 @@ head(listFilters(wormbase))</code></pre>
 <pre><code>##   external_gene_id wbps_transcript_id transcript_biotype
 ## 1           his-33         F17E9.13.1     protein_coding
 ## 2           unc-26          JC8.10a.1     protein_coding
-## 3           unc-26          JC8.10a.2     protein_coding
-## 4           unc-26          JC8.10b.1     protein_coding
-## 5           unc-26          JC8.10c.1     protein_coding
-## 6           unc-26          JC8.10c.2     protein_coding
-## 7           unc-26          JC8.10d.1     protein_coding</code></pre>
+## 3           unc-26          JC8.10b.1     protein_coding
+## 4           unc-26          JC8.10c.1     protein_coding
+## 5           unc-26          JC8.10d.1     protein_coding</code></pre>
 </div>
 <div id="phytozome" class="section level2">
 <h2><span class="header-section-number">2.2</span> Phytozome</h2>
@@ -793,7 +788,7 @@ head(listFilters(wormbase))</code></pre>
 <pre class="r"><code>phytozome_v13 &lt;- useMart(biomart = &quot;phytozome_mart&quot;, 
                 dataset = &quot;phytozome&quot;, 
                 host = &quot;https://phytozome-next.jgi.doe.gov&quot;)</code></pre>
-<p>Once this is set up the usual <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> functions can be used to interrogate the database options and run queries.</p>
+<p>Once this is set up the usual <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> functions can be used to interrogate the database options and run queries.</p>
 <pre class="r"><code>getBM(attributes = c(&quot;organism_name&quot;, &quot;gene_name1&quot;), 
       filters = &quot;gene_name_filter&quot;, 
       values = &quot;82092&quot;, 
@@ -806,43 +801,43 @@ head(listFilters(wormbase))</code></pre>
 <div id="session-info" class="section level1">
 <h1><span class="header-section-number">3</span> Session Info</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 4.1.2 (2021-11-01)
+<pre><code>## R version 4.2.1 (2022-06-23 ucrt)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows Server 2012 R2 x64 (build 9600)
+## Running under: Windows Server x64 (build 20348)
 ## 
 ## Matrix products: default
 ## 
 ## locale:
-## [1] LC_COLLATE=C                           LC_CTYPE=English_United States.1252   
-## [3] LC_MONETARY=English_United States.1252 LC_NUMERIC=C                          
-## [5] LC_TIME=English_United States.1252    
+## [1] LC_COLLATE=C                           LC_CTYPE=English_United States.utf8   
+## [3] LC_MONETARY=English_United States.utf8 LC_NUMERIC=C                          
+## [5] LC_TIME=English_United States.utf8    
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] biomaRt_2.50.3   BiocStyle_2.22.0
+## [1] biomaRt_2.54.0   BiocStyle_2.26.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.8             prettyunits_1.1.1      png_0.1-7              Biostrings_2.62.0     
-##  [5] assertthat_0.2.1       digest_0.6.29          utf8_1.2.2             BiocFileCache_2.2.1   
-##  [9] R6_2.5.1               GenomeInfoDb_1.30.1    stats4_4.1.2           RSQLite_2.2.9         
-## [13] evaluate_0.14          highr_0.9              httr_1.4.2             pillar_1.7.0          
-## [17] zlibbioc_1.40.0        rlang_1.0.1            progress_1.2.2         curl_4.3.2            
-## [21] jquerylib_0.1.4        blob_1.2.2             S4Vectors_0.32.3       rmarkdown_2.11        
-## [25] stringr_1.4.0          RCurl_1.98-1.5         bit_4.0.4              compiler_4.1.2        
-## [29] xfun_0.29              pkgconfig_2.0.3        BiocGenerics_0.40.0    htmltools_0.5.2       
-## [33] tidyselect_1.1.1       KEGGREST_1.34.0        tibble_3.1.6           GenomeInfoDbData_1.2.7
-## [37] bookdown_0.24          codetools_0.2-18       IRanges_2.28.0         XML_3.99-0.8          
-## [41] fansi_1.0.2            withr_2.4.3            crayon_1.4.2           dplyr_1.0.7           
-## [45] dbplyr_2.1.1           bitops_1.0-7           rappdirs_0.3.3         jsonlite_1.7.3        
-## [49] lifecycle_1.0.1        DBI_1.1.2              magrittr_2.0.2         cli_3.1.1             
-## [53] stringi_1.7.6          cachem_1.0.6           XVector_0.34.0         xml2_1.3.3            
-## [57] bslib_0.3.1            ellipsis_0.3.2         filelock_1.0.2         vctrs_0.3.8           
-## [61] generics_0.1.2         tools_4.1.2            bit64_4.0.5            Biobase_2.54.0        
-## [65] glue_1.6.1             purrr_0.3.4            hms_1.1.1              fastmap_1.1.0         
-## [69] yaml_2.2.2             AnnotationDbi_1.56.2   BiocManager_1.30.16    memoise_2.0.1         
-## [73] knitr_1.37             sass_0.4.0</code></pre>
+##  [1] Rcpp_1.0.9             prettyunits_1.1.1      png_0.1-7              Biostrings_2.66.0     
+##  [5] assertthat_0.2.1       digest_0.6.30          utf8_1.2.2             BiocFileCache_2.6.0   
+##  [9] R6_2.5.1               GenomeInfoDb_1.34.0    stats4_4.2.1           RSQLite_2.2.18        
+## [13] evaluate_0.17          highr_0.9              httr_1.4.4             pillar_1.8.1          
+## [17] zlibbioc_1.44.0        rlang_1.0.6            progress_1.2.2         curl_4.3.3            
+## [21] jquerylib_0.1.4        blob_1.2.3             S4Vectors_0.36.0       rmarkdown_2.17        
+## [25] stringr_1.4.1          RCurl_1.98-1.9         bit_4.0.4              compiler_4.2.1        
+## [29] xfun_0.34              pkgconfig_2.0.3        BiocGenerics_0.44.0    htmltools_0.5.3       
+## [33] tidyselect_1.2.0       KEGGREST_1.38.0        tibble_3.1.8           GenomeInfoDbData_1.2.9
+## [37] bookdown_0.29          codetools_0.2-18       IRanges_2.32.0         XML_3.99-0.12         
+## [41] fansi_1.0.3            withr_2.5.0            crayon_1.5.2           dplyr_1.0.10          
+## [45] dbplyr_2.2.1           bitops_1.0-7           rappdirs_0.3.3         jsonlite_1.8.3        
+## [49] lifecycle_1.0.3        DBI_1.1.3              magrittr_2.0.3         cli_3.4.1             
+## [53] stringi_1.7.8          cachem_1.0.6           XVector_0.38.0         xml2_1.3.3            
+## [57] bslib_0.4.0            ellipsis_0.3.2         filelock_1.0.2         vctrs_0.5.0           
+## [61] generics_0.1.3         tools_4.2.1            bit64_4.0.5            Biobase_2.58.0        
+## [65] glue_1.6.2             purrr_0.3.5            hms_1.1.2              fastmap_1.1.0         
+## [69] yaml_2.3.6             AnnotationDbi_1.60.0   BiocManager_1.30.19    memoise_2.0.1         
+## [73] knitr_1.40             sass_0.4.2</code></pre>
 <pre class="r"><code>warnings()</code></pre>
 </div>
 

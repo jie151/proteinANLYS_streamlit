@@ -11,7 +11,7 @@
 
 <meta name="author" content="Mike L. Smith, Steffen Durinck, Wolfgang Huber" />
 
-<meta name="date" content="2022-02-06" />
+<meta name="date" content="2022-11-01" />
 
 <title>Accessing Ensembl annotation with biomaRt</title>
 
@@ -235,6 +235,7 @@ if (window.hljs) {
   }
 }
 </script>
+
 
 
 
@@ -621,6 +622,9 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
 </style>
 
 
@@ -637,8 +641,8 @@ summary {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -646,16 +650,9 @@ summary {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -709,9 +706,9 @@ function toggle_visibility(id1) {
 
 <h1 class="title toc-ignore">Accessing Ensembl annotation with biomaRt</h1>
 <p class="author-name">Mike L. Smith, Steffen Durinck, Wolfgang Huber</p>
-<h4 class="date">6 February 2022</h4>
+<h4 class="date">1 November 2022</h4>
 <h4 class="package">Package</h4>
-<p>biomaRt 2.50.3</p>
+<p>biomaRt 2.54.0</p>
 
 </div>
 
@@ -765,23 +762,23 @@ function toggle_visibility(id1) {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>Accessing the data available in Ensembl is by far most frequent use of the <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> package. With that in mind <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> provides a number of functions that are tailored to work specifically with the BioMart instances provided by Ensembl. This vignette details this Ensembl specific functionality and provides a number of example usecases that can be used as the basis for specifying your own queries.</p>
+<p>Accessing the data available in Ensembl is by far most frequent use of the <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> package. With that in mind <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> provides a number of functions that are tailored to work specifically with the BioMart instances provided by Ensembl. This vignette details this Ensembl specific functionality and provides a number of example usecases that can be used as the basis for specifying your own queries.</p>
 </div>
 <div id="selecting-an-ensembl-biomart-database-and-dataset" class="section level1">
 <h1><span class="header-section-number">2</span> Selecting an Ensembl BioMart database and dataset</h1>
-<p>Every analysis with <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> starts with selecting a BioMart database to use. The commands below will connect us to Ensembl’s most recent version of the Human Genes BioMart.</p>
+<p>Every analysis with <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> starts with selecting a BioMart database to use. The commands below will connect us to Ensembl’s most recent version of the Human Genes BioMart.</p>
 <pre class="r"><code>library(biomaRt)
 ensembl &lt;- useEnsembl(biomart = &quot;genes&quot;, dataset = &quot;hsapiens_gene_ensembl&quot;)</code></pre>
-<p>If this your first time using <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> , you might wonder how to find the two arguments we supplied to the <code>useEnsembl()</code> command. This is a two step process, but once you know the setting you need you can use the version shown above as a single command. These initial steps are outlined below.</p>
+<p>If this your first time using <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> , you might wonder how to find the two arguments we supplied to the <code>useEnsembl()</code> command. This is a two step process, but once you know the setting you need you can use the version shown above as a single command. These initial steps are outlined below.</p>
 <div id="step1-identifying-the-database-you-need" class="section level2">
 <h2><span class="header-section-number">2.1</span> Step1: Identifying the database you need</h2>
 <p>The first step is to find the names of the BioMart services Ensembl is currently providing. We can do this using the function <code>listEnsembl()</code>, which will display all available Ensembl BioMart web services. The first column gives us the name we should provide to the <code>biomart</code> argument in <code>useEnsembl()</code>, and the second gives a more comprehensive title for the dataset along with the Ensembl version.</p>
 <pre class="r"><code>listEnsembl()</code></pre>
 <pre><code>##         biomart                version
-## 1         genes      Ensembl Genes 105
-## 2 mouse_strains      Mouse strains 105
-## 3          snps  Ensembl Variation 105
-## 4    regulation Ensembl Regulation 105</code></pre>
+## 1         genes      Ensembl Genes 108
+## 2 mouse_strains      Mouse strains 108
+## 3          snps  Ensembl Variation 108
+## 4    regulation Ensembl Regulation 108</code></pre>
 <p>The <code>useEnsembl()</code> function can now be used to connect to the desired BioMart database. The <code>biomart</code> argument should be given a valid name from the output of <code>listEnsembl()</code>. In the next example we will select the main Ensembl mart, which provides access to gene annotation information.</p>
 <pre class="r"><code>ensembl &lt;- useEnsembl(biomart = &quot;genes&quot;)</code></pre>
 <p>If we print the current <code>ensembl</code> object, we can see that the ENSEMBL_MART_ENSEMBL database <label for="sidenote-1" class="sidenote-number">1</label><label for="sidenote-1" class="margin-toggle" onclick="toggle_visibility('sidenote-1')">1</label><span class="sidenote" id="sidenote-1"><span class="sidenote-number">1</span> this is how Ensembl name the database on their server</span> has been selected, but that no dataset has been chosen.</p>
@@ -792,7 +789,7 @@ ensembl &lt;- useEnsembl(biomart = &quot;genes&quot;, dataset = &quot;hsapiens_g
 </div>
 <div id="step-2-choosing-a-dataset" class="section level2">
 <h2><span class="header-section-number">2.2</span> Step 2: Choosing a dataset</h2>
-<p>BioMart databases can contain several datasets. For example, within the Ensembl genes mart every species is a different dataset. In the next step we look at which datasets are available in the selected BioMart by using the function <code>listDatasets()</code>. <em>Note: here we use the function <code>head()</code> to display only the first 5 entries as the complete list has 214 entries.</em></p>
+<p>BioMart databases can contain several datasets. For example, within the Ensembl genes mart every species is a different dataset. In the next step we look at which datasets are available in the selected BioMart by using the function <code>listDatasets()</code>. <em>Note: here we use the function <code>head()</code> to display only the first 5 entries as the complete list has 215 entries.</em></p>
 <pre class="r"><code>datasets &lt;- listDatasets(ensembl)
 head(datasets)</code></pre>
 <pre><code>##                        dataset                           description     version
@@ -802,10 +799,10 @@ head(datasets)</code></pre>
 ## 4    acchrysaetos_gene_ensembl       Golden eagle genes (bAquChr1.2)  bAquChr1.2
 ## 5    acitrinellus_gene_ensembl        Midas cichlid genes (Midas_v5)    Midas_v5
 ## 6    amelanoleuca_gene_ensembl       Giant panda genes (ASM200744v2) ASM200744v2</code></pre>
-<p>The <code>listDatasets()</code> function will return every available option, however this can be unwieldy when the list of results is long, involving much scrolling to find the entry you are interested in. <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> also provides the functions <code>searchDatasets()</code> which will try to find any entries matching a specific term or pattern. For example, if we want to find the details of any datasets in our <code>ensembl</code> mart that contain the term ‘<em>hsapiens</em>’ we could do the following:</p>
+<p>The <code>listDatasets()</code> function will return every available option, however this can be unwieldy when the list of results is long, involving much scrolling to find the entry you are interested in. <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> also provides the functions <code>searchDatasets()</code> which will try to find any entries matching a specific term or pattern. For example, if we want to find the details of any datasets in our <code>ensembl</code> mart that contain the term ‘<em>hsapiens</em>’ we could do the following:</p>
 <pre class="r"><code>searchDatasets(mart = ensembl, pattern = &quot;hsapiens&quot;)</code></pre>
 <pre><code>##                  dataset              description    version
-## 80 hsapiens_gene_ensembl Human genes (GRCh38.p13) GRCh38.p13</code></pre>
+## 81 hsapiens_gene_ensembl Human genes (GRCh38.p13) GRCh38.p13</code></pre>
 <p>To use a dataset we can update our <code>Mart</code> object using the function <code>useDataset()</code>. In the example below we choose to use the <em>hsapiens</em> dataset.</p>
 <pre class="r"><code>ensembl &lt;- useDataset(dataset = &quot;hsapiens_gene_ensembl&quot;, mart = ensembl)</code></pre>
 <p>As mentioned previously, if the dataset one wants to use is known in advance i.e. you’ve gone through this process before, we can select a both the database and dataset in one step:</p>
@@ -821,38 +818,36 @@ head(datasets)</code></pre>
 </div>
 <div id="using-archived-versions-of-ensembl" class="section level2">
 <h2><span class="header-section-number">2.4</span> Using archived versions of Ensembl</h2>
-<p>It is possible to query archived versions of Ensembl through <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em>, so you can maintain consistent annotation throughout the duration of a project.</p>
-<p><em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> provides the function <code>listEnsemblArchives()</code> to view the available Ensembl archives. This function takes no arguments, and produces a table containing the name and version number of the available archives, the date they were first released, and the URL where they can be accessed.</p>
+<p>It is possible to query archived versions of Ensembl through <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em>, so you can maintain consistent annotation throughout the duration of a project.</p>
+<p><em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> provides the function <code>listEnsemblArchives()</code> to view the available Ensembl archives. This function takes no arguments, and produces a table containing the name and version number of the available archives, the date they were first released, and the URL where they can be accessed.</p>
 <pre class="r"><code>listEnsemblArchives()</code></pre>
 <pre><code>##              name     date                                 url version current_release
 ## 1  Ensembl GRCh37 Feb 2014          https://grch37.ensembl.org  GRCh37                
-## 2     Ensembl 105 Dec 2021 https://dec2021.archive.ensembl.org     105               *
-## 3     Ensembl 104 May 2021 https://may2021.archive.ensembl.org     104                
-## 4     Ensembl 103 Feb 2021 https://feb2021.archive.ensembl.org     103                
-## 5     Ensembl 102 Nov 2020 https://nov2020.archive.ensembl.org     102                
-## 6     Ensembl 101 Aug 2020 https://aug2020.archive.ensembl.org     101                
-## 7     Ensembl 100 Apr 2020 https://apr2020.archive.ensembl.org     100                
-## 8      Ensembl 99 Jan 2020 https://jan2020.archive.ensembl.org      99                
-## 9      Ensembl 98 Sep 2019 https://sep2019.archive.ensembl.org      98                
-## 10     Ensembl 97 Jul 2019 https://jul2019.archive.ensembl.org      97                
-## 11     Ensembl 96 Apr 2019 https://apr2019.archive.ensembl.org      96                
-## 12     Ensembl 95 Jan 2019 https://jan2019.archive.ensembl.org      95                
-## 13     Ensembl 94 Oct 2018 https://oct2018.archive.ensembl.org      94                
-## 14     Ensembl 93 Jul 2018 https://jul2018.archive.ensembl.org      93                
-## 15     Ensembl 92 Apr 2018 https://apr2018.archive.ensembl.org      92                
-## 16     Ensembl 91 Dec 2017 https://dec2017.archive.ensembl.org      91                
-## 17     Ensembl 90 Aug 2017 https://aug2017.archive.ensembl.org      90                
-## 18     Ensembl 89 May 2017 https://may2017.archive.ensembl.org      89                
-## 19     Ensembl 88 Mar 2017 https://mar2017.archive.ensembl.org      88                
-## 20     Ensembl 87 Dec 2016 https://dec2016.archive.ensembl.org      87                
-## 21     Ensembl 86 Oct 2016 https://oct2016.archive.ensembl.org      86                
-## 22     Ensembl 80 May 2015 https://may2015.archive.ensembl.org      80                
-## 23     Ensembl 77 Oct 2014 https://oct2014.archive.ensembl.org      77                
-## 24     Ensembl 75 Feb 2014 https://feb2014.archive.ensembl.org      75                
-## 25     Ensembl 54 May 2009 https://may2009.archive.ensembl.org      54</code></pre>
+## 2     Ensembl 108 Oct 2022 https://oct2022.archive.ensembl.org     108               *
+## 3     Ensembl 107 Jul 2022 https://jul2022.archive.ensembl.org     107                
+## 4     Ensembl 106 Apr 2022 https://apr2022.archive.ensembl.org     106                
+## 5     Ensembl 105 Dec 2021 https://dec2021.archive.ensembl.org     105                
+## 6     Ensembl 104 May 2021 https://may2021.archive.ensembl.org     104                
+## 7     Ensembl 103 Feb 2021 https://feb2021.archive.ensembl.org     103                
+## 8     Ensembl 102 Nov 2020 https://nov2020.archive.ensembl.org     102                
+## 9     Ensembl 101 Aug 2020 https://aug2020.archive.ensembl.org     101                
+## 10    Ensembl 100 Apr 2020 https://apr2020.archive.ensembl.org     100                
+## 11     Ensembl 99 Jan 2020 https://jan2020.archive.ensembl.org      99                
+## 12     Ensembl 98 Sep 2019 https://sep2019.archive.ensembl.org      98                
+## 13     Ensembl 97 Jul 2019 https://jul2019.archive.ensembl.org      97                
+## 14     Ensembl 96 Apr 2019 https://apr2019.archive.ensembl.org      96                
+## 15     Ensembl 95 Jan 2019 https://jan2019.archive.ensembl.org      95                
+## 16     Ensembl 94 Oct 2018 https://oct2018.archive.ensembl.org      94                
+## 17     Ensembl 93 Jul 2018 https://jul2018.archive.ensembl.org      93                
+## 18     Ensembl 92 Apr 2018 https://apr2018.archive.ensembl.org      92                
+## 19     Ensembl 91 Dec 2017 https://dec2017.archive.ensembl.org      91                
+## 20     Ensembl 80 May 2015 https://may2015.archive.ensembl.org      80                
+## 21     Ensembl 77 Oct 2014 https://oct2014.archive.ensembl.org      77                
+## 22     Ensembl 75 Feb 2014 https://feb2014.archive.ensembl.org      75                
+## 23     Ensembl 54 May 2009 https://may2009.archive.ensembl.org      54</code></pre>
 <p>Alternatively, one can use the <a href="http://www.ensembl.org" class="uri">http://www.ensembl.org</a> website to find an archived version. From the main page scroll down the bottom of the page, click on ‘view in Archive’ and select the archive you need.</p>
 <p><em>You will notice that there is an archive URL even for the current release of Ensembl. It can be useful to use this if you wish to ensure that script you write now will return exactly the same results in the future. Using <code>www.ensembl.org</code> will always access the current release, and so the data retrieved may change over time as new releases come out.</em></p>
-<p>Whichever method you use to find the URL of the archive you wish to query, copy the url and use that in the <code>host</code> argument as shown below to connect to the specified BioMart database. The example below shows how to query Ensembl 54.</p>
+<p>Whichever method you use to find the URL of the archive you wish to query, copy the url and use that in the <code>host</code> argument as shown below to connect to the specified BioMart database. The example below shows how to query Ensembl 95.</p>
 <pre class="r"><code>listEnsembl(version = 95)</code></pre>
 <pre><code>##         biomart               version
 ## 1         genes      Ensembl Genes 95
@@ -869,14 +864,14 @@ head(datasets)</code></pre>
 <p>You can use the functions <code>listEnsemblGenomes()</code> and <code>useEnsemblGenomes()</code> in similar fashion to the functions shown previously. For example first we can list the available Ensembl Genomes marts:</p>
 <pre class="r"><code>listEnsemblGenomes()</code></pre>
 <pre><code>##               biomart                        version
-## 1       protists_mart      Ensembl Protists Genes 52
-## 2 protists_variations Ensembl Protists Variations 52
-## 3          fungi_mart         Ensembl Fungi Genes 52
-## 4    fungi_variations    Ensembl Fungi Variations 52
-## 5        metazoa_mart       Ensembl Metazoa Genes 52
-## 6  metazoa_variations  Ensembl Metazoa Variations 52
-## 7         plants_mart        Ensembl Plants Genes 52
-## 8   plants_variations   Ensembl Plants Variations 52</code></pre>
+## 1       protists_mart      Ensembl Protists Genes 55
+## 2 protists_variations Ensembl Protists Variations 55
+## 3          fungi_mart         Ensembl Fungi Genes 55
+## 4    fungi_variations    Ensembl Fungi Variations 55
+## 5        metazoa_mart       Ensembl Metazoa Genes 55
+## 6  metazoa_variations  Ensembl Metazoa Variations 55
+## 7         plants_mart        Ensembl Plants Genes 55
+## 8   plants_variations   Ensembl Plants Variations 55</code></pre>
 <p>We can the select the Ensembl Plants database, and search for the dataset name for Arabidopsis.</p>
 <pre class="r"><code>ensembl_plants &lt;- useEnsemblGenomes(biomart = &quot;plants_mart&quot;)
 searchDatasets(ensembl_plants, pattern = &quot;Arabidopsis&quot;)</code></pre>
@@ -896,12 +891,12 @@ searchDatasets(ensembl_plants, pattern = &quot;Arabidopsis&quot;)</code></pre>
 <p><em>Filters</em> and <em>values</em> are used to define restrictions on the query. For example, if you want to restrict the output to all genes located on the human X chromosome then the filter <em>chromosome_name</em> can be used with <em>value</em> ‘X’. The <code>listFilters()</code> function shows you all available filters in the selected dataset.</p>
 <pre class="r"><code>filters = listFilters(ensembl)
 filters[1:5,]</code></pre>
-<pre><code>##                 name                            description
-## 1    chromosome_name               Chromosome/scaffold name
-## 2              start                                  Start
-## 3                end                                    End
-## 4             strand                                 Strand
-## 5 chromosomal_region e.g. 1:100:10000:-1, 1:100000:200000:1</code></pre>
+<pre><code>##              name              description
+## 1 chromosome_name Chromosome/scaffold name
+## 2           start                    Start
+## 3             end                      End
+## 4      band_start               Band Start
+## 5        band_end                 Band End</code></pre>
 <p><em>Attributes</em> define the data we are interested in retrieving. For example, maybe we want to retrieve the gene symbols or chromosomal coordinates. The <code>listAttributes()</code> function displays all available attributes in the selected dataset.</p>
 <pre class="r"><code>attributes = listAttributes(ensembl)
 attributes[1:5,]</code></pre>
@@ -911,7 +906,7 @@ attributes[1:5,]</code></pre>
 ## 3         ensembl_transcript_id         Transcript stable ID feature_page
 ## 4 ensembl_transcript_id_version Transcript stable ID version feature_page
 ## 5            ensembl_peptide_id            Protein stable ID feature_page</code></pre>
-<p>The <code>getBM()</code> function is the primary query function in <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em>. It has four main arguments:</p>
+<p>The <code>getBM()</code> function is the primary query function in <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em>. It has four main arguments:</p>
 <ul>
 <li><code>attributes</code>: is a vector of attributes that one wants to retrieve (= the output of the query).</li>
 <li><code>filters</code>: is a vector of filters that one wil use as input to the query.</li>
@@ -919,7 +914,7 @@ attributes[1:5,]</code></pre>
 <li><code>mart</code>: is an object of class <code>Mart</code>, which is created by the <code>useEnsembl()</code> function.</li>
 </ul>
 <p><em>Note: for some frequently used queries to Ensembl, wrapper functions are available: <code>getGene()</code> and <code>getSequence()</code>. These functions call the <code>getBM()</code> function with hard coded filter and attribute names.</em></p>
-<p>Now that we selected a BioMart database and dataset, and know about attributes, filters, and the values for filters; we can build a <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> query. Let’s make an easy query for the following problem: We have a list of Affymetrix identifiers from the u133plus2 platform and we want to retrieve the corresponding EntrezGene identifiers using the Ensembl mappings.</p>
+<p>Now that we selected a BioMart database and dataset, and know about attributes, filters, and the values for filters; we can build a <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> query. Let’s make an easy query for the following problem: We have a list of Affymetrix identifiers from the u133plus2 platform and we want to retrieve the corresponding EntrezGene identifiers using the Ensembl mappings.</p>
 <p>The u133plus2 platform will be the filter for this query and as values for this filter we use our list of Affymetrix identifiers. As output (attributes) for the query we want to retrieve the EntrezGene and u133plus2 identifiers so we get a mapping of these two identifiers as a result. The exact names that we will have to use to specify the attributes and filters can be retrieved with the <code>listAttributes()</code> and <code>listFilters()</code> function respectively. Let’s now run the query:</p>
 <pre class="r"><code>affyids &lt;- c(&quot;202763_at&quot;,&quot;209310_s_at&quot;,&quot;207500_at&quot;)
 getBM(attributes = c(&#39;affy_hg_u133_plus_2&#39;, &#39;entrezgene_id&#39;),
@@ -927,27 +922,27 @@ getBM(attributes = c(&#39;affy_hg_u133_plus_2&#39;, &#39;entrezgene_id&#39;),
       values = affyids, 
       mart = ensembl)</code></pre>
 <pre><code>##   affy_hg_u133_plus_2 entrezgene_id
-## 1           202763_at           836
-## 2         209310_s_at           837
-## 3           207500_at           838</code></pre>
+## 1         209310_s_at           837
+## 2           207500_at           838
+## 3           202763_at           836</code></pre>
 <div id="searching-for-filters-and-attributes" class="section level2">
 <h2><span class="header-section-number">3.1</span> Searching for filters and attributes</h2>
-<p>The functions <code>listAttributes()</code> and <code>listFilters()</code> will return every available option for their respective types, which can produce a very long output where it is hard to find the value you are interested in. <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> also provides the functions <code>searchAttributes()</code> and <code>searchFilters()</code> which will try to find any entries matching a specific term or pattern, in a similar fashion to <code>searchDatasets()</code> seen previously. You can use these functions to find available attributes and filters that you may be interested in. The example below returns the details for all attributes that contain the pattern ‘<em>hgnc</em>’.</p>
+<p>The functions <code>listAttributes()</code> and <code>listFilters()</code> will return every available option for their respective types, which can produce a very long output where it is hard to find the value you are interested in. <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> also provides the functions <code>searchAttributes()</code> and <code>searchFilters()</code> which will try to find any entries matching a specific term or pattern, in a similar fashion to <code>searchDatasets()</code> seen previously. You can use these functions to find available attributes and filters that you may be interested in. The example below returns the details for all attributes that contain the pattern ‘<em>hgnc</em>’.</p>
 <pre class="r"><code>searchAttributes(mart = ensembl, pattern = &quot;hgnc&quot;)</code></pre>
 <pre><code>##               name        description         page
-## 64         hgnc_id            HGNC ID feature_page
-## 65     hgnc_symbol        HGNC symbol feature_page
-## 95 hgnc_trans_name Transcript name ID feature_page</code></pre>
+## 61         hgnc_id            HGNC ID feature_page
+## 62     hgnc_symbol        HGNC symbol feature_page
+## 92 hgnc_trans_name Transcript name ID feature_page</code></pre>
 <p>For advanced use, note that the <em>pattern</em> argument takes a regular expression. This means you can create more complex queries if required. Imagine, for example, that we have the string <em>ENST00000577249.1</em>, which we know is an Ensembl ID of some kind, but we aren’t sure what the appropriate filter term is. The example shown next uses a pattern that will find all filters that contain the terms ‘<em>ensembl</em>’ and ‘<em>id</em>’. This allows us to reduced the list of filters to only those that might be appropriate for our example.</p>
 <pre class="r"><code>searchFilters(mart = ensembl, pattern = &quot;ensembl.*id&quot;)</code></pre>
 <pre><code>##                             name                                                    description
-## 51               ensembl_gene_id                       Gene stable ID(s) [e.g. ENSG00000000003]
-## 52       ensembl_gene_id_version       Gene stable ID(s) with version [e.g. ENSG00000000003.15]
-## 53         ensembl_transcript_id                 Transcript stable ID(s) [e.g. ENST00000000233]
-## 54 ensembl_transcript_id_version Transcript stable ID(s) with version [e.g. ENST00000000233.10]
-## 55            ensembl_peptide_id                    Protein stable ID(s) [e.g. ENSP00000000233]
-## 56    ensembl_peptide_id_version     Protein stable ID(s) with version [e.g. ENSP00000000233.5]
-## 57               ensembl_exon_id                              Exon ID(s) [e.g. ENSE00000000003]</code></pre>
+## 53               ensembl_gene_id                       Gene stable ID(s) [e.g. ENSG00000000003]
+## 54       ensembl_gene_id_version       Gene stable ID(s) with version [e.g. ENSG00000000003.15]
+## 55         ensembl_transcript_id                 Transcript stable ID(s) [e.g. ENST00000000233]
+## 56 ensembl_transcript_id_version Transcript stable ID(s) with version [e.g. ENST00000000233.10]
+## 57            ensembl_peptide_id                    Protein stable ID(s) [e.g. ENSP00000000233]
+## 58    ensembl_peptide_id_version     Protein stable ID(s) with version [e.g. ENSP00000000233.5]
+## 59               ensembl_exon_id                              Exon ID(s) [e.g. ENSE00000000001]</code></pre>
 <p>From this we can compare <em>ENST00000577249.1</em> with the examples given in the description column, and see it is a Transcript ID with version. Thus the appropriate filter value to use with it is <code>ensembl_transcript_id_version</code>.</p>
 </div>
 <div id="using-predefined-filter-values" class="section level2">
@@ -976,7 +971,7 @@ Figure 1: <span class="caption-title">The options available to the Chromosome/Sc
 <h2><span class="header-section-number">3.3</span> Finding out more information on filters</h2>
 <div id="filtertype" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> filterType</h3>
-<p>Boolean filters need a value TRUE or FALSE in <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em>. Setting the value TRUE will include all information that fulfil the filter requirement. Setting FALSE will exclude the information that fulfills the filter requirement and will return all values that don’t fulfil the filter. For most of the filters, their name indicates if the type is a boolean or not and they will usually start with “with”. However this is not a rule and to make sure you got the type right you can use the function <code>filterType()</code> to investigate the type of the filter you want to use.</p>
+<p>Boolean filters need a value TRUE or FALSE in <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em>. Setting the value TRUE will include all information that fulfil the filter requirement. Setting FALSE will exclude the information that fulfills the filter requirement and will return all values that don’t fulfil the filter. For most of the filters, their name indicates if the type is a boolean or not and they will usually start with “with”. However this is not a rule and to make sure you got the type right you can use the function <code>filterType()</code> to investigate the type of the filter you want to use.</p>
 <pre class="r"><code>filterType(&quot;with_affy_hg_u133_plus_2&quot;, ensembl)</code></pre>
 <pre><code>## [1] &quot;boolean_list&quot;</code></pre>
 </div>
@@ -988,7 +983,7 @@ In BioMart databases, attributes are put together in pages, such as sequences, f
 An overview of the attributes pages present in the respective BioMart dataset can be obtained with the <code>attributePages()</code> function.</p>
 <pre class="r"><code>pages = attributePages(ensembl)
 pages</code></pre>
-<pre><code>## [1] &quot;feature_page&quot; &quot;structure&quot;    &quot;homologs&quot;     &quot;snp&quot;          &quot;sequences&quot;</code></pre>
+<pre><code>## [1] &quot;feature_page&quot; &quot;structure&quot;    &quot;homologs&quot;     &quot;snp&quot;          &quot;snp_somatic&quot;  &quot;sequences&quot;</code></pre>
 <p>To show us a smaller list of attributes which belong to a specific page, we can now specify this in the <code>listAttributes()</code> function.<label for="sidenote-3" class="sidenote-number">3</label><label for="sidenote-3" class="margin-toggle" onclick="toggle_visibility('sidenote-3')">3</label><span class="sidenote" id="sidenote-3"><span class="sidenote-number">3</span> The set of attributes is still quite long, so we use <code>head()</code> to show only the first few items here.</span></p>
 <pre class="r"><code>head(listAttributes(ensembl, page=&quot;feature_page&quot;))</code></pre>
 <pre><code>##                            name                  description         page
@@ -1003,9 +998,8 @@ pages</code></pre>
 <div id="using-select" class="section level2">
 <h2><span class="header-section-number">3.5</span> Using <code>select()</code></h2>
 <p>In order to provide a more consistent interface to all annotations in Bioconductor the <code>select()</code>, <code>columns()</code>, <code>keytypes()</code> and <code>keys()</code> have been implemented to wrap some of the existing functionality above. These methods can be called in the same manner that they are used in other parts of the project except that instead of taking a <code>AnnotationDb</code> derived class they take instead a <code>Mart</code> derived class as their 1st argument. Otherwise usage should be essentially the same. You still use <code>columns()</code> to discover things that can be extracted from a <code>Mart</code>, and <code>keytypes()</code> to discover which things can be used as keys with <code>select()</code>.</p>
-<pre class="r"><code>mart &lt;- useEnsembl(dataset = &quot;hsapiens_gene_ensembl&quot;, biomart=&#39;ensembl&#39;)</code></pre>
-<pre><code>## Ensembl site unresponsive, trying uswest mirror</code></pre>
-<pre class="r"><code>head(keytypes(mart), n = 3)</code></pre>
+<pre class="r"><code>mart &lt;- useEnsembl(dataset = &quot;hsapiens_gene_ensembl&quot;, biomart=&#39;ensembl&#39;)
+head(keytypes(mart), n = 3)</code></pre>
 <pre><code>## [1] &quot;affy_hc_g110&quot;        &quot;affy_hg_focus&quot;       &quot;affy_hg_u133_plus_2&quot;</code></pre>
 <pre class="r"><code>head(columns(mart), n = 3)</code></pre>
 <pre><code>## [1] &quot;3_utr_end&quot;   &quot;3_utr_end&quot;   &quot;3_utr_start&quot;</code></pre>
@@ -1025,34 +1019,34 @@ head(k, n=3)</code></pre>
 select(mart, keys=affy, columns=c(&#39;affy_hg_u133_plus_2&#39;,&#39;entrezgene_id&#39;),
   keytype=&#39;affy_hg_u133_plus_2&#39;)</code></pre>
 <pre><code>##   affy_hg_u133_plus_2 entrezgene_id
-## 1           202763_at           836
-## 2         209310_s_at           837
-## 3           207500_at           838</code></pre>
+## 1         209310_s_at           837
+## 2           207500_at           838
+## 3           202763_at           836</code></pre>
 <p>So why would we want to do this when we already have functions like <code>getBM()</code>? For two reasons: 1) for people who are familiar
-with select and it’s helper methods, they can now proceed to use <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> making the same kinds of calls that are already familiar to them and 2) because the select method is implemented in many places elsewhere, the fact that these methods are shared allows for more convenient programmatic access of all these resources. An example of a package that takes advantage of this is the <em><a href="https://bioconductor.org/packages/3.14/OrganismDbi">OrganismDbi</a></em> package. Where several packages can be accessed as if they were one resource.</p>
+with select and it’s helper methods, they can now proceed to use <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> making the same kinds of calls that are already familiar to them and 2) because the select method is implemented in many places elsewhere, the fact that these methods are shared allows for more convenient programmatic access of all these resources. An example of a package that takes advantage of this is the <em><a href="https://bioconductor.org/packages/3.16/OrganismDbi">OrganismDbi</a></em> package. Where several packages can be accessed as if they were one resource.</p>
 </div>
 </div>
 <div id="result-caching" class="section level1">
 <h1><span class="header-section-number">4</span> Result Caching</h1>
-<p>To save time and computing resources <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> will attempt to identify when you are re-running a query you have executed before. Each time a new query is run, the results will be saved to a cache on your computer. If a query is identified as having been run previously, rather than submitting the query to the server, the results will be loaded from the cache.</p>
+<p>To save time and computing resources <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> will attempt to identify when you are re-running a query you have executed before. Each time a new query is run, the results will be saved to a cache on your computer. If a query is identified as having been run previously, rather than submitting the query to the server, the results will be loaded from the cache.</p>
 <p>You can get some information on the size and location of the cache using the function <code>biomartCacheInfo()</code>:</p>
 <pre class="r"><code>biomartCacheInfo()</code></pre>
 <pre><code>## biomaRt cache
 ## - Location: C:\Users\BIOCBU~1\AppData\Local/biomaRt/biomaRt/Cache
-## - No. of files: 447
-## - Total size: 119.8 Mb</code></pre>
+## - No. of files: 725
+## - Total size: 154.2 Mb</code></pre>
 <p>The cache can be deleted using the command <code>biomartCacheClear()</code>. This will remove all cached files.</p>
 <p>The default location for the cache is specifc to your computer and operating system. If you want to use a specific location you can set this via the <code>BIOMART_CACHE</code> environment variable. You can either set this outside of R, or within R via a call to <code>Sys.setenv(BIOMART_CACHE = &quot;&lt;/where/i/store/my/cache&gt;&quot;)</code>. The code below gives an example where we change the location to a temporary file<label for="sidenote-4" class="sidenote-number">4</label><label for="sidenote-4" class="margin-toggle" onclick="toggle_visibility('sidenote-4')">4</label><span class="sidenote" id="sidenote-4"><span class="sidenote-number">4</span> This would not be a sensible choice on your machine, but is convenient on the Bioconductor server.</span> and then confirm that the location has changed.</p>
 <pre class="r"><code>Sys.setenv(BIOMART_CACHE = tempdir())
 biomartCacheInfo()</code></pre>
 <pre><code>## biomaRt cache
-## - Location: C:\Users\biocbuild\bbs-3.14-bioc\tmpdir\RtmpeAe9zF
+## - Location: F:\biocbuild\bbs-3.16-bioc\tmpdir\Rtmp88r7Uk
 ## - No. of files: 0
 ## - Total size: 0 bytes</code></pre>
 </div>
 <div id="biomart-helper-functions" class="section level1">
 <h1><span class="header-section-number">5</span> biomaRt helper functions</h1>
-<p>This section describes a set of <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> helper functions that can be used to export FASTA format sequences, retrieve values for certain filters and exploring the available filters and attributes in a more systematic manner.</p>
+<p>This section describes a set of <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> helper functions that can be used to export FASTA format sequences, retrieve values for certain filters and exploring the available filters and attributes in a more systematic manner.</p>
 <div id="exportfasta" class="section level2">
 <h2><span class="header-section-number">5.1</span> exportFASTA</h2>
 <p>The data.frames obtained by the <code>getSequence()</code> function can be exported to FASTA files using the <code>exportFASTA()</code> function. One has to specify the data.frame to export and the filename using the file argument.</p>
@@ -1060,7 +1054,7 @@ biomartCacheInfo()</code></pre>
 </div>
 <div id="examples-of-biomart-queries" class="section level1">
 <h1><span class="header-section-number">6</span> Examples of biomaRt queries</h1>
-<p>In the sections below a variety of example queries are described. Every example is written as a task, and we have to come up with a <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> solution to the problem.</p>
+<p>In the sections below a variety of example queries are described. Every example is written as a task, and we have to come up with a <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> solution to the problem.</p>
 <div id="annotate-a-set-of-affymetrix-identifiers-with-hugo-symbol-and-chromosomal-locations-of-corresponding-genes" class="section level2">
 <h2><span class="header-section-number">6.1</span> Annotate a set of Affymetrix identifiers with HUGO symbol and chromosomal locations of corresponding genes</h2>
 <p>We have a list of Affymetrix hgu133plus2 identifiers and we would like to retrieve the HUGO gene symbols, chromosome names, start and end positions and the bands of the corresponding genes. The <code>listAttributes()</code> and the <code>listFilters()</code> functions give us an overview of the available attributes and filters and we look in those lists to find the corresponding attribute and filter names we need. For this query we’ll need the following attributes: hgnc_symbol, chromsome_name, start_position, end_position, band and affy_hg_u133_plus_2 (as we want these in the output to provide a mapping with our original Affymetrix input identifiers. There is one filter in this query which is the affy_hg_u133_plus_2 filter as we use a list of Affymetrix identifiers as input. Putting this all together in the <code>getBM()</code> and performing the query gives:</p>
@@ -1071,9 +1065,9 @@ getBM(attributes = c(&#39;affy_hg_u133_plus_2&#39;, &#39;hgnc_symbol&#39;, &#39;
       values = affyids, 
       mart = ensembl)</code></pre>
 <pre><code>##   affy_hg_u133_plus_2 hgnc_symbol chromosome_name start_position end_position  band
-## 1           202763_at       CASP3               4      184627696    184649509 q35.1
-## 2         209310_s_at       CASP4              11      104942866    104969366 q22.3
-## 3           207500_at       CASP5              11      104994235    105023168 q22.3</code></pre>
+## 1         209310_s_at       CASP4              11      104942866    104969366 q22.3
+## 2           207500_at       CASP5              11      104994235    105023168 q22.3
+## 3           202763_at       CASP3               4      184627696    184650062 q35.1</code></pre>
 </div>
 <div id="annotate-a-set-of-entrezgene-identifiers-with-go-annotation" class="section level2">
 <h2><span class="header-section-number">6.2</span> Annotate a set of EntrezGene identifiers with GO annotation</h2>
@@ -1085,12 +1079,12 @@ goids = getBM(attributes = c(&#39;entrezgene_id&#39;, &#39;go_id&#39;),
               mart = ensembl)
 head(goids)</code></pre>
 <pre><code>##   entrezgene_id      go_id
-## 1           673 GO:0005524
-## 2           673 GO:0007165
-## 3           673 GO:0006468
-## 4           673 GO:0035556
-## 5           673 GO:0004672
-## 6           673 GO:0043231</code></pre>
+## 1           673 GO:0007165
+## 2           673 GO:0005524
+## 3           673 GO:0004672
+## 4           673 GO:0006468
+## 5           673 GO:0043231
+## 6           673 GO:0000166</code></pre>
 </div>
 <div id="retrieve-all-hugo-gene-symbols-of-genes-that-are-located-on-chromosomes-1720-or-y-and-are-associated-with-specific-go-terms" class="section level2">
 <h2><span class="header-section-number">6.3</span> Retrieve all HUGO gene symbols of genes that are located on chromosomes 17,20 or Y, and are associated with specific GO terms</h2>
@@ -1114,22 +1108,15 @@ ipro = getBM(attributes=c(&quot;refseq_mrna&quot;,&quot;interpro&quot;,&quot;int
              values=refseqids, 
              mart=ensembl)
 ipro</code></pre>
-<pre><code>##    refseq_mrna  interpro                                               interpro_description
-## 1    NM_000546 IPR002117                                       p53 tumour suppressor family
-## 2    NM_000546 IPR008967                         p53-like transcription factor, DNA-binding
-## 3    NM_000546 IPR010991                                        p53, tetramerisation domain
-## 4    NM_000546 IPR011615                                            p53, DNA-binding domain
-## 5    NM_000546 IPR012346 p53/RUNT-type transcription factor, DNA-binding domain superfamily
-## 6    NM_000546 IPR013872                                         p53 transactivation domain
-## 7    NM_000546 IPR036674                        p53-like tetramerisation domain superfamily
-## 8    NM_000546 IPR040926               Cellular tumor antigen p53, transactivation domain 2
-## 9    NM_005359 IPR001132                                          SMAD domain, Dwarfin-type
-## 10   NM_005359 IPR003619                                       MAD homology 1, Dwarfin-type
-## 11   NM_005359 IPR008984                                        SMAD/FHA domain superfamily
-## 12   NM_005359 IPR013019                                                  MAD homology, MH1
-## 13   NM_005359 IPR013790                                                            Dwarfin
-## 14   NM_005359 IPR017855                                       SMAD-like domain superfamily
-## 15   NM_005359 IPR036578                                        SMAD MH1 domain superfamily</code></pre>
+<pre><code>##   refseq_mrna  interpro                                 interpro_description
+## 1   NM_000546 IPR002117                         p53 tumour suppressor family
+## 2   NM_000546 IPR010991                          p53, tetramerisation domain
+## 3   NM_000546 IPR011615                              p53, DNA-binding domain
+## 4   NM_000546 IPR013872                           p53 transactivation domain
+## 5   NM_000546 IPR040926 Cellular tumor antigen p53, transactivation domain 2
+## 6   NM_005359 IPR001132                            SMAD domain, Dwarfin-type
+## 7   NM_005359 IPR003619                         MAD homology 1, Dwarfin-type
+## 8   NM_005359 IPR013019                                    MAD homology, MH1</code></pre>
 </div>
 <div id="select-all-affymetrix-identifiers-on-the-hgu133plus2-chip-and-ensembl-gene-identifiers-for-genes-located-on-chromosome-16-between-basepair-1100000-and-1250000." class="section level2">
 <h2><span class="header-section-number">6.5</span> Select all Affymetrix identifiers on the hgu133plus2 chip and Ensembl gene identifiers for genes located on chromosome 16 between basepair 1100000 and 1250000.</h2>
@@ -1149,18 +1136,18 @@ ipro</code></pre>
 ## 8                      ENSG00000261294
 ## 9          220339_s_at ENSG00000116176
 ## 10                     ENSG00000277010
-## 11         205683_x_at ENSG00000197253
+## 11         215382_x_at ENSG00000197253
 ## 12         207134_x_at ENSG00000197253
-## 13         217023_x_at ENSG00000197253
-## 14         210084_x_at ENSG00000197253
-## 15         215382_x_at ENSG00000197253
-## 16         216474_x_at ENSG00000197253
-## 17         205683_x_at ENSG00000172236
+## 13         216474_x_at ENSG00000197253
+## 14         217023_x_at ENSG00000197253
+## 15         205683_x_at ENSG00000197253
+## 16         210084_x_at ENSG00000197253
+## 17         215382_x_at ENSG00000172236
 ## 18         207134_x_at ENSG00000172236
-## 19         217023_x_at ENSG00000172236
-## 20         210084_x_at ENSG00000172236
-## 21         215382_x_at ENSG00000172236
-## 22         216474_x_at ENSG00000172236</code></pre>
+## 19         216474_x_at ENSG00000172236
+## 20         217023_x_at ENSG00000172236
+## 21         205683_x_at ENSG00000172236
+## 22         210084_x_at ENSG00000172236</code></pre>
 </div>
 <div id="retrieve-all-entrezgene-identifiers-and-hugo-gene-symbols-of-genes-which-have-a-map-kinase-activity-go-term-associated-with-it." class="section level2">
 <h2><span class="header-section-number">6.6</span> Retrieve all EntrezGene identifiers and HUGO gene symbols of genes which have a “MAP kinase activity” GO term associated with it.</h2>
@@ -1174,17 +1161,18 @@ ipro</code></pre>
 ## 2           5596       MAPK4
 ## 3           5594       MAPK1
 ## 4           6300      MAPK12
-## 5           6885      MAP3K7
-## 6           5600      MAPK11
-## 7          51701         NLK
-## 8           5602      MAPK10
-## 9           5595       MAPK3
-## 10          1432      MAPK14
-## 11          5603      MAPK13
-## 12          5598       MAPK7
-## 13          5599       MAPK8
-## 14          5601       MAPK9
-## 15          5597       MAPK6</code></pre>
+## 5           5600      MAPK11
+## 6           5595       MAPK3
+## 7           5598       MAPK7
+## 8           5603      MAPK13
+## 9           5609      MAP2K7
+## 10          5601       MAPK9
+## 11          5602      MAPK10
+## 12          5599       MAPK8
+## 13          5597       MAPK6
+## 14          6885      MAP3K7
+## 15          1432      MAPK14
+## 16         51701         NLK</code></pre>
 </div>
 <div id="given-a-set-of-entrezgene-identifiers-retrieve-100bp-upstream-promoter-sequences" class="section level2">
 <h2><span class="header-section-number">6.7</span> Given a set of EntrezGene identifiers, retrieve 100bp upstream promoter sequences</h2>
@@ -1222,7 +1210,7 @@ getSequence(id = entrez,
 ## 1          7157
 ## 2           673
 ## 3           837</code></pre>
-<p>One further thing to note is that, although we are searching for genes based on their NCBI Gene IDs, Ensembl BioMart doesn’t allow some ID types (including NCBI IDs) to be returned directly. To try and accommodate this <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> attempts to map the query IDs to Ensembl Gene IDs internally before finding the sequence information. If no such mapping exists (or at least isn’t found in Ensembl) then no sequence will be returned for the affected IDs.</p>
+<p>One further thing to note is that, although we are searching for genes based on their NCBI Gene IDs, Ensembl BioMart doesn’t allow some ID types (including NCBI IDs) to be returned directly. To try and accommodate this <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> attempts to map the query IDs to Ensembl Gene IDs internally before finding the sequence information. If no such mapping exists (or at least isn’t found in Ensembl) then no sequence will be returned for the affected IDs.</p>
 </div>
 <div id="retrieve-all-5-utr-sequences-of-all-genes-that-are-located-on-chromosome-3-between-the-positions-185514033-and-185535839" class="section level2">
 <h2><span class="header-section-number">6.8</span> Retrieve all 5’ UTR sequences of all genes that are located on chromosome 3 between the positions 185,514,033 and 185,535,839</h2>
@@ -1253,19 +1241,53 @@ To get an overview of other valid identifier types we refer to the <code>listFil
                       mart=ensembl)
 protein</code></pre>
 <pre><code>##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              peptide
-## 1                                                                                                                                                                                                                                                                                                                                                                                                                                         ALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKDKMFHFWVNTFFIPGPEETSEKVENGSLCDQEIDSICSIERADNDKEYLVLTLTKNDLDKANKDKANRYFSPNFKVS*
-## 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    XVYRNNIDDVVRFLDSKHKNHYKIYNLWGI*
-## 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Sequence unavailable
-## 4                                                                                                                                                                                                                                                                                                                                                                                                    MTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKADPTGGIPDKGIIVIGDGSSMDVIAP*
+## 1                                                                                                                                                                                                                                          MTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKGVTIPSQRRYVYYYSYLLKNHLDYRPVALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKDKMFHFWVNTFFIPGPEETSEKVENGSLCDQEIDSICSIERADNDKEYLVLTLTKNDLDKANKDKANRYFSPNFKVS*
+## 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         MTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLWGI*
+## 3                                                                                                                                                                                              MTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVSCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKGVTIPSQRRYVYYYSYLLKNHLDYRPVALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKDKMFHFWVNTFFIPGPEETSEKVENGSLCDQEIDSICSIERADNDKEYLVLTLTKNDLDKANKDKANRYFSPNFKVKLYFTKTVEEPSNPEASSSTSVTPDVSDNEPDHYRYSDTTDSDPENEPFDEDQHTQITKV*
+## 4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Sequence unavailable
 ## 5                                                                                                                                                                               MTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKGVTIPSQRRYVYYYSYLLKNHLDYRPVALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKDKMFHFWVNTFFIPGPEETSEKVENGSLCDQEIDSICSIERADNDKEYLVLTLTKNDLDKANKDKANRYFSPNFKVKLYFTKTVEEPSNPEASSSTSVTPDVSDNEPDHYRYSDTTDSDPENEPFDEDQHTQITKV*
-## 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      MTAIIKEIVSRNKRRYQEDGFDLDLTLETGFHRVSQDGLDLLTS*
+## 6                                                                                                                                                                                                                                                                                                                                                                                                    MTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKADPTGGIPDKGIIVIGDGSSMDVIAP*
 ## 7  LERGGEAAAAAAAAAAAPGRGSESPVTISRAGNAGELVSPLLLPPTRRRRRRHIQGPGPVLNLPCAAAAPPVARAPEAAGGGSRSEDYSSSPHSAAAAARPLAAEEKQAQSLQPSSSRRSSHYPAAVQSQAAAERGASATAKSRAISILQKKPRHQQLLPSLSSFFFSHRLPDMTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKGVTIPSQRRYVYYYSYLLKNHLDYRPVALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKDKMFHFWVNTFFIPGPEETSEKVENGSLCDQEIDSICSIERADNDKEYLVLTLTKNDLDKANKDKANRYFSPNFKVKLYFTKTVEEPSNPEASSSTSVTPDVSDNEPDHYRYSDTTDSDPENEPFDEDQHTQITKV*
-## 8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Sequence unavailable
-## 9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIARL*
-## 10                                                                                                                                                                                                                      MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
-## 11                                                                                                                                                                                                                                                                                                                          MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEAQK*
-## 12                                                                                                                                                                                                                                              MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
-## 13 LERGGEAAAAAAAAAAAPGRGSESPVTISRAGNAGELVSPLLLPPTRRRRRRHIQGPGPVLNLPSAAAAPPVARAPEAAGGGSRSEDYSSSPHSAAAAARPLAAEEKQAQSLQPSSSRRSSHYPAAVQSQAAAERGASATAKSRAISILQKKPRHQQLLPSLSSFFFSHRLPDMTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKGVTIPSQRRYVYYYSYLLKNHLDYRPVALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKDKMFHFWVNTFFIPGPEETSEKVENGSLCDQEIDSICSIERADNDKEYLVLTLTKNDLDKANKDKANRYFSPNFKVKLYFTKTVEEPSNPEASSSTSVTPDVSDNEPDHYRYSDTTDSDPENEPFDEDQHTQITKV*
+## 8                                                                                                                                                                                                                                                                                                                      XLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKGVTIPSQRRYVYYYSYLLKNHLDYRPVALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKGQGLTMLPRLVSNSWAQAVLTLWHPKELELQDKMFHFWVNTFFIPGPEETSEKVENG
+## 9                                                                                                                                                                                                                                                                                                                                                                                                                      MTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKILSLWSAS*
+## 10                                                                                                                                                                                                                                                                                                                                                                                MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 11                                                                                                                                                                                                                                              MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 12                                                                                                                                                                                                                                                                                                                          MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEAQK*
+## 13                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Sequence unavailable
+## 14                                                                                                                                                                                                                                                                                                                                                                                                     MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIALWTYSRQSGWDTATTPWKTRPFITGCGRKTCTSRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 15                                                                                                                                                                                                                      MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 16                                                                                                                                                                                                                                                                                                                                   MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEAQK*
+## 17                                                                                                                                                                                                                                                                         MDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 18                                                                                                                                                                                            MSTPDRHLVLCPAPTECSVNGSSFVRQRYGGERQGAQVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 19                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            MAQTPAFDKPKTEFRSCCPGWSAMARPRLTATFASQVQVILLPQPPKWNCMST*
+## 20                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIARL*
+## 21                                                                                                                                                                                                                                                                                                                                                                                                                                     MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIALWTYSRQSGWDTATTPWKTRPFITGCGRKTCTSRSAPGPATSLVPGSRTRSMQSFGSKMTRLTTRSTQMTRSSSSPPWTLITR*
+## 22                                                                                                                                                                                                                                               MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 23                                                                                                                                                                MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGRFLSGLLGSCPVLAPVWLSVGLLARCPSILGQRHECVMTPWFLGPGWEQRLIRSVCFL*
+## 24                                                                                                                                                                                                                                                                                                                                                  MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEAQK*
+## 25                                                                                                                                                                                                                                                                                                                                                                                                                                                               MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAELVPQGGGAV*
+## 26                                                                                                                                                                                                                                                                                                                                                                                                                                                                    XLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAEPTSRAEPLKTPLLQAFTLWSHPNSVGLSNIFTFIPSKKTMISIVSY*
+## 27                                                                                                                                                                                                                                                                                                                                                        MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 28                                                                                                                                                                                                                       MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 29                                                                                                                                                                                                                                                                                                                                                                                                               MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNDVLNGPPFPHLRMGISLP*
+## 30                                                                                                                                                                                               MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQHGQGRACRGPPARAPMTWLSPFQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 31                                                                                                                                                                                             MSTPDRHLVLCPAPTECSVNGSSFVRQRYGGERQGAQVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 32                                                                                                                                                                                  MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAEPLKTPLLQAFTLWSHPNSVGLSNIFTFIPSKKTMISIVSY*
+## 33                                                                                                                                                                                                                                                                                                                                                                                                                                                                          VELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAELVPQGGGAV*
+## 34                                                                                                                                                                                                                                                                                                                                                      XWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGRFLSGLLGSCPVLAPVWLSVGLLARCPSILGQRHECVMTPWFLGPGWEQRLIRSVCFL*
+## 35                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIGLPGGYQKDRL*
+## 36                                                                                                                                                                                                 MSSPPPPTPDELLQVLQATAGPPRKFLNYTIMVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 37                                                                                                                                        MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQHGQGRACRGPPARAPMTWLSPFQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGRFLSGLLGSCPVLAPVWLSVGLLARCPSILGQRHECVMTPWFLGPGWEQRLIRSVCFL*
+## 38                                                                                                                                                                                              MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGRSSFLVLVFYDFYNILGTTSCLIFLLL*
+## 39                                                                                                                                                                                                                        MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 40                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 MAQTPAFDKPKVELHVHLDGSIKPETILYYGSQLQARSGTVRTWRPQH*
+## 41                                                                                                                                                                                                                                                                                                                                                                                                                                                        MDKPLTLPDFLAKFDYYMPAIALWTYSRQSGWDTATTPWKTRPFITGCGRKTCTSRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 42                                                                                                                                                                                             MAQTPAFDKPKTEFRSCCPGWSAMARPRLTATFASQVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 43                                                                                                                                                                                                                                                                                                                                                                                     MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAELWTYSRQSGWDTATTPWKTRPFITGCGRKTCTSRSAPGPATSLVPGSRTRSMQSFGSKMTRLTTRSTQMTRSSSSPPWTLITR*
+## 44                                                                                                                                                                                               MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGRSSFLVLVFYDFYNILGTTSCLIFLLL*
+## 45                                                                                                                                                                                                                       MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAGQNL*
+## 46                                                                                                                                                                                 MAQTPAFDKPKVELHVHLDGSIKPETILYYGRRRGIALPANTAEGLLNVIGMDKPLTLPDFLAKFDYYMPAIAGCREAIKRIAYEFVEMKAKEGVVYVEVRYSPHLLANSKVEPIPWNQAEGDLTPDEVVALVGQGLQEGERDFGVKARSILCCMRHQPNWSPKVVELCKKYQQQTVVAIDLAGDETIPGSSLLPGHVQAYQEAVKSGIHRTVHAGEVGSAEVVKEAVDILKTERLGHGYHTLEDQALYNRLRQENMHFEICPWSSYLTGAWKPDTEHAVIRLKNDQANYSLNTDDPLIFKSTLDTDYQMTKRDMGFTEEEFKRLNINAAKSSFLPEDEKRELLDLLYKAYGMPPSASAEPLKTPLLQAFTLWSHPNSVGLSNIFTFIPSKKTMISIVSY*
+## 47 LERGGEAAAAAAAAAAAPGRGSESPVTISRAGNAGELVSPLLLPPTRRRRRRHIQGPGPVLNLPSAAAAPPVARAPEAAGGGSRSEDYSSSPHSAAAAARPLAAEEKQAQSLQPSSSRRSSHYPAAVQSQAAAERGASATAKSRAISILQKKPRHQQLLPSLSSFFFSHRLPDMTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKGVTIPSQRRYVYYYSYLLKNHLDYRPVALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKDKMFHFWVNTFFIPGPEETSEKVENGSLCDQEIDSICSIERADNDKEYLVLTLTKNDLDKANKDKANRYFSPNFKVKLYFTKTVEEPSNPEASSSTSVTPDVSDNEPDHYRYSDTTDSDPENEPFDEDQHTQITKV*
 ##    entrezgene_id
 ## 1           5728
 ## 2           5728
@@ -1274,12 +1296,46 @@ protein</code></pre>
 ## 5           5728
 ## 6           5728
 ## 7           5728
-## 8            100
-## 9            100
+## 8           5728
+## 9           5728
 ## 10           100
 ## 11           100
 ## 12           100
-## 13          5728</code></pre>
+## 13           100
+## 14           100
+## 15           100
+## 16           100
+## 17           100
+## 18           100
+## 19           100
+## 20           100
+## 21           100
+## 22           100
+## 23           100
+## 24           100
+## 25           100
+## 26           100
+## 27           100
+## 28           100
+## 29           100
+## 30           100
+## 31           100
+## 32           100
+## 33           100
+## 34           100
+## 35           100
+## 36           100
+## 37           100
+## 38           100
+## 39           100
+## 40           100
+## 41           100
+## 42           100
+## 43           100
+## 44           100
+## 45           100
+## 46           100
+## 47          5728</code></pre>
 </div>
 <div id="retrieve-known-snps-located-on-the-human-chromosome-8-between-positions-148350-and-148420" class="section level2">
 <h2><span class="header-section-number">6.10</span> Retrieve known SNPs located on the human chromosome 8 between positions 148350 and 148420</h2>
@@ -1334,14 +1390,8 @@ getLDS(attributes = c(&quot;hgnc_symbol&quot;,&quot;chromosome_name&quot;, &quot
        mart = human,
        attributesL = c(&quot;refseq_mrna&quot;,&quot;chromosome_name&quot;,&quot;start_position&quot;), 
        martL = mouse)</code></pre>
-<pre><code>##   HGNC.symbol Chromosome.scaffold.name Gene.start..bp. RefSeq.mRNA.ID Chromosome.scaffold.name.1
-## 1        TP53                       17         7661779                                        11
-## 2        TP53                       17         7661779   NM_001127233                         11
-## 3        TP53                       17         7661779      NM_011640                         11
-##   Gene.start..bp..1
-## 1          69471185
-## 2          69471185
-## 3          69471185</code></pre>
+<pre><code>## Error: biomaRt has encountered an unexpected server error.
+## Consider trying one of the Ensembl mirrors (for more details look at ?useEnsembl)</code></pre>
 </div>
 </div>
 <div id="connection-troubleshooting" class="section level1">
@@ -1349,12 +1399,12 @@ getLDS(attributes = c(&quot;hgnc_symbol&quot;,&quot;chromosome_name&quot;, &quot
 <p>It is not uncommon to encounter connection problems when trying to access online resources such as the Ensembl BioMart.
 In this section we list error messages that have been reported by users, along with suggested code to fix the problem. If a suggested solution doesn’t work, or you have a new error not listed here, please reported it on the <a href="https://support.bioconductor.org/">Bioconductor Support Site</a>.</p>
 <div id="biomart-specific-solutions" class="section level2">
-<h2><span class="header-section-number">7.1</span> <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> specific solutions</h2>
-<p>If you are using <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> directly make sure you are using <code>useEnsembl()</code> to create the <strong>Mart</strong> object, rather than <code>useMart()</code>. <code>useEnsembl()</code> is aware of some specific connection details required to connect to Ensembl, and using it may fix any connection problems without requiring you to do anything further.</p>
+<h2><span class="header-section-number">7.1</span> <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> specific solutions</h2>
+<p>If you are using <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> directly make sure you are using <code>useEnsembl()</code> to create the <strong>Mart</strong> object, rather than <code>useMart()</code>. <code>useEnsembl()</code> is aware of some specific connection details required to connect to Ensembl, and using it may fix any connection problems without requiring you to do anything further.</p>
 </div>
 <div id="global-connection-settings" class="section level2">
 <h2><span class="header-section-number">7.2</span> Global connection settings</h2>
-<p>If you are unable to modify the <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> code (for example if you are using another package that calls <em><a href="https://bioconductor.org/packages/3.14/biomaRt">biomaRt</a></em> as part of one if its functions) it’s still possible to modify the connection settings for your R session. Below are some reported error messages and code that has been known to resolve them. You will need to execute this code only once in an R session, but the settings will not persist between R sessions.</p>
+<p>If you are unable to modify the <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> code (for example if you are using another package that calls <em><a href="https://bioconductor.org/packages/3.16/biomaRt">biomaRt</a></em> as part of one if its functions) it’s still possible to modify the connection settings for your R session. Below are some reported error messages and code that has been known to resolve them. You will need to execute this code only once in an R session, but the settings will not persist between R sessions.</p>
 <div id="error-ssl-certificate-problem" class="section level3">
 <h3><span class="header-section-number">7.2.1</span> Error: “SSL certificate problem”</h3>
 <p><strong>Error message</strong></p>
@@ -1379,43 +1429,43 @@ error:14094410:SSL routines:ssl3_read_bytes:sslv3 alert handshake failure</code>
 <div id="session-info" class="section level1">
 <h1><span class="header-section-number">8</span> Session Info</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 4.1.2 (2021-11-01)
+<pre><code>## R version 4.2.1 (2022-06-23 ucrt)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows Server 2012 R2 x64 (build 9600)
+## Running under: Windows Server x64 (build 20348)
 ## 
 ## Matrix products: default
 ## 
 ## locale:
-## [1] LC_COLLATE=C                           LC_CTYPE=English_United States.1252   
-## [3] LC_MONETARY=English_United States.1252 LC_NUMERIC=C                          
-## [5] LC_TIME=English_United States.1252    
+## [1] LC_COLLATE=C                           LC_CTYPE=English_United States.utf8   
+## [3] LC_MONETARY=English_United States.utf8 LC_NUMERIC=C                          
+## [5] LC_TIME=English_United States.utf8    
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] biomaRt_2.50.3   BiocStyle_2.22.0
+## [1] biomaRt_2.54.0   BiocStyle_2.26.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.8             prettyunits_1.1.1      png_0.1-7              Biostrings_2.62.0     
-##  [5] assertthat_0.2.1       digest_0.6.29          utf8_1.2.2             BiocFileCache_2.2.1   
-##  [9] R6_2.5.1               GenomeInfoDb_1.30.1    stats4_4.1.2           RSQLite_2.2.9         
-## [13] evaluate_0.14          highr_0.9              httr_1.4.2             pillar_1.7.0          
-## [17] zlibbioc_1.40.0        rlang_1.0.1            progress_1.2.2         curl_4.3.2            
-## [21] jquerylib_0.1.4        blob_1.2.2             S4Vectors_0.32.3       rmarkdown_2.11        
-## [25] stringr_1.4.0          RCurl_1.98-1.5         bit_4.0.4              compiler_4.1.2        
-## [29] xfun_0.29              pkgconfig_2.0.3        BiocGenerics_0.40.0    htmltools_0.5.2       
-## [33] tidyselect_1.1.1       KEGGREST_1.34.0        tibble_3.1.6           GenomeInfoDbData_1.2.7
-## [37] bookdown_0.24          codetools_0.2-18       IRanges_2.28.0         XML_3.99-0.8          
-## [41] fansi_1.0.2            withr_2.4.3            crayon_1.4.2           dplyr_1.0.7           
-## [45] dbplyr_2.1.1           bitops_1.0-7           rappdirs_0.3.3         jsonlite_1.7.3        
-## [49] lifecycle_1.0.1        DBI_1.1.2              magrittr_2.0.2         cli_3.1.1             
-## [53] stringi_1.7.6          cachem_1.0.6           XVector_0.34.0         xml2_1.3.3            
-## [57] bslib_0.3.1            ellipsis_0.3.2         filelock_1.0.2         vctrs_0.3.8           
-## [61] generics_0.1.2         tools_4.1.2            bit64_4.0.5            Biobase_2.54.0        
-## [65] glue_1.6.1             purrr_0.3.4            hms_1.1.1              fastmap_1.1.0         
-## [69] yaml_2.2.2             AnnotationDbi_1.56.2   BiocManager_1.30.16    memoise_2.0.1         
-## [73] knitr_1.37             sass_0.4.0</code></pre>
+##  [1] Rcpp_1.0.9             prettyunits_1.1.1      png_0.1-7              Biostrings_2.66.0     
+##  [5] assertthat_0.2.1       digest_0.6.30          utf8_1.2.2             BiocFileCache_2.6.0   
+##  [9] R6_2.5.1               GenomeInfoDb_1.34.0    stats4_4.2.1           RSQLite_2.2.18        
+## [13] evaluate_0.17          highr_0.9              httr_1.4.4             pillar_1.8.1          
+## [17] zlibbioc_1.44.0        rlang_1.0.6            progress_1.2.2         curl_4.3.3            
+## [21] jquerylib_0.1.4        blob_1.2.3             S4Vectors_0.36.0       rmarkdown_2.17        
+## [25] stringr_1.4.1          RCurl_1.98-1.9         bit_4.0.4              compiler_4.2.1        
+## [29] xfun_0.34              pkgconfig_2.0.3        BiocGenerics_0.44.0    htmltools_0.5.3       
+## [33] tidyselect_1.2.0       KEGGREST_1.38.0        tibble_3.1.8           GenomeInfoDbData_1.2.9
+## [37] bookdown_0.29          codetools_0.2-18       IRanges_2.32.0         XML_3.99-0.12         
+## [41] fansi_1.0.3            withr_2.5.0            crayon_1.5.2           dplyr_1.0.10          
+## [45] dbplyr_2.2.1           bitops_1.0-7           rappdirs_0.3.3         jsonlite_1.8.3        
+## [49] lifecycle_1.0.3        DBI_1.1.3              magrittr_2.0.3         cli_3.4.1             
+## [53] stringi_1.7.8          cachem_1.0.6           XVector_0.38.0         xml2_1.3.3            
+## [57] bslib_0.4.0            ellipsis_0.3.2         filelock_1.0.2         vctrs_0.5.0           
+## [61] generics_0.1.3         tools_4.2.1            bit64_4.0.5            Biobase_2.58.0        
+## [65] glue_1.6.2             purrr_0.3.5            hms_1.1.2              fastmap_1.1.0         
+## [69] yaml_2.3.6             AnnotationDbi_1.60.0   BiocManager_1.30.19    memoise_2.0.1         
+## [73] knitr_1.40             sass_0.4.2</code></pre>
 </div>
 
 
