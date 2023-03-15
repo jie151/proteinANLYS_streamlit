@@ -5,5 +5,4 @@ r-cran-httr
 r-cran-dplyr
 libcairo2-dev libxt-dev
 r-cran-rcurl
-r-cran-tzdb
 libnetcdf-dev
