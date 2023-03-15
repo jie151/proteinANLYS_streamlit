@@ -16,9 +16,10 @@ robjects.r('''
     library(ggplot2)
     library(httr)
     print("!!!!!!!!!!!!!!!!! ")
-    library(clusterProfiler, lib="./win-library/4.1/")
-    print("!!!!!!!!!!!!!!!!! aft")
     library(biomaRt, lib="./win-library/4.1/")
+
+    print("!!!!!!!!!!!!!!!!! aft")
+    library(clusterProfiler, lib="./win-library/4.1/")
     library(DEP, lib="./win-library/4.1/")
     library(DOSE, lib="./win-library/4.1/")
     library(enrichplot, lib="./win-library/4.1/")
