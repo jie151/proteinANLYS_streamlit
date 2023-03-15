@@ -4,3 +4,4 @@ r-cran-cowplot
 r-cran-httr
 r-cran-dplyr
 r-cran-bit
+r-cran-bit64
