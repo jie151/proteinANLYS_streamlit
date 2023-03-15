@@ -1,0 +1,42 @@
+Package: clusterProfiler
+Type: Package
+Title: A universal enrichment tool for interpreting omics data
+Version: 4.2.2
+Authors@R: c(
+    person(given = "Guangchuang", family = "Yu",        email = "guangchuangyu@gmail.com",   role  = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-6485-8781")),
+    person(given = "Li-Gen",      family = "Wang",      email = "reeganwang020@gmail.com",   role  = "ctb"),
+    person(given = "Erqiang",     family = "Hu",        email = "13766876214@163.com",       role = "ctb"),
+    person(given = "Meijun",      family = "Chen",      email = "mjchen1996@outlook.com",    role  = "ctb"),
+    person(given = "Giovanni",    family = "Dall'Olio", email = "giovanni.dallolio@upf.edu", role = "ctb")
+		)
+Maintainer: Guangchuang Yu <guangchuangyu@gmail.com>
+Description: This package supports functional characteristics of both coding and non-coding genomics data for thousands of species with up-to-date gene annotation. It provides a univeral interface for gene functional annotation from a variety of sources and thus can be applied in diverse scenarios. It provides a tidy interface to access, manipulate, and visualize enrichment results to help users achieve efficient data interpretation. Datasets obtained from multiple treatments and time points can be analyzed and compared in a single run, easily revealing functional consensus and differences among distinct conditions.
+Depends: R (>= 3.5.0)
+Imports: AnnotationDbi, downloader, DOSE (>= 3.13.1), dplyr, enrichplot
+        (>= 1.9.3), GO.db, GOSemSim, magrittr, methods, plyr, qvalue,
+        rlang, stats, tidyr, utils, yulab.utils
+Suggests: AnnotationHub, knitr, rmarkdown, org.Hs.eg.db, prettydoc,
+        ReactomePA, testthat
+VignetteBuilder: knitr
+ByteCompile: true
+License: Artistic-2.0
+URL: https://yulab-smu.top/biomedical-knowledge-mining-book/ (docs),
+        https://doi.org/10.1016/j.xinn.2021.100141 (paper)
+BugReports: https://github.com/GuangchuangYu/clusterProfiler/issues
+Packaged: 2022-01-13 14:22:17 UTC; biocbuild
+biocViews: Annotation, Clustering, GeneSetEnrichment, GO, KEGG,
+        MultipleComparison, Pathways, Reactome, Visualization
+RoxygenNote: 7.1.2
+git_url: https://git.bioconductor.org/packages/clusterProfiler
+git_branch: RELEASE_3_14
+git_last_commit: 4ebb9de
+git_last_commit_date: 2022-01-12
+Date/Publication: 2022-01-13
+NeedsCompilation: no
+Author: Guangchuang Yu [aut, cre, cph]
+    (<https://orcid.org/0000-0002-6485-8781>),
+  Li-Gen Wang [ctb],
+  Erqiang Hu [ctb],
+  Meijun Chen [ctb],
+  Giovanni Dall'Olio [ctb]
+Built: R 4.1.2; ; 2022-01-14 10:17:16 UTC; windows

@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Calculate measures for normalization results</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for analyzeNormalizations {NormalyzerDE}"><tr><td>analyzeNormalizations {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Calculate measures for normalization results</h2>
+
+<h3>Description</h3>
+
+<p>This function prepares an NormalyzerEvaluationResults object containing
+the evaluation measures CV (coefficient of variance), MAD (median absolute
+deviation), average variance, significance measures (ANOVA between
+condition groups) and correlation between replicates.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+analyzeNormalizations(nr, categoricalAnova = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nr</code></td>
+<td>
+<p>Normalyzer results object with calculated results.</p>
+</td></tr>
+<tr valign="top"><td><code>categoricalAnova</code></td>
+<td>
+<p>Whether categorical or numerical (ordered) ANOVA
+should be calculated.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Normalyzer results with attached evaluation results object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(example_summarized_experiment)
+normObj &lt;- getVerifiedNormalyzerObject("job_name", example_summarized_experiment)
+normResults &lt;- normMethods(normObj)
+normResultsWithEval &lt;- analyzeNormalizations(normResults)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

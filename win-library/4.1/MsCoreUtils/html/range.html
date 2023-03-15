@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Range helper functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for between {MsCoreUtils}"><tr><td>between {MsCoreUtils}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Range helper functions</h2>
+
+<h3>Description</h3>
+
+<p>These functions help to work with <code>numeric</code> ranges.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+between(x, range)
+
+x %between% range
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p><code>numeric</code>, input values.</p>
+</td></tr>
+<tr valign="top"><td><code>range</code></td>
+<td>
+<p><code>numeric(2)</code>, range to compare against.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>logical</code> vector of length <code>length(x)</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Sebastian Gibb
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other helper functions for developers: 
+<code><a href="../../MsCoreUtils/help/isPeaksMatrix.html">isPeaksMatrix</a>()</code>,
+<code><a href="../../MsCoreUtils/help/rbindFill.html">rbindFill</a>()</code>,
+<code><a href="../../MsCoreUtils/help/validPeaksMatrix.html">validPeaksMatrix</a>()</code>,
+<code><a href="../../MsCoreUtils/help/vapply1c.html">vapply1c</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+between(1:4, 2:3)
+1:4 %between% 2:3
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MsCoreUtils</em> version 1.6.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

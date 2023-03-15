@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract Elements in a Combination set</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for extract_comb {ComplexHeatmap}"><tr><td>extract_comb {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Extract Elements in a Combination set
+</h2>
+
+<h3>Description</h3>
+
+<p>Extract Elements in a Combination set
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+extract_comb(m, comb_name)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>m</code></td>
+<td>
+<p>A combination matrix returned by <code><a href="../../ComplexHeatmap/help/make_comb_mat.html">make_comb_mat</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>comb_name</code></td>
+<td>
+<p>The valid combination set name should be from <code><a href="../../ComplexHeatmap/help/comb_name.html">comb_name</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>It returns the combination set.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(123)
+lt = list(a = sample(letters, 10),
+          b = sample(letters, 15),
+          c = sample(letters, 20))
+m = make_comb_mat(lt)
+extract_comb(m, "110")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

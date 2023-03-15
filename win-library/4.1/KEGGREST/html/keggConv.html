@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert KEGG identifiers to/from outside identifiers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for keggConv {KEGGREST}"><tr><td>keggConv {KEGGREST}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Convert KEGG identifiers to/from outside identifiers
+</h2>
+
+<h3>Description</h3>
+
+<p>Convert KEGG identifiers to/from outside identifiers.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+keggConv(target, source, querySize = 100)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>target</code></td>
+<td>
+
+<p>A KEGG organism code (), T number, or one of the external
+databases <code>ncbi-gi</code>, <code>ncbi-geneid</code>, <code>ncbi-proteinid</code>,
+<code>uniprot</code>, or
+(for chemical substance identifiers) 
+<code>drug</code>, <code>compound</code>, or <code>glycan</code>, <code>pubchem</code>,
+or <code>chebi</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>source</code></td>
+<td>
+
+<p>Same as <code>target</code>, but may also be a list of KEGG identifers
+representing internal or external names.
+</p>
+</td></tr>
+<tr valign="top"><td><code>querySize</code></td>
+<td>
+
+<p>Empirically, KEGG limits queries to 100 source identifiers per query.
+This argument enables larger queries by dividing <code>source</code> into
+sub-queries of no more than <code>querySize</code> identifiers.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A named character vector.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Dan Tenenbaum
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="https://www.kegg.jp/kegg/docs/keggapi.html">https://www.kegg.jp/kegg/docs/keggapi.html</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## conversion from NCBI GeneID to KEGG ID for E. coli genes
+head(keggConv("eco", "ncbi-geneid"))
+head(keggConv("ncbi-geneid", "eco")) ## opposite direction
+
+## conversion from KEGG ID to NCBI GI
+head(keggConv("ncbi-proteinid", c("hsa:10458", "ece:Z5100")))
+
+## conversion from NCBI GI to KEGG ID when the organism code is not known:
+head(keggConv("genes", "ncbi-geneid:3113320"))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>KEGGREST</em> version 1.34.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

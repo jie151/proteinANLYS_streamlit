@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generate an annotated data frame from statistics object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for generateAnnotatedMatrix {NormalyzerDE}"><tr><td>generateAnnotatedMatrix {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate an annotated data frame from statistics object</h2>
+
+<h3>Description</h3>
+
+<p>Extracts key values (p-value, adjusted p-value, log2-fold change and
+average expression values) from an NormalyzerStatistics instance
+and appends these to the annotation- and data-matrices
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+generateAnnotatedMatrix(nst, prefixSep = "_", compLabels = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nst</code></td>
+<td>
+<p>NormalyzerDE statistics object.</p>
+</td></tr>
+<tr valign="top"><td><code>prefixSep</code></td>
+<td>
+<p>Character string for separating the prefix names from the statistics suffix</p>
+</td></tr>
+<tr valign="top"><td><code>compLabels</code></td>
+<td>
+<p>Vector containing strings to use as prefix for statistical comparisons</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>outDf Annotated statistics matrix
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(example_stat_summarized_experiment)
+statObj &lt;- NormalyzerStatistics(example_stat_summarized_experiment)
+statObj &lt;- calculateContrasts(statObj, comparisons=c("1-2", "2-3"), condCol="group", type="limma")
+annotDf &lt;- generateAnnotatedMatrix(statObj)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

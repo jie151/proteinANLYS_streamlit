@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Annotation of DO Identifiers to their Offspring</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for DOOFFSPRING {DO.db}"><tr><td>DOOFFSPRING {DO.db}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Annotation of DO Identifiers to their Offspring</h2>
+
+<h3>Description</h3>
+
+<p>This data set describes associations between DO 
+terms and their offspring  terms, based on the directed acyclic
+graph (DAG) defined by the Disease Ontology Consortium. The format is an R
+object mapping the DO  terms to all offspring terms, where an
+ancestor term is a more specific DO term that is preceded
+by the given DO term in the DAG (in other words, the children and all
+their children, etc.).
+</p>
+
+
+<h3>Details</h3>
+
+<p>Each DO  term is mapped to a vector of offspring DO  terms.
+</p>
+<p>Mappings were based on data provided by: Disease Ontology
+With a date stamp from the source of: 20150323 (sub_version 2806)
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://do-wiki.nubic.northwestern.edu/index.php/Main_Page">http://do-wiki.nubic.northwestern.edu/index.php/Main_Page</a> 
+
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  # Convert the object to a list
+  xx &lt;- as.list(DOOFFSPRING)
+  # Remove DO IDs that do not have any offspring
+  xx &lt;- xx[!is.na(xx)]
+   if(length(xx) &gt; 0){
+    # Get the offspring DO identifiers for the first two elents of xx
+    doidentifiers &lt;- xx[1:2]
+  }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DO.db</em> version 2.9 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

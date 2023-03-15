@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Proteomics data processing</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for process {DEP}"><tr><td>process {DEP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Proteomics data processing</h2>
+
+<h3>Description</h3>
+
+<p><code>process</code> performs data processing on a SummarizedExperiment object.
+It (1) filters a proteomics dataset based on missing values,
+(2) applies variance stabilizing normalization and
+(3) imputes eventual remaining missing values.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+process(se, thr = 0, fun = c("man", "bpca", "knn", "QRILC", "MLE",
+  "MinDet", "MinProb", "min", "zero", "mixed", "nbavg"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>se</code></td>
+<td>
+<p>SummarizedExperiment,
+Proteomics data with unique names and identifiers
+annotated in 'name' and 'ID' columns.
+The appropriate columns and objects can be generated
+using the wrapper import functions <code><a href="../../DEP/help/import_MaxQuant.html">import_MaxQuant</a></code>
+and <code><a href="../../DEP/help/import_IsobarQuant.html">import_IsobarQuant</a></code> or the generic functions
+<code><a href="../../DEP/help/make_se.html">make_se</a></code> and <code><a href="../../DEP/help/make_se_parse.html">make_se_parse</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>thr</code></td>
+<td>
+<p>Integer(1),
+Sets the threshold for the allowed number of missing values per condition.</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>&quot;man&quot;, &quot;bpca&quot;, &quot;knn&quot;, &quot;QRILC&quot;, &quot;MLE&quot;, &quot;MinDet&quot;,
+&quot;MinProb&quot;, &quot;min&quot;, &quot;zero&quot;, &quot;mixed&quot; or &quot;nbavg&quot;,
+Function used for data imputation based on <code><a href="../../DEP/help/manual_impute.html">manual_impute</a></code>
+and <code><a href="../../MSnbase/help/impute-methods.html">impute</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments for imputation functions as depicted in
+<code><a href="../../DEP/help/manual_impute.html">manual_impute</a></code> and <code><a href="../../MSnbase/help/impute-methods.html">impute</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A filtered, normalized and imputed SummarizedExperiment object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Load datasets
+data &lt;- UbiLength
+exp_design &lt;- UbiLength_ExpDesign
+
+# Import data
+se &lt;- import_MaxQuant(data, exp_design)
+
+# Process data
+processed &lt;- process(se)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DEP</em> version 1.16.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

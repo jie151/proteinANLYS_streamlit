@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: heatplot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for heatplot {enrichplot}"><tr><td>heatplot {enrichplot}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>heatplot</h2>
+
+<h3>Description</h3>
+
+<p>heatmap like plot for functional classification
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+heatplot(x, showCategory = 30, foldChange = NULL, label_format = 30)
+
+## S4 method for signature 'enrichResult'
+heatplot(x, showCategory = 30, foldChange = NULL)
+
+## S4 method for signature 'gseaResult'
+heatplot(x, showCategory = 30, foldChange = NULL)
+
+heatplot.enrichResult(
+  x,
+  showCategory = 30,
+  foldChange = NULL,
+  label_format = 30
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>enrichment result.</p>
+</td></tr>
+<tr valign="top"><td><code>showCategory</code></td>
+<td>
+<p>number of enriched terms to display</p>
+</td></tr>
+<tr valign="top"><td><code>foldChange</code></td>
+<td>
+<p>fold Change.</p>
+</td></tr>
+<tr valign="top"><td><code>label_format</code></td>
+<td>
+<p>a numeric value sets wrap length, alternatively a
+custom function to format axis labels.
+by default wraps names longer that 30 characters</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>ggplot object
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>guangchuang yu
+</p>
+<p>Guangchuang Yu
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(DOSE)
+data(geneList)
+de &lt;- names(geneList)[1:100]
+x &lt;- enrichDO(de)
+heatplot(x)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>enrichplot</em> version 1.14.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

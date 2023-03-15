@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: plotting-clusterProfile</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for plotting.clusterProfile {enrichplot}"><tr><td>plotting.clusterProfile {enrichplot}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>plotting-clusterProfile</h2>
+
+<h3>Description</h3>
+
+<p>Internal plot function for plotting compareClusterResult
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+plotting.clusterProfile(
+  clProf.reshape.df,
+  x = ~Cluster,
+  type = "dot",
+  colorBy = "p.adjust",
+  by = "geneRatio",
+  title = "",
+  font.size = 12
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>clProf.reshape.df</code></td>
+<td>
+<p>data frame of compareCluster result</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>x variable</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>one of dot and bar</p>
+</td></tr>
+<tr valign="top"><td><code>colorBy</code></td>
+<td>
+<p>one of pvalue or p.adjust</p>
+</td></tr>
+<tr valign="top"><td><code>by</code></td>
+<td>
+<p>one of percentage and count</p>
+</td></tr>
+<tr valign="top"><td><code>title</code></td>
+<td>
+<p>graph title</p>
+</td></tr>
+<tr valign="top"><td><code>font.size</code></td>
+<td>
+<p>graph font size</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>ggplot object
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Guangchuang Yu <a href="https://guangchuangyu.github.io">https://guangchuangyu.github.io</a>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>enrichplot</em> version 1.14.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

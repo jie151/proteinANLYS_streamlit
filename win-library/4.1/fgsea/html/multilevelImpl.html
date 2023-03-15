@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Calculates P-values for preprocessed data.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for multilevelImpl {fgsea}"><tr><td>multilevelImpl {fgsea}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Calculates P-values for preprocessed data.</h2>
+
+<h3>Description</h3>
+
+<p>Calculates P-values for preprocessed data.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+multilevelImpl(
+  multilevelPathwaysList,
+  stats,
+  sampleSize,
+  seed,
+  eps,
+  sign = FALSE,
+  BPPARAM = NULL
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>multilevelPathwaysList</code></td>
+<td>
+<p>List of pathways for which P-values will be calculated.</p>
+</td></tr>
+<tr valign="top"><td><code>stats</code></td>
+<td>
+<p>Named vector of gene-level stats. Names should be the same as in 'pathways'</p>
+</td></tr>
+<tr valign="top"><td><code>sampleSize</code></td>
+<td>
+<p>The size of a random set of genes which in turn has size = pathwaySize</p>
+</td></tr>
+<tr valign="top"><td><code>seed</code></td>
+<td>
+<p>'seed' parameter from 'fgseaMultilevel'</p>
+</td></tr>
+<tr valign="top"><td><code>eps</code></td>
+<td>
+<p>This parameter sets the boundary for calculating the p value.</p>
+</td></tr>
+<tr valign="top"><td><code>sign</code></td>
+<td>
+<p>This option will be used in future implementations.</p>
+</td></tr>
+<tr valign="top"><td><code>BPPARAM</code></td>
+<td>
+<p>Parallelization parameter used in bplapply.
+Can be used to specify cluster to run. If not initialized explicitly or
+by setting 'nproc' default value 'bpparam()' is used.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>List of P-values.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>fgsea</em> version 1.20.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Refine Peak Centroids</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for refineCentroids {MsCoreUtils}"><tr><td>refineCentroids {MsCoreUtils}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Refine Peak Centroids</h2>
+
+<h3>Description</h3>
+
+<p>This function refines the centroided values of a peak by weighting the y
+values in the neighbourhood that belong most likely to the same peak.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+refineCentroids(x, y, p, k = 2L, threshold = 0.33, descending = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p><code>numeric</code>, i.e. m/z values.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p><code>numeric</code>, i.e. intensity values.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p><code>integer</code>, indices of identified peaks/local maxima.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p><code>integer(1)</code>, number of values left and right of the peak that
+should be considered in the weighted mean calculation.</p>
+</td></tr>
+<tr valign="top"><td><code>threshold</code></td>
+<td>
+<p><code>double(1)</code>, proportion of the maximal peak intensity.
+Just values above are used for the weighted mean calclulation.</p>
+</td></tr>
+<tr valign="top"><td><code>descending</code></td>
+<td>
+<p><code>logical</code>, if <code>TRUE</code> just values between the nearest
+valleys around the peak centroids are used.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For <code>descending = FALSE</code> the function looks for the <code>k</code> nearest neighbouring
+data points and use their <code>x</code> for weighted mean with their corresponding <code>y</code>
+values as weights for calculation of the new peak centroid. If <code>k</code> are chosen
+too large it could result in skewed peak centroids, see example below.
+If <code>descending = TRUE</code> is used the <code>k</code> should be general larger because it is
+trimmed automatically to the nearest valleys on both sides of the peak so the
+problem with skewed centroids is rare.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Sebastian Gibb, Johannes Rainer
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other extreme value functions: 
+<code><a href="../../MsCoreUtils/help/.peakRegionMask.html">.peakRegionMask</a>()</code>,
+<code><a href="../../MsCoreUtils/help/localMaxima.html">localMaxima</a>()</code>,
+<code><a href="../../MsCoreUtils/help/valleys.html">valleys</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ints &lt;- c(5, 8, 12, 7, 4, 9, 15, 16, 11, 8, 3, 2, 3, 9, 12, 14, 13, 8, 3)
+mzs &lt;- seq_along(ints)
+
+plot(mzs, ints, type = "h")
+
+pidx &lt;- as.integer(c(3, 8, 16))
+points(mzs[pidx], ints[pidx], pch = 16)
+
+## Use the weighted average considering the adjacent mz
+mzs1 &lt;- refineCentroids(mzs, ints, pidx,
+                        k = 2L, descending = FALSE, threshold = 0)
+mzs2 &lt;- refineCentroids(mzs, ints, pidx,
+                        k = 5L, descending = FALSE, threshold = 0)
+mzs3 &lt;- refineCentroids(mzs, ints, pidx,
+                        k = 5L, descending = TRUE, threshold = 0)
+points(mzs1, ints[pidx], col = "red", type = "h")
+## please recognize the artificial moved centroids of the first peak caused
+## by a too large k, here
+points(mzs2, ints[pidx], col = "blue", type = "h")
+points(mzs3, ints[pidx], col = "green", type = "h")
+legend("topright",
+       legend = paste0("k = ", c(2, 5, 5),
+                       ", descending =", c("FALSE", "FALSE", "TRUE")),
+       col = c("red", "blue", "green"), lwd = 1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MsCoreUtils</em> version 1.6.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

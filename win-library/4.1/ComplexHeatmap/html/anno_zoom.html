@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Zoom annotation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for anno_zoom {ComplexHeatmap}"><tr><td>anno_zoom {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Zoom annotation
+</h2>
+
+<h3>Description</h3>
+
+<p>Zoom annotation
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+anno_zoom(align_to, panel_fun = function(index, nm = NULL) { grid.rect() },
+    which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
+    size = NULL, gap = unit(1, "mm"),
+    link_width = unit(5, "mm"), link_height = link_width, link_gp = gpar(),
+    extend = unit(0, "mm"), width = NULL, height = NULL, internal_line = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>align_to</code></td>
+<td>
+<p>It defines how the boxes correspond to the rows or the columns in the heatmap. If the value is a list of indices, each box corresponds to the rows or columns with indices in one vector in the list. If the value is a categorical variable (e.g. a factor or a character vector) that has the same length as the rows or columns in the heatmap, each box corresponds to the rows/columns in each level in the categorical variable.</p>
+</td></tr>
+<tr valign="top"><td><code>panel_fun</code></td>
+<td>
+<p>A self-defined function that defines how to draw graphics in the box. The function must have a <code>index</code> argument which is the indices for the rows/columns that the box corresponds to. It can  have second argument <code>nm</code> which is the &quot;name&quot; of the selected part in the heatmap. The corresponding value for <code>nm</code> comes from <code>align_to</code> if it is specified as a categorical variable or a list with names.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>Whether it is a column annotation or a row annotation?</p>
+</td></tr>
+<tr valign="top"><td><code>side</code></td>
+<td>
+<p>Side of the boxes If it is a column annotation, valid values are &quot;top&quot; and &quot;bottom&quot;; If it is a row annotation, valid values are &quot;left&quot; and &quot;right&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>size</code></td>
+<td>
+<p>The size of boxes. It can be pure numeric that they are treated as relative fractions of the total height/width of the heatmap. The value of <code>size</code> can also be absolute units.</p>
+</td></tr>
+<tr valign="top"><td><code>gap</code></td>
+<td>
+<p>Gaps between boxes.</p>
+</td></tr>
+<tr valign="top"><td><code>link_gp</code></td>
+<td>
+<p>Graphic settings for the segments.</p>
+</td></tr>
+<tr valign="top"><td><code>link_width</code></td>
+<td>
+<p>Width of the segments.</p>
+</td></tr>
+<tr valign="top"><td><code>link_height</code></td>
+<td>
+<p>Similar as <code>link_width</code>, used for column annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>extend</code></td>
+<td>
+<p>By default, the region for the labels has the same width (if it is a column annotation) or same height (if it is a row annotation) as the heatmap. The size can be extended by this options. The value can be a proportion number or  a <code><a href="../../grid/help/unit.html">unit</a></code> object. The length can be either one or two.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>internal_line</code></td>
+<td>
+<p>Internally used.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code><a href="../../ComplexHeatmap/help/anno_zoom.html">anno_zoom</a></code> creates several plotting regions (boxes) which can be corresponded to subsets of rows/columns in the
+heatmap.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An annotation function which can be used in <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation.html">HeatmapAnnotation</a></code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#zoom-annotation">https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#zoom-annotation</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(123)
+m = matrix(rnorm(100*10), nrow = 100)
+subgroup = sample(letters[1:3], 100, replace = TRUE, prob = c(1, 5, 10))
+rg = range(m)
+panel_fun = function(index, nm) {
+	pushViewport(viewport(xscale = rg, yscale = c(0, 2)))
+	grid.rect()
+	grid.xaxis(gp = gpar(fontsize = 8))
+	grid.boxplot(m[index, ], pos = 1, direction = "horizontal")
+	grid.text(paste("distribution of group", nm), mean(rg), y = 1.9, 
+		just = "top", default.units = "native", gp = gpar(fontsize = 10))
+	popViewport()
+}
+anno = anno_zoom(align_to = subgroup, which = "row", panel_fun = panel_fun, 
+	size = unit(2, "cm"), gap = unit(1, "cm"), width = unit(4, "cm"))
+Heatmap(m, right_annotation = rowAnnotation(foo = anno), row_split = subgroup)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

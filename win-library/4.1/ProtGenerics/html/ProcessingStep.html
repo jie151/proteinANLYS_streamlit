@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Processing step</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for ProcessingStep {ProtGenerics}"><tr><td>ProcessingStep {ProtGenerics}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Processing step</h2>
+
+<h3>Description</h3>
+
+<p>Class containing the function and arguments to be applied in a lazy-execution
+framework.
+</p>
+<p>Objects of this class are created using the <code>ProcessingStep()</code> function. The
+processing step is executed with the <code>executeProcessingStep()</code> function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ProcessingStep(FUN = character(), ARGS = list())
+
+## S4 method for signature 'ProcessingStep'
+show(object)
+
+executeProcessingStep(object, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>FUN</code></td>
+<td>
+<p><code>function</code> or <code>character</code> representing a function name.</p>
+</td></tr>
+<tr valign="top"><td><code>ARGS</code></td>
+<td>
+<p><code>list</code> of arguments to be passed along to <code>FUN</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p><code>ProcessingStep</code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>optional additional arguments to be passed along.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This object contains all relevant information of a data analysis processing
+step, i.e. the function and all of its arguments to be applied to the data.
+This object is mainly used to record possible processing steps of a
+<code>Spectra</code> or <code>OnDiskMSnExp</code> object (from the <code>Spectra</code> and <code>MSnbase</code>
+packages, respectively).
+</p>
+
+
+<h3>Value</h3>
+
+<p>The <code>ProcessingStep</code> function returns and object of type
+<code>ProcessingStep</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Johannes Rainer
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Create a simple processing step object
+ps &lt;- ProcessingStep(sum)
+
+executeProcessingStep(ps, 1:10)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ProtGenerics</em> version 1.26.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

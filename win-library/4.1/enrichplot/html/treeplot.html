@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: treeplot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for treeplot {enrichplot}"><tr><td>treeplot {enrichplot}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>treeplot</h2>
+
+<h3>Description</h3>
+
+<p>Functional grouping tree diagram for enrichment result of 
+over-representation test or gene set enrichment analysis.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+treeplot(x, showCategory = 30, color = "p.adjust", label_format = 30, ...)
+
+## S4 method for signature 'enrichResult'
+treeplot(x, showCategory = 30, color = "p.adjust", label_format = 30, ...)
+
+## S4 method for signature 'gseaResult'
+treeplot(x, showCategory = 30, color = "p.adjust", label_format = 30, ...)
+
+## S4 method for signature 'compareClusterResult'
+treeplot(x, showCategory = 5, color = "p.adjust", label_format = 30, ...)
+
+treeplot.enrichResult(
+  x,
+  showCategory = 30,
+  color = "p.adjust",
+  nWords = 4,
+  nCluster = 5,
+  cex_category = 1,
+  label_format = 30,
+  fontsize = 4,
+  offset = 1,
+  offset_tiplab = 1,
+  hclust_method = "ward.D",
+  group_color = NULL,
+  extend = 0.3,
+  hilight = TRUE,
+  hexpand = 0.1,
+  align = "both",
+  ...
+)
+
+treeplot.compareClusterResult(
+  x,
+  showCategory = 5,
+  color = "p.adjust",
+  nWords = 4,
+  nCluster = 5,
+  cex_category = 1,
+  split = NULL,
+  label_format = 30,
+  fontsize = 4,
+  offset = 1,
+  pie = "equal",
+  legend_n = 3,
+  offset_tiplab = 1,
+  hclust_method = "ward.D",
+  group_color = NULL,
+  extend = 0.3,
+  hilight = TRUE,
+  geneClusterPanel = "heatMap",
+  hexpand = 0.1,
+  align = "both",
+  ...
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>enrichment result.</p>
+</td></tr>
+<tr valign="top"><td><code>showCategory</code></td>
+<td>
+<p>number of enriched terms to display</p>
+</td></tr>
+<tr valign="top"><td><code>color</code></td>
+<td>
+<p>variable that used to color enriched terms, e.g. pvalue,
+p.adjust or qvalue</p>
+</td></tr>
+<tr valign="top"><td><code>label_format</code></td>
+<td>
+<p>a numeric value sets wrap length, alternatively a
+custom function to format axis labels.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters</p>
+</td></tr>
+<tr valign="top"><td><code>nWords</code></td>
+<td>
+<p>The number of words in the cluster tags.</p>
+</td></tr>
+<tr valign="top"><td><code>nCluster</code></td>
+<td>
+<p>The number of clusters, the default value is 5.</p>
+</td></tr>
+<tr valign="top"><td><code>cex_category</code></td>
+<td>
+<p>Number indicating the amount by which plotting category.
+nodes should be scaled relative to the default.
+displayed completely, the user can increase this value.</p>
+</td></tr>
+<tr valign="top"><td><code>fontsize</code></td>
+<td>
+<p>The size of text, default is 4.</p>
+</td></tr>
+<tr valign="top"><td><code>offset</code></td>
+<td>
+<p>numeric, distance bar and tree, offset of bar and text from the clade, default is 1,
+meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
+(1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).</p>
+</td></tr>
+<tr valign="top"><td><code>offset_tiplab</code></td>
+<td>
+<p>tiplab offset, the bigger the number, 
+the farther the distance between the node and the branch. 
+The default is 1, when geneClusterPanel = &quot;pie&quot;, meaning 1 *  max_radius_of_the_pies; 
+when geneClusterPanel = &quot;heatMap&quot;, meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
+when geneClusterPanel = &quot;dotplot&quot;, meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.</p>
+</td></tr>
+<tr valign="top"><td><code>hclust_method</code></td>
+<td>
+<p>Method of hclust. This should be (an unambiguous abbreviation of) one of &quot;ward.D&quot;, 
+&quot;ward.D2&quot;, &quot;single&quot;, &quot;complete&quot;, &quot;average&quot; (= UPGMA), &quot;mcquitty&quot; (= WPGMA), &quot;median&quot; (= WPGMC) or &quot;centroid&quot; (= UPGMC).</p>
+</td></tr>
+<tr valign="top"><td><code>group_color</code></td>
+<td>
+<p>A vector of group colors, the length of the vector should be the same as nCluster.</p>
+</td></tr>
+<tr valign="top"><td><code>extend</code></td>
+<td>
+<p>Numeric, extend the length of bar, default is 0.3.</p>
+</td></tr>
+<tr valign="top"><td><code>hilight</code></td>
+<td>
+<p>Logical value, if TRUE(default), add ggtree::geom_hilight() layer.</p>
+</td></tr>
+<tr valign="top"><td><code>hexpand</code></td>
+<td>
+<p>expand x limits by amount of xrange * hexpand.</p>
+</td></tr>
+<tr valign="top"><td><code>align</code></td>
+<td>
+<p>control the align direction of the edge of high light rectangular.
+Options is 'none', 'left', 'right', 'both (default)'.</p>
+</td></tr>
+<tr valign="top"><td><code>split</code></td>
+<td>
+<p>Separate result by 'category' variable.</p>
+</td></tr>
+<tr valign="top"><td><code>pie</code></td>
+<td>
+<p>Used only when geneClusterPanel = &quot;pie&quot;, 
+proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.</p>
+</td></tr>
+<tr valign="top"><td><code>legend_n</code></td>
+<td>
+<p>Number of circle in legend, the default value is 3.</p>
+</td></tr>
+<tr valign="top"><td><code>geneClusterPanel</code></td>
+<td>
+<p>one of &quot;heatMap&quot;(default), &quot;dotplot&quot;, &quot;pie&quot;.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function visualizes gene sets as a tree.
+Gene sets with high similarity tend to cluster together, making it easier
+for interpretation.
+</p>
+
+
+<h3>Value</h3>
+
+<p>ggplot object
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+    library(clusterProfiler)
+    library(org.Hs.eg.db)
+    library(enrichplot)
+    library(GOSemSim)
+    library(ggplot2)
+    library(DOSE)
+    data(geneList)
+    gene &lt;- names(geneList)[abs(geneList) &gt; 2]
+    ego &lt;- enrichGO(gene  = gene,
+        universe      = names(geneList),
+        OrgDb         = org.Hs.eg.db,
+        ont           = "BP",
+        pAdjustMethod = "BH",
+        pvalueCutoff  = 0.01,
+        qvalueCutoff  = 0.05,
+        readable      = TRUE)
+    d &lt;- godata('org.Hs.eg.db', ont="BP")
+    ego2 &lt;- pairwise_termsim(ego, method = "Wang", semData = d)
+    treeplot(ego2, showCategory = 30)
+    # use `hilight = FALSE` to remove ggtree::geom_hilight() layer.
+    treeplot(ego2, showCategory = 30, hilight = FALSE)
+    # use `offset` parameter to adjust the distance of bar and tree.
+    treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 1.5)
+    # use `offset_tiplab` parameter to adjust the distance of nodes and branches.
+    treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 1.5)
+    keep &lt;- rownames(ego2@termsim)[c(1:10, 16:20)]
+    keep
+    treeplot(ego2, showCategory = keep)
+    treeplot(ego2, showCategory = 20, 
+        group_color = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442"))
+    # It can also graph compareClusterResult
+    data(gcSample)
+    xx &lt;- compareCluster(gcSample, fun="enrichKEGG",
+                         organism="hsa", pvalueCutoff=0.05)
+    xx &lt;- pairwise_termsim(xx)                     
+    treeplot(xx)                     
+    
+    # use `geneClusterPanel` to change the gene cluster panel.
+    treeplot(xx, geneClusterPanel = "dotplot")  
+    
+    treeplot(xx, geneClusterPanel = "pie")  
+   
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>enrichplot</em> version 1.14.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

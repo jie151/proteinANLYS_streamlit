@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Map between Entrez Gene Identifiers and cytogenetic...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for org.Hs.egMAP {org.Hs.eg.db}"><tr><td>org.Hs.egMAP {org.Hs.eg.db}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Map between Entrez Gene Identifiers and cytogenetic maps/bands</h2>
+
+<h3>Description</h3>
+
+<p>org.Hs.egMAP is an R object that provides mappings between
+entrez gene identifiers and cytoband locations.
+</p>
+
+
+<h3>Details</h3>
+
+<p>Each entrez gene identifier is mapped to a vector of cytoband locations. The
+vector length may be one or longer, if there are multiple reported
+chromosomal locations for a given gene. An <code>NA</code> is reported for
+any entrez gene identifiers that cannot be mapped to a cytoband at this time.
+</p>
+<p>Cytogenetic bands for most higher organisms are labeled p1, p2, p3,
+q1, q2, q3 (p and q are the p and q arms), etc., counting from the
+centromere out toward the telomeres. At higher resolutions, sub-bands
+can be seen within the bands. The sub-bands are also numbered from the
+centromere out toward the telomere. Thus, a label of 7q31.2 indicates
+that the band is on chromosome 7, q arm, band 3, sub-band 1, and
+sub-sub-band 2.   
+</p>
+<p>Mappings were based on data provided by: Entrez Gene  
+ftp://ftp.ncbi.nlm.nih.gov/gene/DATA  
+With a date stamp from the source of: 2021-Sep13
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="https://www.ncbi.nlm.nih.gov">https://www.ncbi.nlm.nih.gov</a>
+</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li> <p><code><a href="../../AnnotationDbi/help/AnnotationDb-class.html">AnnotationDb-class</a></code> for use of
+the <code>select()</code> interface.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## select() interface:
+## Objects in this package can be accessed using the select() interface
+## from the AnnotationDbi package. See ?select for details.
+
+## Bimap interface:
+x &lt;- org.Hs.egMAP
+# Get the entrez gene identifiers that are mapped to any cytoband
+mapped_genes &lt;- mappedkeys(x)
+# Convert to a list
+xx &lt;- as.list(x[mapped_genes])
+if(length(xx) &gt; 0) {
+  # Get the ids for the first five genes
+  xx[1:5]
+  # Get the first one
+  xx[[1]]
+}
+#For the reverse map org.Hs.egMAP2EG
+x &lt;- org.Hs.egMAP2EG
+# Get the cytobands that are mapped to any entrez gene id
+mapped_bands &lt;- mappedkeys(x)
+# Convert to a list
+xx &lt;- as.list(x[mapped_bands])
+if(length(xx) &gt; 0) {
+  # Get the bands for the first five genes
+  xx[1:5]
+  # Get the first one
+  xx[[1]]
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>org.Hs.eg.db</em> version 3.14.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

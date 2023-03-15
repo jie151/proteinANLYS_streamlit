@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Make Layout for the Heatmap List</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for make_layout-HeatmapList-method {ComplexHeatmap}"><tr><td>make_layout-HeatmapList-method {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Make Layout for the Heatmap List
+</h2>
+
+<h3>Description</h3>
+
+<p>Make Layout for the Heatmap List
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'HeatmapList'
+make_layout(object,
+    
+    row_title = character(0),
+    row_title_side = c("left", "right"),
+    row_title_gp = gpar(fontsize = 14),
+    column_title = character(0),
+    column_title_side = c("top", "bottom"),
+    column_title_gp = gpar(fontsize = 14),
+    
+    heatmap_legend_side = c("right", "left", "bottom", "top"),
+    merge_legends = FALSE,
+    show_heatmap_legend = TRUE,
+    heatmap_legend_list = list(),
+    annotation_legend_side = c("right", "left", "bottom", "top"),
+    show_annotation_legend = TRUE,
+    annotation_legend_list = list(),
+    align_heatmap_legend = NULL,
+    align_annotation_legend = NULL,
+    legend_grouping = c("adjusted", "original"),
+    
+    ht_gap = unit(2, "mm"),
+    
+    main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
+    padding = GLOBAL_PADDING,
+    
+    auto_adjust = TRUE,
+    row_dend_side = c("original", "left", "right"),
+    row_sub_title_side = c("original", "left", "right"),
+    column_dend_side = c("original", "top", "bottom"),
+    column_sub_title_side = c("original", "top", "bottom"),
+    
+    row_gap = NULL,
+    cluster_rows = NULL,
+    cluster_row_slices = NULL,
+    clustering_distance_rows = NULL,
+    clustering_method_rows = NULL,
+    row_dend_width = NULL,
+    show_row_dend = NULL,
+    row_dend_reorder = NULL,
+    row_dend_gp = NULL,
+    row_order = NULL,
+    row_km = NULL,
+    row_km_repeats = NULL,
+    row_split = NULL,
+    height = NULL,
+    heatmap_height = NULL,
+    
+    column_gap = NULL,
+    cluster_columns = NULL,
+    cluster_column_slices = NULL,
+    clustering_distance_columns = NULL,
+    clustering_method_columns = NULL,
+    column_dend_width = NULL,
+    show_column_dend = NULL,
+    column_dend_reorder = NULL,
+    column_dend_gp = NULL,
+    column_order = NULL,
+    column_km = NULL,
+    column_km_repeats = NULL,
+    column_split = NULL,
+    width = NULL,
+    heatmap_width = NULL,
+    
+    use_raster = NULL,
+    raster_device = NULL,
+    raster_quality = NULL,
+    raster_device_param = NULL,
+    raster_resize = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>A <code><a href="../../ComplexHeatmap/help/HeatmapList-class.html">HeatmapList-class</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>row_title</code></td>
+<td>
+<p>Title on the row.</p>
+</td></tr>
+<tr valign="top"><td><code>row_title_side</code></td>
+<td>
+<p>Will the title be put on the left or right of the heatmap list?</p>
+</td></tr>
+<tr valign="top"><td><code>row_title_gp</code></td>
+<td>
+<p>Graphic parameters for the row title.</p>
+</td></tr>
+<tr valign="top"><td><code>column_title</code></td>
+<td>
+<p>Title on the column.</p>
+</td></tr>
+<tr valign="top"><td><code>column_title_side</code></td>
+<td>
+<p>Will the title be put on the top or bottom of the heatmap?</p>
+</td></tr>
+<tr valign="top"><td><code>column_title_gp</code></td>
+<td>
+<p>Graphic parameters for the column title.</p>
+</td></tr>
+<tr valign="top"><td><code>heatmap_legend_side</code></td>
+<td>
+<p>Side of the heatmap legends.</p>
+</td></tr>
+<tr valign="top"><td><code>merge_legends</code></td>
+<td>
+<p>Whether to put heatmap legends and annotation legends together. By default they are put in different viewports.</p>
+</td></tr>
+<tr valign="top"><td><code>show_heatmap_legend</code></td>
+<td>
+<p>Whether show heatmap legends.</p>
+</td></tr>
+<tr valign="top"><td><code>heatmap_legend_list</code></td>
+<td>
+<p>A list of self-defined legends, should be wrapped into a list of <code><a href="../../grid/help/grid.grob.html">grob</a></code> objects. Normally they are constructed by <code><a href="../../ComplexHeatmap/help/Legend.html">Legend</a></code>. </p>
+</td></tr>
+<tr valign="top"><td><code>annotation_legend_side</code></td>
+<td>
+<p>Side of annotation legends.</p>
+</td></tr>
+<tr valign="top"><td><code>show_annotation_legend</code></td>
+<td>
+<p>Whether show annotation legends.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_legend_list</code></td>
+<td>
+<p>A list of self-defined legends, should be wrapped into a list of <code><a href="../../grid/help/grid.grob.html">grob</a></code> objects. Normally they are constructed by <code><a href="../../ComplexHeatmap/help/Legend.html">Legend</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>align_heatmap_legend</code></td>
+<td>
+<p>How to align the legends to heatmap. Possible values are &quot;heatmap_center&quot;, &quot;heatmap_top&quot; and &quot;global_center&quot;. If the value is <code>NULL</code>, it automatically picks the proper value from the three options.</p>
+</td></tr>
+<tr valign="top"><td><code>align_annotation_legend</code></td>
+<td>
+<p>How to align the legends to heatmap. Possible values are &quot;heatmap_center&quot;, &quot;heatmap_top&quot; and &quot;global_center&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>legend_grouping</code></td>
+<td>
+<p>How the legends are grouped. Values should be &quot;adjusted&quot; or &quot;original&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>ht_gap</code></td>
+<td>
+<p>Gap between heatmaps, should be a <code><a href="../../grid/help/unit.html">unit</a></code> object. It can be a vector of length 1 or the number of heamtaps/annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>main_heatmap</code></td>
+<td>
+<p>Name or index for the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>padding</code></td>
+<td>
+<p>Padding of the whole plot. The four values correspond to the bottom, left, top and right paddings.</p>
+</td></tr>
+<tr valign="top"><td><code>auto_adjust</code></td>
+<td>
+<p>whether apply automatic adjustment? The auto-adjustment includes turning off dendrograms, titles and row/columns for non-main heatmaps.</p>
+</td></tr>
+<tr valign="top"><td><code>row_dend_side</code></td>
+<td>
+<p>If auto-adjustment is on, to put the row dendrograms of the main heatmap to the most left side of the heatmap list or the most right side?</p>
+</td></tr>
+<tr valign="top"><td><code>row_sub_title_side</code></td>
+<td>
+<p>There can be sub titles generated by the splitting of heatmaps. Similar setting as <code>row_dend_side</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>column_dend_side</code></td>
+<td>
+<p>Similar setting as <code>row_dend_side</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>column_sub_title_side</code></td>
+<td>
+<p>Similar setting as <code>row_sub_title_side</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>row_gap</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster_rows</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster_row_slices</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>clustering_distance_rows</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>clustering_method_rows</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.same setting as in <code><a href="../../ComplexHeatmap/help/Heatmap.html">Heatmap</a></code>, if it is specified, <code>clustering_method_rows</code> in main heatmap is ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>row_dend_width</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>show_row_dend</code></td>
+<td>
+<p>same Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>row_dend_reorder</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>row_dend_gp</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>row_order</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>row_km</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>row_km_repeats</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>row_split</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>heatmap_height</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>column_gap</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster_columns</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster_column_slices</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>clustering_distance_columns</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>clustering_method_columns</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>column_dend_width</code></td>
+<td>
+<p>column Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>show_column_dend</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>column_dend_reorder</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>column_dend_gp</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>column_order</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>column_km</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>column_km_repeats</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>column_split</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>heatmap_width</code></td>
+<td>
+<p>Overwrite the corresponding setting in the main heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>use_raster</code></td>
+<td>
+<p>Overwrite the corresponding setting in every heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>raster_device</code></td>
+<td>
+<p>Overwrite the corresponding setting in every heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>raster_quality</code></td>
+<td>
+<p>Overwrite the corresponding setting in every heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>raster_device_param</code></td>
+<td>
+<p>Overwrite the corresponding setting in every heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>raster_resize</code></td>
+<td>
+<p>Overwrite the corresponding setting in every heatmap.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>It sets the size of each component of the heatmap list and adjusts graphic
+parameters for each heatmap if necessary.
+</p>
+<p>This function is only for internal use.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../ComplexHeatmap/help/HeatmapList-class.html">HeatmapList-class</a></code> object in which settings for all heatmap are adjusted.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Zuguang Gu &lt;z.gu@dkfz.de&gt;
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# There is no example
+NULL
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Constructor Method for SingleAnnotation Class</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for SingleAnnotation {ComplexHeatmap}"><tr><td>SingleAnnotation {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Constructor Method for SingleAnnotation Class
+</h2>
+
+<h3>Description</h3>
+
+<p>Constructor Method for SingleAnnotation Class
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+SingleAnnotation(name, value, col, fun,
+    label = NULL,
+    na_col = "grey",
+    which = c("column", "row"),
+    show_legend = TRUE,
+    gp = gpar(col = NA),
+    border = FALSE,
+    legend_param = list(),
+    show_name = TRUE,
+    name_gp = gpar(fontsize = 12),
+    name_offset = NULL,
+    name_side = ifelse(which == "column", "right", "bottom"),
+    name_rot = NULL,
+    simple_anno_size = ht_opt$simple_anno_size,
+    width = NULL, height = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>Name for the annotation. If it is not specified, an internal name is assigned.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>A vector or a matrix of discrete or continuous values.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>Colors corresponding to <code>value</code>. If the mapping is discrete, the value of <code>col</code> should be a named vector; If the mapping is continuous, the value of <code>col</code> should be  a color mapping function.</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>A user-defined function to add annotation graphics. The argument of this function should be at least  a vector of index that corresponds to rows or columns. Normally the function should be  constructed by <code><a href="../../ComplexHeatmap/help/AnnotationFunction.html">AnnotationFunction</a></code> if you want the annotation supports splitting.  See **Details** for more explanation.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>Label for the annotation. By default is the annotation name.</p>
+</td></tr>
+<tr valign="top"><td><code>na_col</code></td>
+<td>
+<p>Color for <code>NA</code> values in the simple annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>Whether the annotation is a row annotation or a column annotation?</p>
+</td></tr>
+<tr valign="top"><td><code>show_legend</code></td>
+<td>
+<p>If it is a simple annotation, whether show legend in the final heatmap?</p>
+</td></tr>
+<tr valign="top"><td><code>gp</code></td>
+<td>
+<p>Since simple annotation is represented as rows of grids. This argument controls graphic parameters for the simple annotation. The <code>fill</code> parameter is ignored here.</p>
+</td></tr>
+<tr valign="top"><td><code>border</code></td>
+<td>
+<p>border, only work for simple annotation</p>
+</td></tr>
+<tr valign="top"><td><code>legend_param</code></td>
+<td>
+<p>Parameters for the legend. See <code><a href="../../ComplexHeatmap/help/color_mapping_legend+2CColorMapping-method.html">color_mapping_legend,ColorMapping-method</a></code> for all possible options.</p>
+</td></tr>
+<tr valign="top"><td><code>show_name</code></td>
+<td>
+<p>Whether show annotation name?</p>
+</td></tr>
+<tr valign="top"><td><code>name_gp</code></td>
+<td>
+<p>Graphic parameters for annotation name.</p>
+</td></tr>
+<tr valign="top"><td><code>name_offset</code></td>
+<td>
+<p>Offset to the annotation, a <code><a href="../../grid/help/unit.html">unit</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>name_side</code></td>
+<td>
+<p>'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations</p>
+</td></tr>
+<tr valign="top"><td><code>name_rot</code></td>
+<td>
+<p>Rotation of the annotation name.</p>
+</td></tr>
+<tr valign="top"><td><code>simple_anno_size</code></td>
+<td>
+<p>size of the simple annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation, the width must be an absolute unit.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation, the width must be an absolute unit.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A single annotation is a basic unit of complex heatmap annotations where the heamtap annotations
+are always a list of single annotations. An annotation can be simply heatmap-like (here we call
+it simple annotation) or more complex like points, lines, boxes (for which we call it complex annotation).
+</p>
+<p>In the <code><a href="../../ComplexHeatmap/help/SingleAnnotation.html">SingleAnnotation</a></code> constructor, <code>value</code>, <code>col</code>, <code>na_col</code> are used to construct a <code><a href="../../ComplexHeatmap/help/anno_simple.html">anno_simple</a></code>
+annotation funciton which is generated internally by <code><a href="../../ComplexHeatmap/help/AnnotationFunction.html">AnnotationFunction</a></code>. The legend of the simple annotation
+can be automatcally generated,
+</p>
+<p>For construcing a complex annotation, users need to use <code>fun</code> which is a user-defind function. Normally it 
+is constucted by <code><a href="../../ComplexHeatmap/help/AnnotationFunction.html">AnnotationFunction</a></code>. One big advantage for using <code><a href="../../ComplexHeatmap/help/AnnotationFunction.html">AnnotationFunction</a></code> is the annotation function
+or the graphics drawn by the annotation function can be split according to row splitting or column splitting of
+the heatmap. Users can also provide a &quot;pure&quot; function which is a normal R function for the <code>fun</code> argument. 
+The function only needs one argument which is a vector of index for rows or columns depending whether it is 
+a row annotation or column annotation. The other two optional arguments are the current slice index and total
+number of slices. See **Examples** section for an example. If it is a normal R function, it will be constructed
+into the <code><a href="../../ComplexHeatmap/help/AnnotationFunction-class.html">AnnotationFunction-class</a></code> object internally.
+</p>
+<p>The <code><a href="../../ComplexHeatmap/help/SingleAnnotation-class.html">SingleAnnotation-class</a></code> is a simple wrapper on top of <code><a href="../../ComplexHeatmap/help/AnnotationFunction-class.html">AnnotationFunction-class</a></code> only with annotation 
+name added.
+</p>
+<p>The class also stored the &quot;extended area&quot; relative to the area for the annotation graphics. The extended areas
+are those created by annotation names and axes.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../ComplexHeatmap/help/SingleAnnotation-class.html">SingleAnnotation-class</a></code> object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Zuguang Gu &lt;z.gu@dkfz.de&gt;
+</p>
+
+
+<h3>See Also</h3>
+
+<p>There are following built-in annotation functions that can be directly used to generate complex annotations: 
+<code><a href="../../ComplexHeatmap/help/anno_simple.html">anno_simple</a></code>, <code><a href="../../ComplexHeatmap/help/anno_points.html">anno_points</a></code>, <code><a href="../../ComplexHeatmap/help/anno_lines.html">anno_lines</a></code>, <code><a href="../../ComplexHeatmap/help/anno_barplot.html">anno_barplot</a></code>, <code><a href="../../ComplexHeatmap/help/anno_histogram.html">anno_histogram</a></code>, <code><a href="../../ComplexHeatmap/help/anno_boxplot.html">anno_boxplot</a></code>, <code><a href="../../ComplexHeatmap/help/anno_density.html">anno_density</a></code>, <code><a href="../../ComplexHeatmap/help/anno_text.html">anno_text</a></code>,
+<code><a href="../../ComplexHeatmap/help/anno_joyplot.html">anno_joyplot</a></code>, <code><a href="../../ComplexHeatmap/help/anno_horizon.html">anno_horizon</a></code>, <code><a href="../../ComplexHeatmap/help/anno_image.html">anno_image</a></code>, <code><a href="../../ComplexHeatmap/help/anno_block.html">anno_block</a></code>, <code><a href="../../ComplexHeatmap/help/anno_summary.html">anno_summary</a></code> and <code><a href="../../ComplexHeatmap/help/anno_mark.html">anno_mark</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ha = SingleAnnotation(value = 1:10)
+draw(ha, test = "single column annotation")
+
+m = cbind(1:10, 10:1)
+colnames(m) = c("a", "b")
+ha = SingleAnnotation(value = m)
+draw(ha, test = "matrix as column annotation")
+
+anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)))
+ha = SingleAnnotation(fun = anno)
+draw(ha, test = "anno_barplot as input")
+
+fun = local({
+    # because there variables outside the function for use, we put it a local environment
+    value = 1:10
+    function(index, k = 1, n = 1) {
+        pushViewport(viewport(xscale = c(0.5, length(index) + 0.5), yscale = range(value)))
+        grid.points(seq_along(index), value[index])
+        grid.rect()
+        if(k == 1) grid.yaxis()
+        popViewport()
+    }
+})
+ha = SingleAnnotation(fun = fun, height = unit(4, "cm"))
+draw(ha, index = 1:10, test = "self-defined function")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

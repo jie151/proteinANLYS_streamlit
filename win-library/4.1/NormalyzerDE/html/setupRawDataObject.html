@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Prepare SummarizedExperiment object for raw data to be...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for setupRawDataObject {NormalyzerDE}"><tr><td>setupRawDataObject {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Prepare SummarizedExperiment object for raw data to be normalized containing 
+data, design and annotation information</h2>
+
+<h3>Description</h3>
+
+<p>Prepare SummarizedExperiment object for raw data to be normalized containing 
+data, design and annotation information
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+setupRawDataObject(
+  dataPath,
+  designPath,
+  inputFormat = "default",
+  zeroToNA = FALSE,
+  sampleColName = "sample",
+  groupColName = "group"
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dataPath</code></td>
+<td>
+<p>File path to data matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>designPath</code></td>
+<td>
+<p>File path to design matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>inputFormat</code></td>
+<td>
+<p>Type of matrix for data, can be either 'default',
+'proteios', 'maxquantprot' or 'maxquantpep'</p>
+</td></tr>
+<tr valign="top"><td><code>zeroToNA</code></td>
+<td>
+<p>If TRUE zeroes in the data is automatically converted to
+NA values</p>
+</td></tr>
+<tr valign="top"><td><code>sampleColName</code></td>
+<td>
+<p>Column name for column containing sample names</p>
+</td></tr>
+<tr valign="top"><td><code>groupColName</code></td>
+<td>
+<p>Column name for column containing condition levels</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>experimentObj SummarizedExperiment object loaded with the data
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data_path &lt;- system.file(package="NormalyzerDE", "extdata", "tiny_data.tsv")
+design_path &lt;- system.file(package="NormalyzerDE", "extdata", "tiny_design.tsv")
+df &lt;- setupRawDataObject(data_path, design_path)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

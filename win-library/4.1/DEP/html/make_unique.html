@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Make unique names</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for make_unique {DEP}"><tr><td>make_unique {DEP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Make unique names</h2>
+
+<h3>Description</h3>
+
+<p><code>make_unique</code> generates unique identifiers
+for a proteomics dataset based on &quot;name&quot; and &quot;id&quot; columns.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+make_unique(proteins, names, ids, delim = ";")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>proteins</code></td>
+<td>
+<p>Data.frame,
+Protein table for which unique names will be created.</p>
+</td></tr>
+<tr valign="top"><td><code>names</code></td>
+<td>
+<p>Character(1),
+Name of the column containing feature names.</p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>Character(1),
+Name of the column containing feature IDs.</p>
+</td></tr>
+<tr valign="top"><td><code>delim</code></td>
+<td>
+<p>Character(1),
+Sets the delimiter separating the feature names within one protein group.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A data.frame with the additional variables
+&quot;name&quot; and &quot;ID&quot; containing unique names and identifiers, respectively.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Load example
+data &lt;- UbiLength
+
+# Check colnames and pick the appropriate columns
+colnames(data)
+data_unique &lt;- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DEP</em> version 1.16.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

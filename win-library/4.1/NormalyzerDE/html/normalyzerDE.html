@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: NormalyzerDE differential expression</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for normalyzerDE {NormalyzerDE}"><tr><td>normalyzerDE {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>NormalyzerDE differential expression</h2>
+
+<h3>Description</h3>
+
+<p>Performs differential expression analysis on a normalization matrix.
+This command executes a pipeline processing the data and generates an
+annotated normalization matrix and a report containing p-value histograms
+for each of the performed comparisons.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+normalyzerDE(
+  jobName,
+  comparisons,
+  designPath = NULL,
+  dataPath = NULL,
+  experimentObj = NULL,
+  outputDir = ".",
+  logTrans = FALSE,
+  type = "limma",
+  sampleCol = "sample",
+  condCol = "group",
+  batchCol = NULL,
+  techRepCol = NULL,
+  leastRepCount = 1,
+  quiet = FALSE,
+  sigThres = 0.1,
+  sigThresType = "fdr",
+  log2FoldThres = 0,
+  writeReportAsPngs = FALSE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>jobName</code></td>
+<td>
+<p>Name of job</p>
+</td></tr>
+<tr valign="top"><td><code>comparisons</code></td>
+<td>
+<p>Character vector containing target contrasts. 
+If comparing condA with condB, then the vector would be c(&quot;condA-condB&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>designPath</code></td>
+<td>
+<p>File path to design matrix</p>
+</td></tr>
+<tr valign="top"><td><code>dataPath</code></td>
+<td>
+<p>File path to normalized matrix</p>
+</td></tr>
+<tr valign="top"><td><code>experimentObj</code></td>
+<td>
+<p>SummarizedExperiment object, can be provided as input
+as alternative to 'designPath' and 'dataPath'</p>
+</td></tr>
+<tr valign="top"><td><code>outputDir</code></td>
+<td>
+<p>Path to output directory</p>
+</td></tr>
+<tr valign="top"><td><code>logTrans</code></td>
+<td>
+<p>Log transform the input (needed if providing non-logged 
+input)</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Type of statistical comparison, &quot;limma&quot;, &quot;limma_intensity&quot; or 
+&quot;welch&quot;, where &quot;limma_intensity&quot; allows the prior to be fit according to
+intensity rather than using a flat prior</p>
+</td></tr>
+<tr valign="top"><td><code>sampleCol</code></td>
+<td>
+<p>Design matrix column header for column containing sample IDs</p>
+</td></tr>
+<tr valign="top"><td><code>condCol</code></td>
+<td>
+<p>Design matrix column header for column containing sample 
+conditions</p>
+</td></tr>
+<tr valign="top"><td><code>batchCol</code></td>
+<td>
+<p>Provide an optional column for inclusion of possible batch 
+variance in the model</p>
+</td></tr>
+<tr valign="top"><td><code>techRepCol</code></td>
+<td>
+<p>Design matrix column header for column containing technical 
+replicates</p>
+</td></tr>
+<tr valign="top"><td><code>leastRepCount</code></td>
+<td>
+<p>Minimum required replicate count</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>Omit status messages printed during run</p>
+</td></tr>
+<tr valign="top"><td><code>sigThres</code></td>
+<td>
+<p>Significance threshold use for illustrating significant hits
+in diagnostic plots</p>
+</td></tr>
+<tr valign="top"><td><code>sigThresType</code></td>
+<td>
+<p>Type of significance threshold, &quot;fdr&quot; or &quot;p&quot;. &quot;fdr&quot; is
+strongly recommended (Benjamini-Hochberg corrected p-values)</p>
+</td></tr>
+<tr valign="top"><td><code>log2FoldThres</code></td>
+<td>
+<p>Fold-size cutoff for being considered significant in
+diagnostic plots</p>
+</td></tr>
+<tr valign="top"><td><code>writeReportAsPngs</code></td>
+<td>
+<p>Output report as separate PNG files instead of a
+single PDF</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>When executed, it performs the following steps:
+</p>
+<p>1: Read the data and the design matrices into dataframes.
+2: Generate an instance of the NormalyzerStatistics class representing the
+data and their statistical comparisons.
+3: Optionally reduce technical replicates in both the data matrix and the 
+design matrix
+4: Calculate statistical contrats between supplied groups
+5: Generate an annotated version of the original dataframe where columns
+containing statistical key measures have been added
+6: Write the table to file
+7: Generate a PDF report displaying p-value histograms for each calculated
+contrast
+</p>
+
+
+<h3>Value</h3>
+
+<p>None
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data_path &lt;- system.file(package="NormalyzerDE", "extdata", "tiny_data.tsv")
+design_path &lt;- system.file(package="NormalyzerDE", "extdata", "tiny_design.tsv")
+out_dir &lt;- tempdir()
+normalyzerDE(
+  jobName="my_jobname", 
+  comparisons=c("4-5"), 
+  designPath=design_path, 
+  dataPath=data_path,
+  outputDir=out_dir,
+  condCol="group")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

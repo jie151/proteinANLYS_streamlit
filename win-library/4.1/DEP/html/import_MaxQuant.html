@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Import from MaxQuant</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for import_MaxQuant {DEP}"><tr><td>import_MaxQuant {DEP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Import from MaxQuant</h2>
+
+<h3>Description</h3>
+
+<p><code>import_MaxQuant</code> imports a protein table from MaxQuant
+and converts it into a SummarizedExperiment object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+import_MaxQuant(proteins, expdesign, filter = c("Reverse",
+  "Potential.contaminant"), intensities = "LFQ", names = "Gene.names",
+  ids = "Protein.IDs", delim = ";")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>proteins</code></td>
+<td>
+<p>Data.frame,
+Protein table originating from MaxQuant.</p>
+</td></tr>
+<tr valign="top"><td><code>expdesign</code></td>
+<td>
+<p>Data.frame,
+Experimental design with 'label', 'condition'
+and 'replicate' information.
+See <code><a href="../../DEP/help/UbiLength_ExpDesign.html">UbiLength_ExpDesign</a></code> for an example experimental design.</p>
+</td></tr>
+<tr valign="top"><td><code>filter</code></td>
+<td>
+<p>Character,
+Name of the column(s) containing features to be filtered on.</p>
+</td></tr>
+<tr valign="top"><td><code>intensities</code></td>
+<td>
+<p>Character(1),
+Prefix of the columns containing sample intensities.</p>
+</td></tr>
+<tr valign="top"><td><code>names</code></td>
+<td>
+<p>Character(1),
+Name of the column containing feature names.</p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>Character(1),
+Name of the column containing feature IDs.</p>
+</td></tr>
+<tr valign="top"><td><code>delim</code></td>
+<td>
+<p>Character(1),
+Sets the delimiter separating the feature names within on protein group.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A SummarizedExperiment object with log2-transformed values and
+&quot;name&quot; and &quot;ID&quot; columns containing unique names and identifiers.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Load example data and experimental design
+data &lt;- UbiLength
+exp_design &lt;- UbiLength_ExpDesign
+
+# Import data
+se &lt;- import_MaxQuant(data, exp_design)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DEP</em> version 1.16.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

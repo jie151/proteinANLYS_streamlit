@@ -9,19 +9,21 @@ from io import StringIO
 
 # Load package in r
 robjects.r('''
+
     print("hihi")
     library(cowplot) # save_plot
     library(dplyr)
     library(ggplot2)
     library(httr)
-    library(biomaRt)#, lib="./win-library/4.1/")
-    library(clusterProfiler)#, lib="./win-library/4.1/")
-    library(DEP)#, lib="./win-library/4.1/")
-    library(DOSE)#, lib="./win-library/4.1/")
-    library(enrichplot)#, lib="./win-library/4.1/")
-    library(NormalyzerDE)#, lib="./win-library/4.1/")
-    library(SummarizedExperiment)#, lib="./win-library/4.1/")
-
+    print("!!!!!!!!!!!!!!!!! ")
+    library(biomaRt, lib="./win-library/4.1/")
+    print("!!!!!!!!!!!!!!!!! aft bio")
+    library(clusterProfiler, lib="./win-library/4.1/")
+    library(DEP, lib="./win-library/4.1/")
+    library(DOSE, lib="./win-library/4.1/")
+    library(enrichplot, lib="./win-library/4.1/")
+    library(NormalyzerDE, lib="./win-library/4.1/")
+    library(SummarizedExperiment, lib="./win-library/4.1/")
 ''')
 
 

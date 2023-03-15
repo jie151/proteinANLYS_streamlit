@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Represents raw input data together with basic annotation...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for NormalyzerDataset {NormalyzerDE}"><tr><td>NormalyzerDataset {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Represents raw input data together with basic annotation information</h2>
+
+<h3>Description</h3>
+
+<p>Takes a job name, a data matrix, a design matrix as well as specification
+of the group and sample columns in the design matrix. Provides the
+basic representation of a dataset in the NormalyzerDE normalization part.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+NormalyzerDataset(
+  jobName,
+  designMatrix,
+  rawData,
+  annotationData,
+  sampleNameCol,
+  groupNameCol,
+  tinyRunThres = 50,
+  quiet = FALSE
+)
+
+NormalyzerDataset(
+  jobName,
+  designMatrix,
+  rawData,
+  annotationData,
+  sampleNameCol,
+  groupNameCol,
+  tinyRunThres = 50,
+  quiet = FALSE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>jobName</code></td>
+<td>
+<p>Name of the NormalyzerDE processing run</p>
+</td></tr>
+<tr valign="top"><td><code>designMatrix</code></td>
+<td>
+<p>Matrix containing sample conditions</p>
+</td></tr>
+<tr valign="top"><td><code>rawData</code></td>
+<td>
+<p>Matrix containing raw input data</p>
+</td></tr>
+<tr valign="top"><td><code>annotationData</code></td>
+<td>
+<p>Matrix containing annotation information for each
+input feature. Is expected to contain the same number of rows as the data
+but can contain any number of features</p>
+</td></tr>
+<tr valign="top"><td><code>sampleNameCol</code></td>
+<td>
+<p>Name of column in design matrix containing sample
+information</p>
+</td></tr>
+<tr valign="top"><td><code>groupNameCol</code></td>
+<td>
+<p>Name of column in design matrix containing condition
+information</p>
+</td></tr>
+<tr valign="top"><td><code>tinyRunThres</code></td>
+<td>
+<p>If fewer features than this is present in the input
+a limited run will be performed to avoid some steps requiring a more
+extensive number of features.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>If set to TRUE no information messages will be printed</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>nds Generated NormalyzerDataset instance
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>jobName</code></dt><dd><p>Name of the job represented by the dataset.</p>
+</dd>
+<dt><code>rawData</code></dt><dd><p>Matrix with raw values.</p>
+</dd>
+<dt><code>sampleNameCol</code></dt><dd><p>Name column for sample.</p>
+</dd>
+<dt><code>groupNameCol</code></dt><dd><p>Name column for groups.</p>
+</dd>
+<dt><code>designMatrix</code></dt><dd><p>Data frame containing design.</p>
+</dd>
+<dt><code>sampleNames</code></dt><dd><p>Vector containing sample names.</p>
+</dd>
+<dt><code>filterrawdata</code></dt><dd><p>Reduced raw data matrix where low abundance rows are 
+removed</p>
+</dd>
+<dt><code>sampleReplicateGroups</code></dt><dd><p>Vector with sample replicate information</p>
+</dd>
+<dt><code>samplesGroupsWithReplicates</code></dt><dd><p>Vector with replicated sample replicate information</p>
+</dd>
+<dt><code>annotationValues</code></dt><dd><p>Annotation part of original dataframe.</p>
+</dd>
+<dt><code>retentionTimes</code></dt><dd><p>Vector of retention time values.</p>
+</dd>
+<dt><code>singleReplicateRun</code></dt><dd><p>Conditional whether run is single replicate.</p>
+</dd>
+</dl>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

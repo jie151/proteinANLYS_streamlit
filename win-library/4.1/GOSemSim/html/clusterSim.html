@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Semantic Similarity Between Two Gene Clusters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for clusterSim {GOSemSim}"><tr><td>clusterSim {GOSemSim}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Semantic Similarity Between Two Gene Clusters</h2>
+
+<h3>Description</h3>
+
+<p>Given two gene clusters, this function calculates semantic similarity between
+them.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+clusterSim(
+  cluster1,
+  cluster2,
+  semData,
+  measure = "Wang",
+  drop = "IEA",
+  combine = "BMA"
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cluster1</code></td>
+<td>
+<p>A set of gene IDs.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster2</code></td>
+<td>
+<p>Another set of gene IDs.</p>
+</td></tr>
+<tr valign="top"><td><code>semData</code></td>
+<td>
+<p>GOSemSimDATA object</p>
+</td></tr>
+<tr valign="top"><td><code>measure</code></td>
+<td>
+<p>One of &quot;Resnik&quot;, &quot;Lin&quot;, &quot;Rel&quot;, &quot;Jiang&quot;, &quot;TCSS&quot; and &quot;Wang&quot; methods.</p>
+</td></tr>
+<tr valign="top"><td><code>drop</code></td>
+<td>
+<p>A set of evidence codes based on which certain annotations are
+dropped. Use NULL to keep all GO annotations.</p>
+</td></tr>
+<tr valign="top"><td><code>combine</code></td>
+<td>
+<p>One of &quot;max&quot;, &quot;avg&quot;, &quot;rcmax&quot;, &quot;BMA&quot; methods, for combining
+semantic similarity scores of multiple GO terms associated with protein or
+multiple proteins assiciated with protein cluster.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>similarity
+</p>
+
+
+<h3>References</h3>
+
+<p>Yu et al. (2010) GOSemSim: an R package for measuring semantic
+similarity among GO terms and gene products <em>Bioinformatics</em> (Oxford,
+England), 26:7 976&ndash;978, April 2010. ISSN 1367-4803
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/26/7/976">http://bioinformatics.oxfordjournals.org/cgi/content/abstract/26/7/976</a>
+PMID: 20179076
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../GOSemSim/help/goSim.html">goSim</a></code> <code><a href="../../GOSemSim/help/mgoSim.html">mgoSim</a></code> <code><a href="../../GOSemSim/help/geneSim.html">geneSim</a></code>
+<code><a href="../../GOSemSim/help/mgeneSim.html">mgeneSim</a></code> <code><a href="../../GOSemSim/help/mclusterSim.html">mclusterSim</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+    d &lt;- godata('org.Hs.eg.db', ont="MF", computeIC=FALSE)
+    cluster1 &lt;- c("835", "5261","241", "994")
+cluster2 &lt;- c("307", "308", "317", "321", "506", "540", "378", "388", "396")
+clusterSim(cluster1, cluster2, semData=d, measure="Wang")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>GOSemSim</em> version 2.20.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

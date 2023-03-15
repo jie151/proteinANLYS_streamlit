@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: enrich.internal</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for enricher_internal {DOSE}"><tr><td>enricher_internal {DOSE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>enrich.internal</h2>
+
+<h3>Description</h3>
+
+<p>interal method for enrichment analysis
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+enricher_internal(
+  gene,
+  pvalueCutoff,
+  pAdjustMethod = "BH",
+  universe = NULL,
+  minGSSize = 10,
+  maxGSSize = 500,
+  qvalueCutoff = 0.2,
+  USER_DATA
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>gene</code></td>
+<td>
+<p>a vector of entrez gene id.</p>
+</td></tr>
+<tr valign="top"><td><code>pvalueCutoff</code></td>
+<td>
+<p>Cutoff value of pvalue.</p>
+</td></tr>
+<tr valign="top"><td><code>pAdjustMethod</code></td>
+<td>
+<p>one of &quot;holm&quot;, &quot;hochberg&quot;, &quot;hommel&quot;, &quot;bonferroni&quot;, &quot;BH&quot;, &quot;BY&quot;, &quot;fdr&quot;, &quot;none&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>universe</code></td>
+<td>
+<p>background genes</p>
+</td></tr>
+<tr valign="top"><td><code>minGSSize</code></td>
+<td>
+<p>minimal size of genes annotated by Ontology term for testing.</p>
+</td></tr>
+<tr valign="top"><td><code>maxGSSize</code></td>
+<td>
+<p>maximal size of each geneSet for analyzing</p>
+</td></tr>
+<tr valign="top"><td><code>qvalueCutoff</code></td>
+<td>
+<p>cutoff of qvalue</p>
+</td></tr>
+<tr valign="top"><td><code>USER_DATA</code></td>
+<td>
+<p>ontology information</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>using the hypergeometric model
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <code>enrichResult</code> instance.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Guangchuang Yu <a href="http://guangchuangyu.github.io">http://guangchuangyu.github.io</a>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>DOSE</em> version 3.20.1 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cluster within and between Groups</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for cluster_within_group {ComplexHeatmap}"><tr><td>cluster_within_group {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Cluster within and between Groups
+</h2>
+
+<h3>Description</h3>
+
+<p>Cluster within and between Groups
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cluster_within_group(mat, factor)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>mat</code></td>
+<td>
+<p>A matrix where clustering is applied on columns.</p>
+</td></tr>
+<tr valign="top"><td><code>factor</code></td>
+<td>
+<p>A categorical vector.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The clustering is firstly applied in each group, then clustering is applied
+to group means. The within-group dendrograms and between-group dendrogram
+are finally connected by <code><a href="../../ComplexHeatmap/help/merge_dendrogram.html">merge_dendrogram</a></code>.
+</p>
+<p>In the final dendrogram, the within group dendrograms are enforced to be 
+flat lines to emphasize that the within group dendrograms have no sense to 
+compare to between-group dendrogram.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../stats/html/dendrogram.html">dendrogram</a></code> object. The order of columns can be retrieved by <code><a href="../../stats/help/order.dendrogram.html">order.dendrogram</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+m = matrix(rnorm(120), nc = 12)
+colnames(m) = letters[1:12]
+fa = rep(c("a", "b", "c"), times = c(2, 4, 6))
+dend = cluster_within_group(m, fa)
+grid.dendrogram(dend, test = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Map Entrez Gene identifiers to GenBank Accession Numbers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for org.Hs.egACCNUM {org.Hs.eg.db}"><tr><td>org.Hs.egACCNUM {org.Hs.eg.db}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Map Entrez Gene identifiers to GenBank Accession Numbers</h2>
+
+<h3>Description</h3>
+
+ 
+<p>org.Hs.egACCNUM is an R object that contains mappings between 
+Entrez Gene identifiers and GenBank accession numbers.    
+</p>
+
+
+<h3>Details</h3>
+
+<p>This object is a simple mapping of Entrez Gene identifiers
+<a href="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene">https://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene</a> to all possible GenBank 
+accession numbers.
+</p>
+<p>Mappings were based on data provided by: Entrez Gene  
+ftp://ftp.ncbi.nlm.nih.gov/gene/DATA  
+With a date stamp from the source of: 2021-Sep13
+</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li> <p><code><a href="../../AnnotationDbi/help/AnnotationDb-class.html">AnnotationDb-class</a></code> for use of
+the <code>select()</code> interface.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## select() interface:
+## Objects in this package can be accessed using the select() interface
+## from the AnnotationDbi package. See ?select for details.
+
+## Bimap interface:
+x &lt;- org.Hs.egACCNUM
+# Get the entrez gene identifiers that are mapped to an ACCNUM
+mapped_genes &lt;- mappedkeys(x)
+# Convert to a list
+xx &lt;- as.list(x[mapped_genes])
+if(length(xx) &gt; 0) {
+  # Get the ACCNUM for the first five genes
+  xx[1:5]
+  # Get the first one
+  xx[[1]]
+}
+#For the reverse map ACCNUM2EG:
+# Convert to a list
+xx &lt;- as.list(org.Hs.egACCNUM2EG)
+if(length(xx) &gt; 0){
+   # Gets the entrez gene identifiers for the first five Entrez Gene IDs
+   xx[1:5]
+   # Get the first one
+   xx[[1]]
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>org.Hs.eg.db</em> version 3.14.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

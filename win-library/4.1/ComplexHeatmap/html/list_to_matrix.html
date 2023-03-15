@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert a List of Sets to a Binary Matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for list_to_matrix {ComplexHeatmap}"><tr><td>list_to_matrix {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Convert a List of Sets to a Binary Matrix
+</h2>
+
+<h3>Description</h3>
+
+<p>Convert a List of Sets to a Binary Matrix
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+list_to_matrix(lt, universal_set = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>lt</code></td>
+<td>
+<p>A list of vectors.</p>
+</td></tr>
+<tr valign="top"><td><code>universal_set</code></td>
+<td>
+<p>The universal set.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>It converts the list which have m sets to a binary matrix with n rows and m columns
+where n is the size of universal set.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(123)
+lt = list(a = sample(letters, 5),
+          b = sample(letters, 10),
+          c = sample(letters, 15))
+list_to_matrix(lt)
+list_to_matrix(lt, universal_set = letters)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

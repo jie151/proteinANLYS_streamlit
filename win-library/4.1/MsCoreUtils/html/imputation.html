@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Quantitative mass spectrometry data imputation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for impute_matrix {MsCoreUtils}"><tr><td>impute_matrix {MsCoreUtils}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Quantitative mass spectrometry data imputation</h2>
+
+<h3>Description</h3>
+
+<p>The <code>impute_matrix</code> function performs data imputation on <code>matrix</code>
+objects instance using a variety of methods (see below).
+</p>
+<p>Users should proceed with care when imputing data and take
+precautions to assure that the imputation produce valid results,
+in particular with naive imputations such as replacing missing
+values with 0.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+impute_matrix(x, method, FUN, ...)
+
+imputeMethods()
+
+impute_neighbour_average(x, k = min(x, na.rm = TRUE))
+
+impute_knn(x, ...)
+
+impute_mle(x, ...)
+
+impute_bpca(x, ...)
+
+impute_mixed(x, randna, mar, mnar, ...)
+
+impute_min(x)
+
+impute_zero(x)
+
+impute_with(x, val)
+
+impute_fun(x, FUN, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A matrix with missing values to be imputed.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p><code>character(1)</code> defining the imputation method. See
+<code>imputeMethods()</code> for available ones.</p>
+</td></tr>
+<tr valign="top"><td><code>FUN</code></td>
+<td>
+<p>A user-provided function that takes a <code>matrix</code> as input and
+returns an imputed <code>matrix</code> of identical dimensions.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional parameters passed to the inner imputation
+function.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p><code>numeric(1)</code> providing the imputation value used for the
+first and last samples if they contain an <code>NA</code>. The default is
+to use the smallest value in the data.</p>
+</td></tr>
+<tr valign="top"><td><code>randna</code></td>
+<td>
+<p><code>logical</code> of length equal to <code>nrow(object)</code> defining
+which rows are missing at random. The other ones are
+considered missing not at random. Only relevant when <code>methods</code>
+is <code>mixed</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>mar</code></td>
+<td>
+<p>Imputation method for values missing at random. See
+<code>method</code> above.</p>
+</td></tr>
+<tr valign="top"><td><code>mnar</code></td>
+<td>
+<p>Imputation method for values missing not at
+random. See <code>method</code> above.</p>
+</td></tr>
+<tr valign="top"><td><code>val</code></td>
+<td>
+<p><code>numeric(1)</code> used to replace all missing values.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>There are two types of mechanisms resulting in missing values in
+LC/MSMS experiments.
+</p>
+
+<ul>
+<li><p> Missing values resulting from absence of detection of a feature,
+despite ions being present at detectable concentrations. For
+example in the case of ion suppression or as a result from the
+stochastic, data-dependent nature of the MS acquisition
+method. These missing value are expected to be randomly
+distributed in the data and are defined as missing at random
+(MAR) or missing completely at random (MCAR).
+</p>
+</li>
+<li><p> Biologically relevant missing values resulting from the absence
+of the low abundance of ions (below the limit of detection of
+the instrument). These missing values are not expected to be
+randomly distributed in the data and are defined as missing not
+at random (MNAR).
+</p>
+</li></ul>
+
+<p>MNAR features should ideally be imputed with a left-censor method,
+such as <code>QRILC</code> below. Conversely, it is recommended to use host
+deck methods such nearest neighbours, Bayesian missing value
+imputation or maximum likelihood methods when values are missing
+at random.
+</p>
+<p>Currently, the following imputation methods are available.
+</p>
+
+<ul>
+<li> <p><em>MLE</em>: Maximum likelihood-based imputation method using the EM
+algorithm. Implemented in the <code>norm::imp.norm()</code>. function. See
+<code><a href="../../norm/help/imp.norm.html">norm::imp.norm()</a></code> for details and additional parameters. Note
+that here, <code>...</code> are passed to the [norm::em.norm()<code style="white-space: pre;">function, rather to the actual imputation function</code>imp.norm'.
+</p>
+</li>
+<li> <p><em>bpca</em>: Bayesian missing value imputation are available, as
+implemented in the <code>pcaMethods::pca()</code> function. See
+<code><a href="../../pcaMethods/help/pca.html">pcaMethods::pca()</a></code> for details and additional parameters.
+</p>
+</li>
+<li> <p><em>knn</em>: Nearest neighbour averaging, as implemented in the
+<code>impute::impute.knn</code> function. See <code><a href="../../impute/help/impute.knn.html">impute::impute.knn()</a></code>] for
+details and additional parameters.
+</p>
+</li>
+<li> <p><em>QRILC</em>: A missing data imputation method that performs the
+imputation of left-censored missing data using random draws from
+a truncated distribution with parameters estimated using
+quantile regression. Implemented in the
+<code>imputeLCMD::impute.QRILC</code>
+function. <code><a href="../../imputeLCMD/help/impute.QRILC.html">imputeLCMD::impute.QRILC()</a></code> for details and
+additional parameters.
+</p>
+</li>
+<li> <p><em>MinDet</em>: Performs the imputation of left-censored missing data
+using a deterministic minimal value approach. Considering a
+expression data with <em>n</em> samples and <em>p</em> features, for each
+sample, the missing entries are replaced with a minimal value
+observed in that sample. The minimal value observed is estimated
+as being the q-th quantile (default <code>q = 0.01</code>) of the observed
+values in that sample. Implemented in the
+<code>imputeLCMD::impute.MinDet</code> function. See
+<code><a href="../../imputeLCMD/help/impute.MinDet.html">imputeLCMD::impute.MinDet()</a></code> for details and additional
+parameters.
+</p>
+</li>
+<li> <p><em>MinProb</em>: Performs the imputation of left-censored missing data
+by random draws from a Gaussian distribution centred to a
+minimal value. Considering an expression data matrix with <em>n</em>
+samples and <em>p</em> features, for each sample, the mean value of the
+Gaussian distribution is set to a minimal observed value in that
+sample. The minimal value observed is estimated as being the
+q-th quantile (default <code>q = 0.01</code>) of the observed values in
+that sample. The standard deviation is estimated as the median
+of the feature standard deviations. Note that when estimating
+the standard deviation of the Gaussian distribution, only the
+peptides/proteins which present more than 50\
+are considered. Implemented in the <code>imputeLCMD::impute.MinProb</code>
+function. See <code><a href="../../imputeLCMD/help/impute.MinProb.html">imputeLCMD::impute.MinProb()</a></code> for details and
+additional parameters.
+</p>
+</li>
+<li> <p><em>min</em>: Replaces the missing values with the smallest non-missing
+value in the data.
+</p>
+</li>
+<li> <p><em>zero</em>: Replaces the missing values with 0.
+</p>
+</li>
+<li> <p><em>mixed</em>: A mixed imputation applying two methods (to be defined
+by the user as <code>mar</code> for values missing at random and <code>mnar</code> for
+values missing not at random, see example) on two M<a href="../../stats/html/zC.html">C</a>AR/MNAR
+subsets of the data (as defined by the user by a <code>randna</code>
+logical, of length equal to nrow(object)).
+</p>
+</li>
+<li> <p><em>nbavg</em>: Average neighbour imputation for fractions collected
+along a fractionation/separation gradient, such as sub-cellular
+fractions. The method assumes that the fraction are ordered
+along the gradient and is invalid otherwise.
+</p>
+<p>Continuous sets <code>NA</code> value at the beginning and the end of the
+quantitation vectors are set to the lowest observed value in the
+data or to a user defined value passed as argument <code>k</code>. Then,
+when a missing value is flanked by two non-missing neighbouring
+values, it is imputed by the mean of its direct neighbours.
+</p>
+</li>
+<li> <p><em>with</em>: Replaces all missing values with a user-provided value.
+</p>
+</li>
+<li> <p><em>none</em>: No imputation is performed and the missing values are
+left untouched. Implemented in case one wants to only impute
+value missing at random or not at random with the <em>mixed</em>
+method.
+</p>
+</li></ul>
+
+<p>The <code>imputeMethods()</code> function returns a vector with valid
+imputation method arguments.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Laurent Gatto
+</p>
+
+
+<h3>References</h3>
+
+<p>Olga Troyanskaya, Michael Cantor, Gavin Sherlock, Pat Brown,
+Trevor Hastie, Robert Tibshirani, David Botstein and Russ B.
+Altman, Missing value estimation methods for DNA microarrays
+Bioinformatics (2001) 17 (6): 520-525.
+</p>
+<p>Oba et al., A Bayesian missing value estimation method for gene
+expression profile data, Bioinformatics (2003) 19 (16): 2088-2096.
+</p>
+<p>Cosmin Lazar (2015). imputeLCMD: A collection of methods for
+left-censored missing data imputation. R package version
+2.0. <a href="http://CRAN.R-project.org/package=imputeLCMD">http://CRAN.R-project.org/package=imputeLCMD</a>.
+</p>
+<p>Lazar C, Gatto L, Ferro M, Bruley C, Burger T. Accounting for the
+Multiple Natures of Missing Values in Label-Free Quantitative
+Proteomics Data Sets to Compare Imputation Strategies. J Proteome
+Res. 2016 Apr 1;15(4):1116-25. doi:
+10.1021/acs.jproteome.5b00981. PubMed PMID:26906401.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## test data
+set.seed(42)
+m &lt;- matrix(rlnorm(60), 10)
+dimnames(m) &lt;- list(letters[1:10], LETTERS[1:6])
+m[sample(60, 10)] &lt;- NA
+
+## available methods
+imputeMethods()
+
+impute_matrix(m, method = "zero")
+
+impute_matrix(m, method = "min")
+
+impute_matrix(m, method = "knn")
+
+## same as impute_zero
+impute_matrix(m, method = "with", val = 0)
+
+## impute with half of the smalles value
+impute_matrix(m, method = "with",
+              val = min(m, na.rm = TRUE) * 0.5)
+
+## all but third and fourth features' missing values
+## are the result of random missing values
+randna &lt;- rep(TRUE, 10)
+randna[c(3, 9)] &lt;- FALSE
+
+impute_matrix(m, method = "mixed",
+              randna = randna,
+              mar = "knn",
+              mnar = "min")
+
+
+## user provided (random) imputation function
+random_imp &lt;- function(x) {
+   m &lt;- mean(x, na.rm = TRUE)
+   sdev &lt;- sd(x, na.rm = TRUE)
+   n &lt;- sum(is.na(x))
+   x[is.na(x)] &lt;- rnorm(n, mean = m, sd = sdev)
+   x
+}
+
+impute_matrix(m, FUN = random_imp)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>MsCoreUtils</em> version 1.6.2 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

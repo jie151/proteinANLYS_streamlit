@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Resize the Width or Height of Heatmap Annotations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for re_size-HeatmapAnnotation-method {ComplexHeatmap}"><tr><td>re_size-HeatmapAnnotation-method {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Resize the Width or Height of Heatmap Annotations
+</h2>
+
+<h3>Description</h3>
+
+<p>Resize the Width or Height of Heatmap Annotations
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'HeatmapAnnotation'
+re_size(object,
+    annotation_height = NULL,
+    annotation_width = NULL,
+    height = NULL,
+    width = NULL,
+    simple_anno_size = object@param$simple_anno_size,
+    simple_anno_size_adjust = object@param$simple_anno_size_adjust)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>A <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation-class.html">HeatmapAnnotation-class</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_height</code></td>
+<td>
+<p>A vector of of annotation heights in <code><a href="../../grid/help/unit.html">unit</a></code> class.</p>
+</td></tr>
+<tr valign="top"><td><code>annotation_width</code></td>
+<td>
+<p>A vector of of annotation widths in <code><a href="../../grid/help/unit.html">unit</a></code> class.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>The height of the complete heatmap annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The width of the complete heatmap annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>simple_anno_size</code></td>
+<td>
+<p>The size of one line of the simple annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>simple_anno_size_adjust</code></td>
+<td>
+<p>Whether adjust the size of the simple annotation?</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function only adjust height for column annotations and width for row annotations.
+</p>
+<p>The basic rules are (take <code>height</code> and <code>annotation_height</code> for example:
+</p>
+<p>1. If <code>annotation_height</code> is set and all
+<code>annotation_height</code> are absolute units, <code>height</code> is ignored.
+2. If <code>annotation_height</code> contains non-absolute units, <code>height</code> also need to be set and the
+non-absolute units should be set in a simple form such as 1:10 or <code>unit(1, "null")</code>.
+3. <code>simple_anno_size</code> is only used when <code>annotation_height</code> is NULL.
+4. If only <code>height</code> is set, non-simple annotation is adjusted while keeps simple anntation unchanged.
+5. If only <code>height</code> is set and all annotations are simple annotations, all anntations are adjusted,
+and <code>simple_anno_size</code> is disabled.
+6. If <code>simple_anno_size_adjust</code> is <code>FALSE</code>, the size of the simple annotations will not change.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# There is no example
+NULL
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

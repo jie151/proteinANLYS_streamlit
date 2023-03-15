@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Pack Legends</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for packLegend {ComplexHeatmap}"><tr><td>packLegend {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Pack Legends
+</h2>
+
+<h3>Description</h3>
+
+<p>Pack Legends
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+packLegend(..., gap = unit(4, "mm"), row_gap = unit(4, "mm"), column_gap = unit(4, "mm"),
+    direction = c("vertical", "horizontal"),
+    max_width = NULL, max_height = NULL, list = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>A list of objects returned by <code><a href="../../ComplexHeatmap/help/Legend.html">Legend</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>gap</code></td>
+<td>
+<p>Gap between two neighbouring legends. The value is a <code><a href="../../grid/help/unit.html">unit</a></code> object with length of one. It is the same as <code>row_gap</code> if the direction if vertial and the same as <code>column_gap</code> if the direction is horizontal.</p>
+</td></tr>
+<tr valign="top"><td><code>row_gap</code></td>
+<td>
+<p>Horizontal gaps between legends.</p>
+</td></tr>
+<tr valign="top"><td><code>column_gap</code></td>
+<td>
+<p>Vertical gaps between legends.</p>
+</td></tr>
+<tr valign="top"><td><code>direction</code></td>
+<td>
+<p>The direction to arrange legends.</p>
+</td></tr>
+<tr valign="top"><td><code>max_width</code></td>
+<td>
+<p>The maximal width of the total packed legends. It only works for horizontal arrangement. If the total width of the legends exceeds it, the legends will be arranged into multiple rows.</p>
+</td></tr>
+<tr valign="top"><td><code>max_height</code></td>
+<td>
+<p>Similar as <code>max_width</code>, but for the vertical arrangment of legends.</p>
+</td></tr>
+<tr valign="top"><td><code>list</code></td>
+<td>
+<p>The list of legends can be specified as a list.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../ComplexHeatmap/help/Legends-class.html">Legends-class</a></code> object.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#a-list-of-legends">https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#a-list-of-legends</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+require(circlize)
+col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+lgd1 = Legend(at = 1:6, legend_gp = gpar(fill = 1:6), title = "legend1")
+lgd2 = Legend(col_fun = col_fun, title = "legend2", at = c(0, 0.25, 0.5, 0.75, 1))
+pd = packLegend(lgd1, lgd2)
+draw(pd, test = "two legends")
+pd = packLegend(lgd1, lgd2, direction = "horizontal")
+draw(pd, test = "two legends packed horizontally")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

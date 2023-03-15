@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Adjust the Positions of nodes/leaves in the Dendrogram</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for adjust_dend_by_x {ComplexHeatmap}"><tr><td>adjust_dend_by_x {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Adjust the Positions of nodes/leaves in the Dendrogram
+</h2>
+
+<h3>Description</h3>
+
+<p>Adjust the Positions of nodes/leaves in the Dendrogram
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+adjust_dend_by_x(dend, leaf_pos = 1:nobs(dend)-0.5)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>A <code><a href="../../stats/html/dendrogram.html">dendrogram</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>leaf_pos</code></td>
+<td>
+<p>A vector of positions of leaves. The value can also be a <code><a href="../../grid/help/unit.html">unit</a></code> object.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The positions of nodes stored as <code>x</code> attribute are recalculated based on the new positions of leaves.
+</p>
+<p>By default, the position of leaves are at 0.5, 1.5, ..., n-0.5.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+m = matrix(rnorm(100), 10)
+dend = as.dendrogram(hclust(dist(m)))
+dend = adjust_dend_by_x(dend, sort(runif(10)))
+str(dend)
+dend = adjust_dend_by_x(dend, unit(1:10, "cm"))
+str(dend)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

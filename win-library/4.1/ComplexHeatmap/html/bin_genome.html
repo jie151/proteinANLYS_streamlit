@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Bin the genome</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for bin_genome {ComplexHeatmap}"><tr><td>bin_genome {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Bin the genome
+</h2>
+
+<h3>Description</h3>
+
+<p>Bin the genome
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bin_genome(species = "hg19", bins = 2000, bin_size = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>species</code></td>
+<td>
+<p>Abbreviation of the genome, pass to <code><a href="../../circlize/help/read.chromInfo.html">read.chromInfo</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>bins</code></td>
+<td>
+<p>Number of bins. The final number of bins is approximately equal to it.</p>
+</td></tr>
+<tr valign="top"><td><code>bin_size</code></td>
+<td>
+<p>Size of the bins. If <code>bin_size</code> is set, <code>bins</code> is ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>All pass to <code><a href="../../circlize/help/read.chromInfo.html">read.chromInfo</a></code>. E.g. you can set a subset of chromosomes there.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../GenomicRanges/help/GRanges-class.html">GRanges</a></code> object of the genomic bins.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# There is no example
+NULL
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

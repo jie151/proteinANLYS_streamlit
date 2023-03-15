@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Runs preranked gene set enrichment analysis for preprocessed...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for fgseaSimpleImpl {fgsea}"><tr><td>fgseaSimpleImpl {fgsea}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Runs preranked gene set enrichment analysis for preprocessed input data.</h2>
+
+<h3>Description</h3>
+
+<p>Runs preranked gene set enrichment analysis for preprocessed input data.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fgseaSimpleImpl(
+  pathwayScores,
+  pathwaysSizes,
+  pathwaysFiltered,
+  leadingEdges,
+  permPerProc,
+  seeds,
+  toKeepLength,
+  stats,
+  BPPARAM,
+  scoreType
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pathwayScores</code></td>
+<td>
+<p>Vector with enrichment scores for the 'pathways'.</p>
+</td></tr>
+<tr valign="top"><td><code>pathwaysSizes</code></td>
+<td>
+<p>Vector of pathways sizes.</p>
+</td></tr>
+<tr valign="top"><td><code>pathwaysFiltered</code></td>
+<td>
+<p>Filtered pathways.</p>
+</td></tr>
+<tr valign="top"><td><code>leadingEdges</code></td>
+<td>
+<p>Leading edge genes.</p>
+</td></tr>
+<tr valign="top"><td><code>permPerProc</code></td>
+<td>
+<p>Parallelization parameter for permutations.</p>
+</td></tr>
+<tr valign="top"><td><code>seeds</code></td>
+<td>
+<p>Seed vector</p>
+</td></tr>
+<tr valign="top"><td><code>toKeepLength</code></td>
+<td>
+<p>Number of 'pathways' that meet the condition for 'minSize' and 'maxSize'.</p>
+</td></tr>
+<tr valign="top"><td><code>stats</code></td>
+<td>
+<p>Named vector of gene-level stats. Names should be the same as in 'pathways'</p>
+</td></tr>
+<tr valign="top"><td><code>BPPARAM</code></td>
+<td>
+<p>Parallelization parameter used in bplapply.</p>
+</td></tr>
+<tr valign="top"><td><code>scoreType</code></td>
+<td>
+<p>This parameter defines the GSEA score type. Possible options are (&quot;std&quot;, &quot;pos&quot;, &quot;neg&quot;)
+Can be used to specify cluster to run. If not initialized explicitly or
+by setting 'nproc' default value 'bpparam()' is used.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A table with GSEA results. Each row corresponds to a tested pathway.
+The columns are the following:
+</p>
+
+<ul>
+<li><p> pathway &ndash; name of the pathway as in 'names(pathway)';
+</p>
+</li>
+<li><p> pval &ndash; an enrichment p-value;
+</p>
+</li>
+<li><p> padj &ndash; a BH-adjusted p-value;
+</p>
+</li>
+<li><p> ES &ndash; enrichment score, same as in Broad GSEA implementation;
+</p>
+</li>
+<li><p> NES &ndash; enrichment score normalized to mean enrichment of random samples of the same size;
+</p>
+</li>
+<li><p> nMoreExtreme' &ndash; a number of times a random gene set had a more
+extreme enrichment score value;
+</p>
+</li>
+<li><p> size &ndash; size of the pathway after removing genes not present in 'names(stats)'.
+</p>
+</li>
+<li><p> leadingEdge &ndash; vector with indexes of leading edge genes that drive the enrichment, see <a href="http://software.broadinstitute.org/gsea/doc/GSEAUserGuideTEXT.htm#_Running_a_Leading">http://software.broadinstitute.org/gsea/doc/GSEAUserGuideTEXT.htm#_Running_a_Leading</a>.
+</p>
+</li></ul>
+
+
+<hr /><div style="text-align: center;">[Package <em>fgsea</em> version 1.20.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Barplot Annotation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for anno_barplot {ComplexHeatmap}"><tr><td>anno_barplot {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Barplot Annotation
+</h2>
+
+<h3>Description</h3>
+
+<p>Barplot Annotation
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+anno_barplot(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6, beside = FALSE,
+    gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, axis = TRUE,
+    axis_param = default_axis_param(which),
+    add_numbers = FALSE, numbers_gp = gpar(fontsize = 8),
+    numbers_rot = ifelse(which == "column", 45, 0), numbers_offset = unit(2, "mm"),
+    width = NULL, height = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>The value vector. The value can be a vector or a matrix. The length of the vector or the number of rows of the matrix is taken as the number of the observations of the annotation. If <code>x</code> is a vector, the barplots will be represented as stacked barplots.</p>
+</td></tr>
+<tr valign="top"><td><code>baseline</code></td>
+<td>
+<p>baseline of bars. The value should be &quot;min&quot; or &quot;max&quot;, or a numeric value. It is enforced to be zero for stacked barplots.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>Whether it is a column annotation or a row annotation?</p>
+</td></tr>
+<tr valign="top"><td><code>border</code></td>
+<td>
+<p>Wether draw borders of the annotation region?</p>
+</td></tr>
+<tr valign="top"><td><code>bar_width</code></td>
+<td>
+<p>Relative width of the bars. The value should be smaller than one.</p>
+</td></tr>
+<tr valign="top"><td><code>beside</code></td>
+<td>
+<p>When <code>x</code> is a matrix, will bars be positioned beside each other or as stacked bars?</p>
+</td></tr>
+<tr valign="top"><td><code>gp</code></td>
+<td>
+<p>Graphic parameters for bars. The length of each graphic parameter can be 1, length of <code>x</code> if <code>x</code> is a vector, or number of columns of <code>x</code> is <code>x</code> is a matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>ylim</code></td>
+<td>
+<p>Data ranges. By default it is <code>range(x)</code> if <code>x</code> is a vector, or <code>range(rowSums(x))</code> if <code>x</code> is a matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>extend</code></td>
+<td>
+<p>The extension to both side of <code>ylim</code>. The value is a percent value corresponding to <code>ylim[2] - ylim[1]</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>axis</code></td>
+<td>
+<p>Whether to add axis?</p>
+</td></tr>
+<tr valign="top"><td><code>axis_param</code></td>
+<td>
+<p>parameters for controlling axis. See <code><a href="../../ComplexHeatmap/help/default_axis_param.html">default_axis_param</a></code> for all possible settings and default parameters.</p>
+</td></tr>
+<tr valign="top"><td><code>add_numbers</code></td>
+<td>
+<p>Whether to add numbers to the bars. It only works when <code>x</code> is a simple vector.</p>
+</td></tr>
+<tr valign="top"><td><code>numbers_gp</code></td>
+<td>
+<p>Graphics parameters for the numbers.</p>
+</td></tr>
+<tr valign="top"><td><code>numbers_rot</code></td>
+<td>
+<p>Rotation of numbers.</p>
+</td></tr>
+<tr valign="top"><td><code>numbers_offset</code></td>
+<td>
+<p>Offset to the default positions (1mm away the top of the bars).</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Other arguments.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An annotation function which can be used in <code><a href="../../ComplexHeatmap/help/HeatmapAnnotation.html">HeatmapAnnotation</a></code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#barplot_annotation">https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#barplot_annotation</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+anno = anno_barplot(1:10)
+draw(anno, test = "a vector")
+
+m = matrix(runif(4*10), nc = 4)
+m = t(apply(m, 1, function(x) x/sum(x)))
+anno = anno_barplot(m, gp = gpar(fill = 2:5), bar_width = 1, height = unit(6, "cm"))
+draw(anno, test = "proportion matrix")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

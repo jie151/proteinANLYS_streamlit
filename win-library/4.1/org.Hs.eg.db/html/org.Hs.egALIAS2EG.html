@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Map between Common Gene Symbol Identifiers and Entrez Gene</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for org.Hs.egALIAS2EG {org.Hs.eg.db}"><tr><td>org.Hs.egALIAS2EG {org.Hs.eg.db}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Map between Common Gene Symbol Identifiers and Entrez Gene</h2>
+
+<h3>Description</h3>
+
+<p>org.Hs.egALIAS is an R object that provides mappings between
+common gene symbol identifiers and entrez gene identifiers.
+</p>
+
+
+<h3>Details</h3>
+
+<p>Each gene symbol maps to a named vector containing the corresponding entrez
+gene identifier. The name of the vector corresponds to the gene symbol.
+Since gene symbols are sometimes redundantly assigned in the literature,
+users are cautioned that this map may produce multiple matching results for a
+single gene symbol.  Users should map back from the entrez gene IDs produced
+to determine which result is the one they want when this happens.
+</p>
+<p>Because of this problem with  redundant assigment of gene symbols, is it
+never advisable to use gene symbols as primary identifiers.  
+</p>
+<p>This mapping includes ALL gene symbols including those which are already
+listed in the SYMBOL map.  The SYMBOL map is meant to only list official gene
+symbols, while the ALIAS maps are meant to store all used symbols.
+</p>
+<p>Mappings were based on data provided by: Entrez Gene  
+ftp://ftp.ncbi.nlm.nih.gov/gene/DATA  
+With a date stamp from the source of: 2021-Sep13
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene">https://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene</a>
+</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li> <p><code><a href="../../AnnotationDbi/help/AnnotationDb-class.html">AnnotationDb-class</a></code> for use of
+the <code>select()</code> interface.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## select() interface:
+## Objects in this package can be accessed using the select() interface
+## from the AnnotationDbi package. See ?select for details.
+
+## Bimap interface:
+# Convert the object to a list
+xx &lt;- as.list(org.Hs.egALIAS2EG)
+# Remove pathway identifiers that do not map to any entrez gene id
+xx &lt;- xx[!is.na(xx)]
+if(length(xx) &gt; 0){
+    # The entrez gene identifiers for the first two elements of XX
+    xx[1:2]
+    # Get the first one
+    xx[[1]]
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>org.Hs.eg.db</em> version 3.14.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Representation of evaluation results by calculating...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for NormalyzerEvaluationResults {NormalyzerDE}"><tr><td>NormalyzerEvaluationResults {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Representation of evaluation results by calculating performance measures
+for an an NormalyzerResults instance</h2>
+
+<h3>Description</h3>
+
+<p>Contains the resulting information from the processing which subsequently
+can be used to generate the quality assessment report.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+NormalyzerEvaluationResults(nr)
+
+NormalyzerEvaluationResults(nr)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nr</code></td>
+<td>
+<p>NormalyzerResults object</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>nds Generated NormalyzerEvaluationResults instance
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>avgcvmem</code></dt><dd><p>Average coefficient of variance per method</p>
+</dd>
+<dt><code>avgcvmempdiff</code></dt><dd><p>Percentage difference of mean coefficient of variance
+compared to log2-transformed data</p>
+</dd>
+<dt><code>featureCVPerMethod</code></dt><dd><p>CV calculated per feature and normalization method.</p>
+</dd>
+<dt><code>avgmadmem</code></dt><dd><p>Average median absolute deviation</p>
+</dd>
+<dt><code>avgmadmempdiff</code></dt><dd><p>Percentage difference of median absolute deviation
+compared to log2-transformed data</p>
+</dd>
+<dt><code>avgvarmem</code></dt><dd><p>Average variance per method</p>
+</dd>
+<dt><code>avgvarmempdiff</code></dt><dd><p>Percentage difference of mean variance compared
+to log2-transformed data</p>
+</dd>
+<dt><code>lowVarFeaturesCVs</code></dt><dd><p>List of 5
+for log2-transformed data</p>
+</dd>
+<dt><code>lowVarFeaturesCVsPercDiff</code></dt><dd><p>Coefficient of variance for least variable
+entries</p>
+</dd>
+<dt><code>anovaP</code></dt><dd><p>ANOVA calculated p-values</p>
+</dd>
+<dt><code>repCorPear</code></dt><dd><p>Within group Pearson correlations</p>
+</dd>
+<dt><code>repCorSpear</code></dt><dd><p>Within group Spearman correlations</p>
+</dd>
+</dl>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(example_summarized_experiment)
+normObj &lt;- getVerifiedNormalyzerObject("job_name", example_summarized_experiment)
+normResults &lt;- normMethods(normObj)
+normEval &lt;- NormalyzerEvaluationResults(normResults)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

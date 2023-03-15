@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Visualize Frequency Distribution by Heatmap</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for frequencyHeatmap {ComplexHeatmap}"><tr><td>frequencyHeatmap {ComplexHeatmap}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Visualize Frequency Distribution by Heatmap
+</h2>
+
+<h3>Description</h3>
+
+<p>Visualize Frequency Distribution by Heatmap
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+frequencyHeatmap(data,
+    breaks = "Sturges",
+    stat = c("count", "density", "proportion"),
+    
+    col = brewer.pal(9, "Blues"),
+    color_space = "LAB",
+    ylab = deparse(substitute(data)),
+    column_title = paste0("Frequency heatmap of ", deparse(substitute(data))),
+    title = column_title,
+    ylim = NULL,
+    range = ylim,
+    
+    title_gp = gpar(fontsize = 14),
+    ylab_gp = gpar(fontsize = 12),
+    tick_label_gp = gpar(fontsize = 10),
+    
+    column_order = NULL,
+    column_names_side = "bottom",
+    show_column_names = TRUE,
+    column_names_max_height = unit(6, "cm"),
+    column_names_gp = gpar(fontsize = 12),
+    column_names_rot = 90,
+    cluster_columns = FALSE,
+    
+    use_3d = FALSE,
+    ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>A matrix or a list. If it is a matrix, density is calculated by columns.</p>
+</td></tr>
+<tr valign="top"><td><code>breaks</code></td>
+<td>
+<p>Pass to <code><a href="../../graphics/help/hist.html">hist</a></code>. Please only set equal bin size.</p>
+</td></tr>
+<tr valign="top"><td><code>stat</code></td>
+<td>
+<p>Statistic to use.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>A vector of colors that density values are mapped to.</p>
+</td></tr>
+<tr valign="top"><td><code>color_space</code></td>
+<td>
+<p>The color space in which colors are interpolated. Pass to <code><a href="../../circlize/help/colorRamp2.html">colorRamp2</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>Label on y-axis.</p>
+</td></tr>
+<tr valign="top"><td><code>column_title</code></td>
+<td>
+<p>Title of the heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>title</code></td>
+<td>
+<p>Same as <code>column_title</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ylim</code></td>
+<td>
+<p>Ranges on the y-axis.</p>
+</td></tr>
+<tr valign="top"><td><code>range</code></td>
+<td>
+<p>Same as <code>ylim</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>title_gp</code></td>
+<td>
+<p>Graphic parameters for title.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab_gp</code></td>
+<td>
+<p>Graphic parameters for y-labels.</p>
+</td></tr>
+<tr valign="top"><td><code>tick_label_gp</code></td>
+<td>
+<p>Graphic parameters for y-ticks.</p>
+</td></tr>
+<tr valign="top"><td><code>column_order</code></td>
+<td>
+<p>Order of columns.</p>
+</td></tr>
+<tr valign="top"><td><code>column_names_side</code></td>
+<td>
+<p>Pass to <code><a href="../../ComplexHeatmap/help/Heatmap.html">Heatmap</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>show_column_names</code></td>
+<td>
+<p>Pass to <code><a href="../../ComplexHeatmap/help/Heatmap.html">Heatmap</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>column_names_max_height</code></td>
+<td>
+<p>Pass to <code><a href="../../ComplexHeatmap/help/Heatmap.html">Heatmap</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>column_names_gp</code></td>
+<td>
+<p>Pass to <code><a href="../../ComplexHeatmap/help/Heatmap.html">Heatmap</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>column_names_rot</code></td>
+<td>
+<p>Pass to <code><a href="../../ComplexHeatmap/help/Heatmap.html">Heatmap</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster_columns</code></td>
+<td>
+<p>Whether cluster columns?</p>
+</td></tr>
+<tr valign="top"><td><code>use_3d</code></td>
+<td>
+<p>Whether to visualize the frequencies as a 3D heatmap with <code><a href="../../ComplexHeatmap/help/Heatmap3D.html">Heatmap3D</a></code>?</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Pass to <code><a href="../../ComplexHeatmap/help/Heatmap.html">Heatmap</a></code> or <code><a href="../../ComplexHeatmap/help/Heatmap3D.html">Heatmap3D</a></code> (if <code>use_3d = TRUE</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../ComplexHeatmap/help/Heatmap-class.html">Heatmap-class</a></code> object. It can oly add other heatmaps/annotations vertically.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Zuguang Gu &lt;z.gu@dkfz.de&gt;
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]
+frequencyHeatmap(matrix)
+frequencyHeatmap(matrix, use_3d = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ComplexHeatmap</em> version 2.10.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

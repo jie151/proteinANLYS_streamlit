@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Data.frame to SummarizedExperiment object conversion using an...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for make_se {DEP}"><tr><td>make_se {DEP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Data.frame to SummarizedExperiment object
+conversion using an experimental design</h2>
+
+<h3>Description</h3>
+
+<p><code>make_se</code> creates a SummarizedExperiment object
+based on two data.frames: the protein table and experimental design.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+make_se(proteins_unique, columns, expdesign)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>proteins_unique</code></td>
+<td>
+<p>Data.frame,
+Protein table with unique names annotated in the 'name' column
+(output from <code><a href="../../DEP/help/make_unique.html">make_unique</a>()</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>columns</code></td>
+<td>
+<p>Integer vector,
+Column numbers indicating the columns containing the assay data.</p>
+</td></tr>
+<tr valign="top"><td><code>expdesign</code></td>
+<td>
+<p>Data.frame,
+Experimental design with 'label', 'condition'
+and 'replicate' information.
+See <code><a href="../../DEP/help/UbiLength_ExpDesign.html">UbiLength_ExpDesign</a></code> for an example experimental design.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A SummarizedExperiment object
+with log2-transformed values.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Load example
+data &lt;- UbiLength
+data &lt;- data[data$Reverse != "+" &amp; data$Potential.contaminant != "+",]
+data_unique &lt;- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+
+# Make SummarizedExperiment
+columns &lt;- grep("LFQ.", colnames(data_unique))
+exp_design &lt;- UbiLength_ExpDesign
+se &lt;- make_se(data_unique, columns, exp_design)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DEP</em> version 1.16.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

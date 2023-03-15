@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Calculates ANOVA p-values comparing the different condition...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for calculateANOVAPValues {NormalyzerDE}"><tr><td>calculateANOVAPValues {NormalyzerDE}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Calculates ANOVA p-values comparing the different condition groups
+returning a vector of resulting p-values with NA-values where too few
+values were present in at least one of the groups.</h2>
+
+<h3>Description</h3>
+
+<p>Calculates ANOVA p-values comparing the different condition groups
+returning a vector of resulting p-values with NA-values where too few
+values were present in at least one of the groups.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+calculateANOVAPValues(methodList, sampleReplicateGroups, categoricalANOVA)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>methodList</code></td>
+<td>
+<p>List containing normalized matrices</p>
+</td></tr>
+<tr valign="top"><td><code>sampleReplicateGroups</code></td>
+<td>
+<p>Condition header</p>
+</td></tr>
+<tr valign="top"><td><code>categoricalANOVA</code></td>
+<td>
+<p>Whether the ANOVA should be calculated using ordered
+or categorical groups</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>avgVarianceMat Matrix with average variance for each biological
+condition
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>NormalyzerDE</em> version 1.12.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>
