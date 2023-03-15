@@ -5,3 +5,5 @@ r-cran-httr
 r-cran-dplyr
 r-cran-bit
 r-cran-bit64
+r-cran-rsqlite
+r-cran-xml
