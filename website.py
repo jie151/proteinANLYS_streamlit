@@ -8,7 +8,7 @@ from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
 cmd = 'whoami'
-os.system("mkdir -m 777 library")
+#os.system("mkdir -m 777 library")
 #os.system("ls -l")
 
 # Load package in r
@@ -39,10 +39,10 @@ robjects.r('''
         print("install SummarizedExperiment")
     }
 
-
     library(BiocManager, lib = path)
     library(biomaRt, lib = path)
     library(clusterProfiler, lib = path)
+    BiocManager::install("clusterProfiler", lib = path)
     library(DEP, lib = path)
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
