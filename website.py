@@ -9,7 +9,7 @@ from io import StringIO
 
 cmd = 'whoami'
 os.system("apt-get install sudo")
-os.system("sudo chmod 777 -R /usr/local/lib/R/site-library")
+os.system("chmod 777 -R /usr/local/lib/R/site-library")
 # Load package in r
 robjects.r('''
 
