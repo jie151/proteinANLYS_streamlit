@@ -38,11 +38,10 @@ robjects.r('''
         BiocManager::install("SummarizedExperiment", lib = path)
         print("install SummarizedExperiment")
     }
-    source("https://bioconductor.org/biocLite.R")
-    BiocInstaller::biocLite("clusterProfiler", lib=path)
+
     library(BiocManager, lib = path)
     library(biomaRt, lib = path)
-    #BiocManager::install("clusterProfiler", lib = path)
+    BiocManager::install("clusterProfiler", lib = path)
     library(clusterProfiler, lib = path)
 
     library(DEP, lib = path)
