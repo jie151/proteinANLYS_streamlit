@@ -9,21 +9,13 @@ from io import StringIO
 
 # Load package in r
 robjects.r('''
-    .libPaths("./win-library/4.1/")
-    print("***********")
-    print(.libPaths())
-    library(biomaRt)
 
-    print("hihi")
     library(cowplot) # save_plot
     library(dplyr)
     library(ggplot2)
     library(httr)
-
-    print("!!!!!!!!!!!!!!!!! ")
+    install.packages("BiocManager", repos = "http://cran.us.r-project.org")
     library(biomaRt, lib="./win-library/4.1/")
-
-    print("!!!!!!!!!!!!!!!!! aft")
     library(clusterProfiler, lib="./win-library/4.1/")
     library(DEP, lib="./win-library/4.1/")
     library(DOSE, lib="./win-library/4.1/")
