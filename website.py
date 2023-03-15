@@ -8,8 +8,8 @@ from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
 cmd = 'whoami'
-os.system("apt-get install sudo")
-os.system("chmod 777 -R /usr/local/lib/R/site-library")
+os.system("ll")
+
 # Load package in r
 robjects.r('''
 
@@ -18,7 +18,7 @@ robjects.r('''
     library(ggplot2)
     library(httr)
     print("!!!!!")
-    install.packages("BiocManager", repos = "http://cran.us.r-project.org")
+    install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib="./win-library/4.1/")
     print("?????")
     library(BiocManager)
     library(biomaRt, lib="./win-library/4.1/")
