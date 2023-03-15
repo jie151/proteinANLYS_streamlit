@@ -9,7 +9,7 @@ from io import StringIO
 
 # Load package in r
 robjects.r('''
-
+    print(.libPaths())
     print("hihi")
     library(cowplot) # save_plot
     library(dplyr)
