@@ -9,13 +9,15 @@ from io import StringIO
 
 # Load package in r
 robjects.r('''
-    print(.libPaths())
+    .libPaths("./win-library/4.1/")
+    library(biomaRt, lib="./win-library/4.1/")
+
     print("hihi")
     library(cowplot) # save_plot
     library(dplyr)
     library(ggplot2)
     library(httr)
-    .libPaths("./win-library/4.1/")
+
     print("!!!!!!!!!!!!!!!!! ")
     library(biomaRt, lib="./win-library/4.1/")
 
