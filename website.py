@@ -19,8 +19,10 @@ robjects.r('''
     library(ggplot2)
     library(httr)
 
-    if (!require("BiocManager", quietly = TRUE, lib = path))
+    if (!require("BiocManager", quietly = TRUE, lib = path)) {
+        print("install!!!!!!!!")
         install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
+        library(BiocManager, lib = path)
         BiocManager::install("biomaRt", lib = path)
         print("install biomaRt")
         BiocManager::install("clusterProfiler", lib = path)
@@ -35,6 +37,8 @@ robjects.r('''
         print("install NormalyzerDE")
         BiocManager::install("SummarizedExperiment", lib = path)
         print("install SummarizedExperiment")
+    }
+
 
     library(BiocManager, lib = path)
     library(biomaRt, lib = path)
