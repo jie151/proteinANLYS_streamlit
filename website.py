@@ -41,8 +41,9 @@ robjects.r('''
 
     library(BiocManager, lib = path)
     library(biomaRt, lib = path)
-    library(clusterProfiler, lib = path)
     BiocManager::install("clusterProfiler", lib = path)
+    library(clusterProfiler, lib = path)
+
     library(DEP, lib = path)
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
