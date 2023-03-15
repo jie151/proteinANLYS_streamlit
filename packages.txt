@@ -9,3 +9,4 @@ r-cran-rsqlite
 r-cran-xml
 r-cran-rcpp
 r-cran-fastmap
+r-cran-cachem
