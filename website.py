@@ -8,7 +8,7 @@ from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
 cmd = 'whoami'
-os.system("ll")
+os.system("ls -l")
 
 # Load package in r
 robjects.r('''
