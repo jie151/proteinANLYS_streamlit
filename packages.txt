@@ -6,7 +6,7 @@ r-cran-dplyr
 r-cran-bit
 r-cran-bit64
 r-cran-rsqlite
-r-cran-xml=3.99-0.13
+r-cran-xml
 r-cran-rcpp
 r-cran-fastmap
 r-cran-cachem
