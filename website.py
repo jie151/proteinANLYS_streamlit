@@ -9,26 +9,34 @@ from io import StringIO
 
 cmd = 'whoami'
 os.system("mkdir -m 777 library")
-os.system("ls -l")
+#os.system("ls -l")
 
 # Load package in r
 robjects.r('''
-
+    path = "./library"
     library(cowplot) # save_plot
     library(dplyr)
     library(ggplot2)
     library(httr)
-    print("!!!!!")
-    install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib="./library")
-    print("?????")
-    library(BiocManager)
-    library(biomaRt, lib="./win-library/4.1/")
-    library(clusterProfiler, lib="./win-library/4.1/")
-    library(DEP, lib="./win-library/4.1/")
-    library(DOSE, lib="./win-library/4.1/")
-    library(enrichplot, lib="./win-library/4.1/")
-    library(NormalyzerDE, lib="./win-library/4.1/")
-    library(SummarizedExperiment, lib="./win-library/4.1/")
+
+    if (!require("BiocManager", quietly = TRUE, lib = path))
+        install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
+        BiocManager::install("biomaRt", lib = path)
+        BiocManager::install("clusterProfiler", lib = path)
+        BiocManager::install("DEP", lib = path)
+        BiocManager::install("DOSE", lib = path)
+        BiocManager::install("enrichplot", lib = path)
+        BiocManager::install("NormalyzerDE", lib = path)
+        BiocManager::install("SummarizedExperiment", lib = path)
+
+    library(BiocManager, lib = path)
+    library(biomaRt, lib = path)
+    library(clusterProfiler, lib = path)
+    library(DEP, lib = path)
+    library(DOSE, lib = path)
+    library(enrichplot, lib = path)
+    library(NormalyzerDE, lib = path)
+    library(SummarizedExperiment, lib = path)
 ''')
 
 
