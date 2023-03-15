@@ -7,8 +7,8 @@ from PIL import Image
 from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
-cmd = 'whoami'
-os.system(cmd)
+#cmd = 'whoami'
+#os.system(cmd)
 
 # Load package in r
 robjects.r('''
@@ -17,7 +17,9 @@ robjects.r('''
     library(dplyr)
     library(ggplot2)
     library(httr)
+    print("!!!!!")
     install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = "./win-library/4.1/")
+    print("?????")
     library(BiocManager)
     library(biomaRt, lib="./win-library/4.1/")
     library(clusterProfiler, lib="./win-library/4.1/")
