@@ -9,7 +9,7 @@ from io import StringIO
 
 cmd = 'whoami'
 os.system(cmd)
-os.system("ls")
+os.system("chmod 777 -R /usr/local/lib/R/site-library")
 # Load package in r
 robjects.r('''
 
@@ -18,7 +18,7 @@ robjects.r('''
     library(ggplot2)
     library(httr)
     print("!!!!!")
-    install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = "./win-library/4.1/")
+    install.packages("BiocManager", repos = "http://cran.us.r-project.org")
     print("?????")
     library(BiocManager)
     library(biomaRt, lib="./win-library/4.1/")
