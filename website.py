@@ -12,7 +12,7 @@ robjects.r('''
     .libPaths("./win-library/4.1/")
     print("***********")
     print(.libPaths())
-    library(biomaRt, lib="./win-library/4.1/")
+    library(biomaRt)
 
     print("hihi")
     library(cowplot) # save_plot
