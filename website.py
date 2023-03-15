@@ -8,6 +8,7 @@ from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
 cmd = 'whoami'
+os.system("mkdir -m 777 library")
 os.system("ls -l")
 
 # Load package in r
