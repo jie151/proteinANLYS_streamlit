@@ -7,6 +7,9 @@ from PIL import Image
 from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
+cmd = 'whoami'
+os.system(cmd)
+
 # Load package in r
 robjects.r('''
 
