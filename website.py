@@ -41,9 +41,10 @@ robjects.r('''
 
     library(BiocManager, lib = path)
     library(biomaRt, lib = path)
-    print("**************")
-    BiocManager::install("clusterProfiler", lib = path)
+    print("**************1")
+    remove.packages("clusterProfiler", lib=path)
     print("**************2")
+    BiocManager::install("clusterProfiler", lib = path)
     library(clusterProfiler, lib = path)
 
     library(DEP, lib = path)
