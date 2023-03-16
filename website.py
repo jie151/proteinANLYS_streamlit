@@ -13,14 +13,14 @@ os.system("mkdir -m 777 library")
 
 # Load package in r
 robjects.r('''
-    path = "./library"
+
     library(cowplot) # save_plot
     library(dplyr)
     library(ggplot2)
     library(httr)
-
+    path = "./library"
+    .libPaths(path)
     if (!require("BiocManager", quietly = TRUE, lib = path)) {
-        .libPaths(path)
         print("install!!!!!!!!")
         install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
         library(BiocManager, lib = path)
@@ -43,8 +43,6 @@ robjects.r('''
     library(BiocManager, lib = path)
     library(biomaRt, lib = path)
     #library(clusterProfiler, lib = path)
-
-    BiocManager::install("DEP", lib = path)
     library(DEP, lib = path)
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
