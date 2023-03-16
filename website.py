@@ -38,6 +38,8 @@ robjects.r('''
         print("install NormalyzerDE")
         BiocManager::install("SummarizedExperiment", lib = path)
         print("install SummarizedExperiment")
+    }else{
+        print("else!!!!!!!!!!!")
     }
 
     library(BiocManager, lib = path)
