@@ -7,9 +7,7 @@ from PIL import Image
 from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
-cmd = 'whoami'
 os.system("mkdir -m 777 library")
-
 
 # Load package in r
 robjects.r('''
@@ -24,10 +22,10 @@ robjects.r('''
     install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source")
     #.libPaths(path)
     #install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
-    #library(BiocManager, lib = path)
+    library(BiocManager, lib = path)
     #BiocManager::install("biomaRt", lib = path)
     #library(biomaRt, lib = path)
-    BiocManager::install("clusterProfiler", lib = path, force=TRUE, ask=FALSE)
+    BiocManager::install("clusterProfiler", lib = path, force=TRUE, update=FALSE, ask=FALSE)
     library(clusterProfiler, lib = path)
         #print("install clusterProfiler")
         #BiocManager::install("DEP", lib = path)
