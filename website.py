@@ -19,7 +19,8 @@ robjects.r('''
     library(ggplot2)
     library(httr)
     path = "./library"
-    packageVersion('rvcheck')
+    print("#############################")
+    print(packageVersion('rvcheck'))
     #.libPaths(path)
     #install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
     #library(BiocManager, lib = path)
