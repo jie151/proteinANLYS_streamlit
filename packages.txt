@@ -9,3 +9,4 @@ libnetcdf-dev
 libcurl4-openssl-dev libssl-dev
 libgdal-dev
 libnlopt-dev
+r-cran-hmisc
