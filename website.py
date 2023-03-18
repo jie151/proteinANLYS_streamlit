@@ -30,8 +30,8 @@ robjects.r('''
     #BiocManager::install("clusterProfiler", lib = path, force=TRUE, update=FALSE, ask=FALSE)
     #library(clusterProfiler, lib = path)
 
-    BiocManager::install("DEP", lib = path)
-    library(DEP, lib = path, force=TRUE, update=FALSE, ask=FALSE)
+    BiocManager::install("DEP", lib = path, force=TRUE, update=FALSE, ask=FALSE)
+    library(DEP, lib = path)
         #BiocManager::install("DOSE", lib = path)
         #print("install DOSE")
         #BiocManager::install("enrichplot", lib = path)
