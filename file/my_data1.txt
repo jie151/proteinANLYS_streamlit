@@ -1,4 +1,13 @@
 "Gene.names" "frequency"
-"" 9
-"TMPO" 2
-"TOR1AIP2" 2
+"" 16
+"Arhgap17" 2
+"Hist1h4b" 2
+"Hnrnpa3" 2
+"Ikbip" 2
+"Pkm" 2
+"Plec" 2
+"Rtn4" 2
+"Serbp1" 2
+"Tpm1" 2
+"Tpm3" 2
+"Tubb5" 2
