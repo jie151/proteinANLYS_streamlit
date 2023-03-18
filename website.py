@@ -34,7 +34,7 @@ robjects.r('''
     library(httr)
 
     library(BiocManager, lib = path)
-    BiocManager::install("DOSE", lib = path)
+    BiocManager::install("DOSE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
         #print("install DOSE")
         #BiocManager::install("enrichplot", lib = path)
         #print("install enrichplot")
