@@ -19,12 +19,13 @@ robjects.r('''
     library(ggplot2)
     library(httr)
     path = "./library"
-    .libPaths(path)
-    install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
-    library(BiocManager, lib = path)
-    BiocManager::install("biomaRt", lib = path)
-    library(biomaRt, lib = path)
-        #BiocManager::install("clusterProfiler", lib = path)
+    #.libPaths(path)
+    #install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
+    #library(BiocManager, lib = path)
+    #BiocManager::install("biomaRt", lib = path)
+    #library(biomaRt, lib = path)
+    #BiocManager::install("clusterProfiler", lib = path)
+    #library(clusterProfiler, lib = path)
         #print("install clusterProfiler")
         #BiocManager::install("DEP", lib = path)
         #print("install DEP")
@@ -37,8 +38,6 @@ robjects.r('''
         #BiocManager::install("SummarizedExperiment", lib = path)
         #print("install SummarizedExperiment")
 
-
-    #library(BiocManager, lib = path)
     #library(biomaRt, lib = path)
     #library(clusterProfiler, lib = path)
     #library(DEP, lib = path)
@@ -82,14 +81,14 @@ def upload_file():
     uploaded_file = st.sidebar.file_uploader('選擇您要上傳的csv、txt檔', type=['csv', 'txt'], accept_multiple_files=False)
     if uploaded_file is not None:
         # 將上傳的檔案儲存下來 (由R開啟)
-        filename = ".\\file\\uploadFile\\uploadFile.txt" # + uploaded_file.name
-        with open(os.path.join("uploadFile", "uploadFile.txt"),"wb") as f:
+        filename = "./file/uploadFile/uploadFile.txt"
+        with open(filename,"wb") as f:
             f.write( uploaded_file.getbuffer())
 
         sep_word = "," if uploaded_file.type == "text/csv" else " "
         data = pd.read_csv(uploaded_file, sep = sep_word, error_bad_lines=False)
     else:
-        filename = ".\\file\\uploadFile\\proteinGroups_HsinYuan_Rat.txt"
+        filename = "./file/uploadFile/proteinGroups_HsinYuan_Rat.txt"
         data = pd.read_csv(filename, sep=" ")
     return filename, data
 

@@ -1,10 +1,8 @@
 label,condition,replicate
-Reporter.intensity.corrected.1.AGE,A,1
-Reporter.intensity.corrected.2.AGE,A,2
-Reporter.intensity.corrected.5.AGE,A,3
-Reporter.intensity.corrected.6.AGE,B,1
-Reporter.intensity.corrected.7.AGE,B,2
-Reporter.intensity.corrected.8.AGE,B,3
-Reporter.intensity.corrected.9.AGE,C,1
-Reporter.intensity.corrected.10.AGE,C,2
-Reporter.intensity.corrected.11.AGE,C,3
+Reporter.intensity.corrected.1.H1650,A,1
+Reporter.intensity.corrected.2.H1650,A,2
+Reporter.intensity.corrected.3.H1650,A,3
+Reporter.intensity.corrected.7.H1650,A,4
+Reporter.intensity.corrected.8.H1650,A,5
+Reporter.intensity.corrected.9.H1650,A,6
+Reporter.intensity.corrected.10.H1650,A,7
