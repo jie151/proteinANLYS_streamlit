@@ -43,12 +43,12 @@ robjects.r('''
     library(enrichplot, lib = path)
     print("&&&&&&&&&&&&&&&")
     remove.packages("rlang")#, lib=path)
-    install.packages("https://cran.r-project.org/src/contrib/Archive/rlang/rlang_1.0.6.tar.gz", repos = NULL, type="source")
+    install.packages("https://cran.r-project.org/src/contrib/rlang_1.1.0.tar.gz", repos = NULL, type="source")
 
     print(packageVersion("rlang"))
     print("&&&&&&&&&&&&&&&")
     #BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-    #library(NormalyzerDE, lib = path)
+    library(NormalyzerDE, lib = path)
     library(SummarizedExperiment, lib = path)
 ''')
 
