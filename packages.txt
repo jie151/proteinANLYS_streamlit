@@ -7,3 +7,4 @@ libcairo2-dev libxt-dev
 r-cran-rcurl
 libnetcdf-dev
 libcurl4-openssl-dev libssl-dev
+libgdal-dev
