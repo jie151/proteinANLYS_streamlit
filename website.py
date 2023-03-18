@@ -33,7 +33,8 @@ robjects.r('''
     library(ggplot2)
     library(httr)
 
-        BiocManager::install("DOSE", lib = path)
+    library(BiocManager, lib = path)
+    BiocManager::install("DOSE", lib = path)
         #print("install DOSE")
         #BiocManager::install("enrichplot", lib = path)
         #print("install enrichplot")
