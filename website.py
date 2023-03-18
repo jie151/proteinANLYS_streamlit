@@ -20,7 +20,8 @@ robjects.r('''
     library(httr)
     path = "./library"
     print("#############################")
-    print(packageVersion('rvcheck'))
+    remove.packages("rvcheck")
+    install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source")
     #.libPaths(path)
     #install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
     #library(BiocManager, lib = path)
