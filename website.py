@@ -22,6 +22,7 @@ if not os.path.exists("./library/"):
         BiocManager::install("mzR", lib=path, force=TRUE, update=FALSE, ask=FALSE)
         BiocManager::install("DEP", lib = path, force=TRUE, update=FALSE, ask=FALSE)
 
+        BiocManager::install("SummarizedExperiment", lib = path, force=TRUE, update=FALSE, ask=FALSE)
     ''')
 
 
@@ -33,23 +34,23 @@ robjects.r('''
     library(ggplot2)
     library(httr)
 
-    library(BiocManager, lib = path)
-    BiocManager::install("DOSE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
+    #library(BiocManager, lib = path)
+    #BiocManager::install("DOSE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
         #print("install DOSE")
         #BiocManager::install("enrichplot", lib = path)
         #print("install enrichplot")
         #BiocManager::install("NormalyzerDE", lib = path)
         #print("install NormalyzerDE")
     #BiocManager::install("SummarizedExperiment", lib = path)
-        #print("install SummarizedExperiment")
+
 
     library(biomaRt, lib = path)
     library(clusterProfiler, lib = path)
     library(DEP, lib = path)
-    library(DOSE, lib = path)
+    #library(DOSE, lib = path)
     #library(enrichplot, lib = path)
     #library(NormalyzerDE, lib = path)
-    #library(SummarizedExperiment, lib = path)
+    library(SummarizedExperiment, lib = path)
 ''')
 
 
