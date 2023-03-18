@@ -29,7 +29,7 @@ robjects.r('''
     #install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source", lib=path)
     #BiocManager::install("clusterProfiler", lib = path, force=TRUE, update=FALSE, ask=FALSE)
     #library(clusterProfiler, lib = path)
-
+    BiocManager::install("mzR", lib=path, force=TRUE, update=FALSE, ask=FALSE)
     BiocManager::install("DEP", lib = path, force=TRUE, update=FALSE, ask=FALSE)
     library(DEP, lib = path)
         #BiocManager::install("DOSE", lib = path)
