@@ -9,7 +9,7 @@ from io import StringIO
 
 cmd = 'whoami'
 os.system("mkdir -m 777 library")
-#os.system("ls -l")
+os.system("packageVersion('rvcheck') ")
 
 # Load package in r
 robjects.r('''
