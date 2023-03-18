@@ -7,7 +7,9 @@ from PIL import Image
 from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
-os.system("mkdir -m 777 library")
+if not os.path.exists("./library/"):
+    os.system("mkdir -m 777 library")
+
 
 # Load package in r
 robjects.r('''
@@ -19,17 +21,17 @@ robjects.r('''
     path = "./library"
     .libPaths(path)
     print("#############################")
-    #remove.packages("rvcheck")
-    install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source", lib=path)
     install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
     library(BiocManager, lib = path)
     #BiocManager::install("biomaRt", lib = path)
     #library(biomaRt, lib = path)
-    BiocManager::install("clusterProfiler", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-    library(clusterProfiler, lib = path)
-        #print("install clusterProfiler")
-        #BiocManager::install("DEP", lib = path)
-        #print("install DEP")
+
+    #install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source", lib=path)
+    #BiocManager::install("clusterProfiler", lib = path, force=TRUE, update=FALSE, ask=FALSE)
+    #library(clusterProfiler, lib = path)
+
+    BiocManager::install("DEP", lib = path)
+    library(DEP, lib = path, force=TRUE, update=FALSE, ask=FALSE)
         #BiocManager::install("DOSE", lib = path)
         #print("install DOSE")
         #BiocManager::install("enrichplot", lib = path)
