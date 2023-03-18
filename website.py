@@ -9,28 +9,31 @@ from io import StringIO
 
 if not os.path.exists("./library/"):
     os.system("mkdir -m 777 library")
+    robjects.r('''
+        path = "./library"
+        .libPaths(path)
+        install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
+        library(BiocManager, lib = path)
+        BiocManager::install("biomaRt", lib = path)
+
+        install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source", lib=path)
+        BiocManager::install("clusterProfiler", lib = path, force=TRUE, update=FALSE, ask=FALSE)
+
+        BiocManager::install("mzR", lib=path, force=TRUE, update=FALSE, ask=FALSE)
+        BiocManager::install("DEP", lib = path, force=TRUE, update=FALSE, ask=FALSE)
+
+    ''')
 
 
 # Load package in r
 robjects.r('''
-
+    path = "./library"
     library(cowplot) # save_plot
     library(dplyr)
     library(ggplot2)
     library(httr)
-    path = "./library"
-    .libPaths(path)
-    print("#############################")
-    install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
-    library(BiocManager, lib = path)
-    #BiocManager::install("biomaRt", lib = path)
-    #library(biomaRt, lib = path)
-
-    #install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source", lib=path)
-    #BiocManager::install("clusterProfiler", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-    #library(clusterProfiler, lib = path)
-    BiocManager::install("mzR", lib=path, force=TRUE, update=FALSE, ask=FALSE)
-    BiocManager::install("DEP", lib = path, force=TRUE, update=FALSE, ask=FALSE)
+    library(biomaRt, lib = path)
+    library(clusterProfiler, lib = path)
     library(DEP, lib = path)
         #BiocManager::install("DOSE", lib = path)
         #print("install DOSE")
