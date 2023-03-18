@@ -9,7 +9,7 @@ from io import StringIO
 
 cmd = 'whoami'
 os.system("mkdir -m 777 library")
-os.system("packageVersion('rvcheck') ")
+
 
 # Load package in r
 robjects.r('''
@@ -19,6 +19,7 @@ robjects.r('''
     library(ggplot2)
     library(httr)
     path = "./library"
+    packageVersion('rvcheck')
     #.libPaths(path)
     #install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
     #library(BiocManager, lib = path)
