@@ -45,8 +45,9 @@ robjects.r('''
     remove.packages("rlang")#, lib=path)
     install.packages("rlang")#, lib=path, version= "1.0.0")
     print(packageVersion("rlang"))
+    print("&&&&&&&&&&&&&&&")
     #BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-    library(NormalyzerDE, lib = path)
+    #library(NormalyzerDE, lib = path)
     library(SummarizedExperiment, lib = path)
 ''')
 
