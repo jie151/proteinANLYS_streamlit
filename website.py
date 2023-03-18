@@ -35,7 +35,7 @@ robjects.r('''
     library(dplyr)
     library(ggplot2)
     library(httr)
-
+    .libPaths(path)
     library(biomaRt, lib = path)
     library(clusterProfiler, lib = path)
     library(DEP, lib = path)
