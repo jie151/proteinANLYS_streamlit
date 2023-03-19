@@ -884,6 +884,6 @@ if check_button:
     r_plot_gseaplot_2_10()
 
     st.sidebar.subheader("18. Download result file")
-    st_download_button("dep_output.csv", "Download dep_output.csv" 'text/csv')
+    st_download_button("dep_output.csv", "Download dep_output.csv" ,'text/csv')
     st_download_button("uniprot_entrez.csv", "Download uniprot_entrez.csv", 'text/csv')
     st_download_button("dep_output_result.csv", "Download dep_output_result.csv", 'text/csv')

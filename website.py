@@ -68,8 +68,8 @@ def st_capture(output_func):
         yield
 
 def st_download_button(filename, label, mime_type):
-    with open( "./file/"+ filename, "rb") as file:
-        st.sidebar.download_button(
+    with open(filename, "rb") as file:
+        st.download_button(
             label = label,
             data = file,
             file_name = filename,
@@ -375,6 +375,7 @@ def r_normalize_function():
 # Plot a barplot of the protein identification overlap between samples
 def r_plot_frequency_1_1():
     robjects.r(''' save_plot("./file/image/plot1_1.png", plot =  plot_frequency(data_se), , base_height = 4, base_width = 4.5) ''')
+    st.write(" *Plot a barplot of the protein identification overlap between samples")
     st.image(Image.open('./file/image/plot1_1.png'))
     with st.expander("data"):
         output = st.empty()
@@ -392,11 +393,13 @@ def r_plot_numbers_filter_missval_1_2():
         data_filt <- filter_missval(data_se, thr = nThr) #讓使用者選0~4(重複)
         save_plot("./file/image/plot1_2.png", plot =  plot_numbers(data_filt), base_height = 4, base_width = 4.5)
     ''')
+    st.write(" *Plot a barplot of the number of identified proteins per samples")
     st.image(Image.open('./file/image/plot1_2.png'))
 
 # Plot a barplot of the protein identification overlap between samples
 def r_plot_coverage_1_3():
     robjects.r(''' save_plot("./file/image/plot1_3.png", plot =  plot_coverage(data_filt), base_height = 4, base_width = 4) ''')
+    st.write(" *Plot a barplot of the protein identification overlap between samples")
     st.image(Image.open('./file/image/plot1_3.png'))
 
 def r_plot_normalization_1_4():
@@ -407,6 +410,8 @@ def r_plot_normalization_1_4():
         pic1 <- plot_normalization(data_filt, data_norm)
         save_plot("./file/image/plot1_4.png", plot =  pic1, base_height = 4, base_width = 4)
     ''')
+
+    st.write(" Visualize normalization by boxplots for all samples before and after normalization")
     st.image(Image.open('./file/image/plot1_4.png'))
 
 # Plot a heatmap of proteins with missing values
@@ -437,7 +442,11 @@ def r_plot_heatmap_1_5():
         pic1 <- plot_imputation(data_norm, data_imp)
         save_plot("./file/image/plot1_5_3.png", plot =  pic1, base_width = 4, base_height = 4)
     ''')
+    image_label_list = ["*Plot a heatmap of proteins with missing values",
+                        "*Plot intensity distributions and cumulative fraction of proteins with and without missing values",
+                        "*Plot intensity distributions before and after imputation"]
     for i in range(1, 4):
+        st.write(f"{image_label_list[i-1]}")
         st.image(Image.open(f'./file/image/plot1_5_{i}.png'))
 
 def r_plot_pca_1_6(control_py):
@@ -459,8 +468,11 @@ def r_plot_pca_1_6(control_py):
         pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
         dev.off()
     ''')
-    st.image(Image.open('./file/image/plot1_6_1.png'))
-    st.image(Image.open('./file/image/plot1_6_2.png'))
+    image_label_list = ["*Plot the first and second principal components",
+                        "*Plot the Pearson correlation matrix"]
+    for i in range(1, 3):
+        st.write(image_label_list[i-1])
+        st.image(Image.open(f'./file/image/plot1_6_{i}.png'))
 
 def r_plot_heatmap_dep_1_7():
     robjects.r('''
@@ -477,8 +489,11 @@ def r_plot_heatmap_dep_1_7():
                     k = 6, col_limit = 10, show_row_names = FALSE)
         dev.off()
     ''')
-    st.image(Image.open('./file/image/plot1_7_1.png'))
-    st.image(Image.open('./file/image/plot1_7_2.png'))
+    image_label_list = ["*Plot a heatmap of all significant proteins with the data centered per protein",
+                        "*Plot a heatmap of all significant proteins (rows) and the tested contrasts (columns)"]
+    for i in range(1, 3):
+        st.write(image_label_list[i-1])
+        st.image(Image.open(f'./file/image/plot1_7_{i}.png'))
 
 def r_plot_volcano_1_8(contrast_py):
     robjects.r.assign("contrast_r", contrast_py)
@@ -519,16 +534,17 @@ def r_plot_single_1_9():
 
 def r_plot_cond_1_10():
     robjects.r('''
-        # Plot a frequency plot of significant proteins for the different conditions
-        png(file="./file/image/plot1_10.png")
-        pic1 <- plot_cond(dep)
-        dev.off()
-
         # Generate a results table
         data_results <- get_results(dep)
         # Number of significant proteins
         data_results %>% filter(significant) %>% nrow()
         write.csv(data_results,"./file/dep_output.csv", row.names = FALSE, quote=F)
+
+        # Plot a frequency plot of significant proteins for the different conditions
+        png(file="./file/image/plot1_10.png")
+        pic1 <- plot_cond(dep)
+        dev.off()
+
     ''')
     st.image(Image.open('./file/image/plot1_10.png'))
 
@@ -537,8 +553,8 @@ def r_uniprotAPI():
     robjects.r('''
         # uriprot.org API
         isJobReady <- function(jobId) {
-            pollingInterval = 5
-            nTries = 20
+            pollingInterval = 15
+            nTries = 60
             for (i in 1:nTries) {
                 url <- paste("https://rest.uniprot.org/idmapping/status/", jobId, sep = "")
                 r <- GET(url = url, accept_json())
@@ -603,18 +619,21 @@ def r_init_DOSE_data():
     rationName_py = st.sidebar.selectbox(label= "Ratio: ", options= ratioColname_py)
     robjects.r.assign("ratioName", rationName_py)
 
-    robjects.r('''
-        # convert uniprot -> entrez
-        ID_string <- paste(dep_output_data$ID, collapse=",")
-        resultsTable <- generate_uniprot_resultTable(ID_string)
+    try:
+        robjects.r('''
+            # convert uniprot -> entrez
+            ID_string <- paste(dep_output_data$ID, collapse=",")
+            resultsTable <- generate_uniprot_resultTable(ID_string)
 
-        uniprot_entrez <- resultsTable[-c(1),]
-        #去除重複 (因為uniprot可能會有多個entrez => 排序後選最小的)
-        uniprot_entrez[, 2] <- as.numeric(uniprot_entrez[, 2])
-        uniprot_entrez <- uniprot_entrez [ order(uniprot_entrez$ID_uniprot, uniprot_entrez$GeneID_entrez),]
-        uniprot_entrez <- uniprot_entrez[!duplicated(uniprot_entrez$ID_uniprot),]
-        write.csv(uniprot_entrez, file="./file/uniprot_entrez.csv")
-    ''')
+            uniprot_entrez <- resultsTable[-c(1),]
+            #去除重複 (因為uniprot可能會有多個entrez => 排序後選最小的)
+            uniprot_entrez[, 2] <- as.numeric(uniprot_entrez[, 2])
+            uniprot_entrez <- uniprot_entrez [ order(uniprot_entrez$ID_uniprot, uniprot_entrez$GeneID_entrez),]
+            uniprot_entrez <- uniprot_entrez[!duplicated(uniprot_entrez$ID_uniprot),]
+            write.csv(uniprot_entrez, file="./file/uniprot_entrez.csv")
+        ''')
+    except:
+        st.error('與uriprot.org網站連接失敗(Entrez -> GeneID), 請重新載入網頁', icon="🚨")
 
 def r_convert_species_gene():
     robjects.r('''
@@ -732,11 +751,12 @@ def r_plot_heatplot_2_4():
         save_plot("./file/image/plot2_4_1.png", pic13_1)
         save_plot("./file/image/plot2_4_2.png", pic13_2)
 
-        save_plot("./file/image/plot2_4_1_big.png", pic13_1, base_height = 70, base_aspect_ratio = 0.5,limitsize = FALSE)
-        save_plot("./file/image/plot2_4_2_big.png", pic13_2, base_height = 10, base_aspect_ratio = 3,limitsize = FALSE)
+        save_plot("./file/image/heatplot_1.png", pic13_1, base_height = 10, base_aspect_ratio = 3,limitsize = FALSE)
+        save_plot("./file/image/heatplot_2.png", pic13_2, base_height = 10, base_aspect_ratio = 3,limitsize = FALSE)
     ''')
-    st.image(Image.open('./file/image/plot2_4_1.png'))
-    st.image(Image.open('./file/image/plot2_4_2.png'))
+    for i in range(1, 3):
+        st.image(Image.open(f'./file/image/plot2_4_{i}.png'))
+        st_download_button(f"./file/image/heatplot_{i}.png", f"Download heatplot_{i}.png", "image/png")
 
 
 def r_plotenrichment_map_2_5():
@@ -788,7 +808,7 @@ def r_plot_upsetplot_with_splider_2_8():
 def r_plot_ridgeplot_2_9():
     robjects.r('''
         pic17 <- ridgeplot(edo2) + xlab("expression distributions of enriched genes (log2FC)")
-        save_plot("./file/image/plot2_9.png", pic17, base_height = 20, base_aspect_ratio = 0.6)
+        save_plot("./file/image/plot2_9.png", pic17, base_height = 12, base_aspect_ratio = 0.65)
     ''')
     st.image(Image.open("./file/image/plot2_9.png"))
 
@@ -874,7 +894,7 @@ if check_button:
     try :
         r_plot_heatmap_dep_1_7()
     except:
-        st.write("Error! 需要調整alpha, lfc的值 (如: alpha = 1, lfc = 1)")
+        st.error("Error! 需要調整alpha, lfc的值 (如: alpha = 1, lfc = 1)",icon="🚨")
 
     st.header("6. Volcano plots of specific contrasts:")
     r_plot_volcano_1_8(contrast_py)
@@ -883,13 +903,15 @@ if check_button:
     st.sidebar.subheader("7. Barplots of a protein of interest")
     r_plot_single_1_9()
 
-    st.header("8. Frequency plot of significant proteins and overlap of conditions")
-    r_plot_cond_1_10()
-
+    try :
+        st.header("8. Frequency plot of significant proteins and overlap of conditions")
+        r_plot_cond_1_10()
+    except:
+        st.error('condition要有三組以上', icon="🚨")
     # DOSE
     r_uniprotAPI()
-
     st.sidebar.subheader("9. Configure data for analysis (DOSE)")
+
     r_init_DOSE_data()
     r_convert_species_gene()
     #r_test_file() # 測試用
@@ -900,9 +922,10 @@ if check_button:
     #r_plot_cnetplot_2_3() error
     st.header("12. Heatmap-like functional classification")
     r_plot_heatplot_2_4()
-    st_download_button("./file/image/plot2_4_2_big.png", "Download plot")
+
     st.header("13. Enrichment Map")
     r_plotenrichment_map_2_5()
+
     st.header("14. Biological theme comparison")
     #r_plot_emapplot_2_6() error
 
@@ -915,8 +938,8 @@ if check_button:
 
     st.header("17. running score and preranked list of GSEA result")
     r_plot_gseaplot_2_10()
-
-    st.sidebar.subheader("18. Download result file")
-    st_download_button("dep_output.csv", "Download dep_output.csv", 'text/csv')
-    st_download_button("uniprot_entrez.csv", "Download uniprot_entrez.csv", 'text/csv')
-    st_download_button("dep_output_result.csv", "Download dep_output_result.csv", 'text/csv')
+    with st.sidebar:
+        st.subheader("18. Download result file")
+        st_download_button("./file/dep_output.csv", "Download dep_output.csv" ,'text/csv')
+        st_download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv", 'text/csv')
+        st_download_button("./file/dep_output_result.csv", "Download dep_output_result.csv", 'text/csv')
