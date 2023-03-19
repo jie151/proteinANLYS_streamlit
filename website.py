@@ -47,17 +47,12 @@ robjects.r('''
     library(enrichplot, lib = path)
 
     print("&&&&&&&&&&&&&&&")
-    .libPaths(Sys.getenv("R_LIBS_USER"))
     print("lib path: ")
     print(packageVersion("rlang", lib = path))
     print("lib: ")
 
-
-    #print(packageVersion("rlang", lib = "/usr/local/lib/R/site-library")) # error no pacakge
-     print("@@@@@@@@@@@@@@")
     print(packageVersion("rlang", lib = "/usr/lib/R/site-library" ))
-    print("@@@@@@@@@@@@@@")
-    print(packageVersion("rlang", lib =  "/usr/lib/R/library" ))  # error no pacakge
+
     print("&&&&&&&&&&&&&&&")
     .libPaths(Sys.getenv(path))
     library(NormalyzerDE, lib = path)
