@@ -12,7 +12,7 @@ if not os.path.exists("./library/"):
     robjects.r('''
         path = "./library"
         .libPaths(path)
-
+        install.packages("tzdb", type="source")
         install.packages("rlang",lib=path)
         install.packages("rlang")
         install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
@@ -859,10 +859,10 @@ if check_button:
     r_plot_cond_1_10()
 
     # DOSE
-    r_uniprotAPI()
-    r_init_DOSE_data()
-    r_convert_species_gene()
-    #r_test_file() # 測試用
+    #r_uniprotAPI()
+    #r_init_DOSE_data()
+    #r_convert_species_gene()
+    r_test_file() # 測試用
     r_plot_barplot_2_1()
     r_plot_dotplot_2_2()
     #r_plot_cnetplot_2_3() error

@@ -11,4 +11,3 @@ libgdal-dev
 libnlopt-dev
 r-cran-hmisc
 r-cran-pbkrtest
-r-cran-tzdb

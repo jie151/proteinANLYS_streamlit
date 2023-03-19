@@ -344,7 +344,7 @@ def r_normalize_function():
 # Plot a barplot of the protein identification overlap between samples
 def r_plot_frequency_1_1():
     robjects.r(''' save_plot("./file/image/plot1_1.png", plot =  plot_frequency(data_se), , base_height = 4, base_width = 4.5) ''')
-    st.header('Filter on missing values')
+    st.header('2. Filter on missing values:')
     st.image(Image.open('./file/image/plot1_1.png'))
     with st.expander("data"):
         output = st.empty()
@@ -363,7 +363,6 @@ def r_plot_numbers_filter_missval_1_2():
         data_filt <- filter_missval(data_se, thr = nThr) #讓使用者選0~4(重複)
         save_plot("./file/image/plot1_2.png", plot =  plot_numbers(data_filt), base_height = 4, base_width = 4.5)
     ''')
-    st.header('2. Filter on missing values:')
     st.image(Image.open('./file/image/plot1_2.png'))
 
 # Plot a barplot of the protein identification overlap between samples
@@ -372,7 +371,7 @@ def r_plot_coverage_1_3():
     st.image(Image.open('./file/image/plot1_3.png'))
 
 def r_plot_normalization_1_4():
-    st.sidebar.subheader("Normalization")
+    st.sidebar.subheader("3. Normalization")
     normalizeOption_py = st.sidebar.selectbox(options=["Log2", "Median", "Mean", "VSN", "Quantile", "Cyclic Loess", "RLR", "Global Intensity"], label="選擇正規化方式")
     robjects.r.assign("normalizeOption", normalizeOption_py)
     robjects.r('''
@@ -380,7 +379,7 @@ def r_plot_normalization_1_4():
         pic1 <- plot_normalization(data_filt, data_norm)
         save_plot("./file/image/plot1_4.png", plot =  pic1, base_height = 4, base_width = 4)
     ''')
-    st.header("Normalization")
+    st.header("3. Normalization")
     st.image(Image.open('./file/image/plot1_4.png'))
 
 # Plot a heatmap of proteins with missing values
@@ -411,10 +410,12 @@ def r_plot_heatmap_1_5():
         pic1 <- plot_imputation(data_norm, data_imp)
         save_plot("./file/image/plot1_5_3.png", plot =  pic1, base_width = 4, base_height = 4)
     ''')
+    st.header("4. Impute data for missing values: ")
     for i in range(1, 4):
         st.image(Image.open(f'./file/image/plot1_5_{i}.png'))
 
 def r_plot_pca_1_6(control_py):
+    st.sidebar.subheader("5. Differential enrichment analysis")
     alpha_py = st.sidebar.slider("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01, format="%f")
     lfc_py = st.sidebar.slider("lfc = log2(value): ", min_value=0.0, max_value=2.0, value=1.5, step=0.1, format="%f")
     robjects.r.assign("control_r", control_py)
@@ -433,6 +434,7 @@ def r_plot_pca_1_6(control_py):
         pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
         dev.off()
     ''')
+    st.header("5. Differential enrichment analysis")
     st.image(Image.open('./file/image/plot1_6_1.png'))
     st.image(Image.open('./file/image/plot1_6_2.png'))
 
@@ -465,6 +467,7 @@ def r_plot_volcano_1_8(contrast_py):
         pic <- plot_volcano(dep, contrast = contrastSample, label_size = 2, add_names = TRUE)
         save_plot("./file/image/plot1_8.png", pic)
     ''')
+    st.header("Volcano plots of specific contrasts:")
     st.image(Image.open('./file/image/plot1_8.png'))
 
 def r_plot_single_1_9():
