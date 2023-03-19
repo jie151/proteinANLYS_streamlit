@@ -39,7 +39,7 @@ robjects.r('''
     library(dplyr)
     library(ggplot2)
     library(httr)
-    .libPaths(path)
+    .libPaths(Sys.getenv(path))
     library(biomaRt, lib = path)
     library(clusterProfiler, lib = path)
     library(DEP, lib = path)
@@ -54,7 +54,7 @@ robjects.r('''
     print(packageVersion("rlang", lib = "/usr/lib/R/site-library" ))
 
     print("&&&&&&&&&&&&&&&")
-    .libPaths(Sys.getenv(path))
+
     library(NormalyzerDE, lib = path)
     library(SummarizedExperiment, lib = path)
 
