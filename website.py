@@ -43,9 +43,6 @@ robjects.r('''
     .libPaths(Sys.getenv(path))
     library(biomaRt, lib = path)
     library(clusterProfiler, lib = path)
-    library(DEP, lib = path)
-    library(DOSE, lib = path)
-    library(enrichplot, lib = path)
     print("&&&&&&&&&&&&&&")
     print("rlang")
     print(packageVersion("rlang", lib = "/usr/lib/R/site-library" ))
@@ -55,6 +52,10 @@ robjects.r('''
     print(packageVersion("tzdb", lib = path ))
     print(packageVersion("tzdb", lib = "/usr/lib/R/site-library" ))
     print("&&&&&&&&&&&&&&")
+    library(DEP, lib = path)
+    library(DOSE, lib = path)
+    library(enrichplot, lib = path)
+
     library(NormalyzerDE, lib = path)
     library(SummarizedExperiment, lib = path)
 
