@@ -14,16 +14,16 @@ robjects.r('''
     library(dplyr)
     library(ggplot2)
     library(httr)
-    print("hihi")
-    #library(clusterProfiler, lib="./win-library/4.1/")
-    #library(DEP, lib="./win-library/4.1/")
-    #library(DOSE, lib="./win-library/4.1/")
-    #library(enrichplot, lib="./win-library/4.1/")
-    #library(NormalyzerDE, lib="./win-library/4.1/")
-    library(SummarizedExperiment, lib="./win-library/4.1/")
+
+    library(clusterProfiler)
+    library(DEP)
+    library(DOSE)
+    library(enrichplot)
+    library(NormalyzerDE)
+    library(SummarizedExperiment)
+    library(biomaRt)
 ''')
 
-# library(biomaRt, lib="./win-library/4.1/")
 # 在網頁顯示print的內容
 @contextmanager
 def st_capture(output_func):
@@ -57,14 +57,14 @@ def upload_file():
     uploaded_file = st.sidebar.file_uploader('選擇您要上傳的csv、txt檔', type=['csv', 'txt'], accept_multiple_files=False)
     if uploaded_file is not None:
         # 將上傳的檔案儲存下來 (由R開啟)
-        filename = ".\\file\\uploadFile\\uploadFile.txt" # + uploaded_file.name
-        with open(os.path.join("uploadFile", "uploadFile.txt"),"wb") as f:
+        filename = "./file/uploadFile/uploadFile.txt"
+        with open(filename,"wb") as f:
             f.write( uploaded_file.getbuffer())
 
         sep_word = "," if uploaded_file.type == "text/csv" else " "
         data = pd.read_csv(uploaded_file, sep = sep_word, error_bad_lines=False)
     else:
-        filename = ".\\file\\uploadFile\\proteinGroups_HsinYuan_Rat.txt"
+        filename = "./file/uploadFile/proteinGroups_HsinYuan_Rat.txt"
         data = pd.read_csv(filename, sep=" ")
     return filename, data
 
@@ -344,6 +344,7 @@ def r_normalize_function():
 # Plot a barplot of the protein identification overlap between samples
 def r_plot_frequency_1_1():
     robjects.r(''' save_plot("./file/image/plot1_1.png", plot =  plot_frequency(data_se), , base_height = 4, base_width = 4.5) ''')
+    st.header('Filter on missing values')
     st.image(Image.open('./file/image/plot1_1.png'))
     with st.expander("data"):
         output = st.empty()
@@ -354,6 +355,7 @@ def r_plot_frequency_1_1():
 def r_plot_numbers_filter_missval_1_2():
     # Filter for proteins that are identified in all replicates of at least one condition
     maxReplicate_py = robjects.r("maxReplicate")
+    st.sidebar.subheader("2.Filter on missing values")
     nThr_py = st.sidebar.slider('Filter for proteins that are identified in all replicates of at least one condition: ', min_value = 0,max_value = maxReplicate_py[0] ,value = 0, step=1, format="%d")
 
     robjects.r.assign("nThr", nThr_py)
@@ -361,6 +363,7 @@ def r_plot_numbers_filter_missval_1_2():
         data_filt <- filter_missval(data_se, thr = nThr) #讓使用者選0~4(重複)
         save_plot("./file/image/plot1_2.png", plot =  plot_numbers(data_filt), base_height = 4, base_width = 4.5)
     ''')
+    st.header('2. Filter on missing values:')
     st.image(Image.open('./file/image/plot1_2.png'))
 
 # Plot a barplot of the protein identification overlap between samples
@@ -369,6 +372,7 @@ def r_plot_coverage_1_3():
     st.image(Image.open('./file/image/plot1_3.png'))
 
 def r_plot_normalization_1_4():
+    st.sidebar.subheader("Normalization")
     normalizeOption_py = st.sidebar.selectbox(options=["Log2", "Median", "Mean", "VSN", "Quantile", "Cyclic Loess", "RLR", "Global Intensity"], label="選擇正規化方式")
     robjects.r.assign("normalizeOption", normalizeOption_py)
     robjects.r('''
@@ -376,6 +380,7 @@ def r_plot_normalization_1_4():
         pic1 <- plot_normalization(data_filt, data_norm)
         save_plot("./file/image/plot1_4.png", plot =  pic1, base_height = 4, base_width = 4)
     ''')
+    st.header("Normalization")
     st.image(Image.open('./file/image/plot1_4.png'))
 
 # Plot a heatmap of proteins with missing values
