@@ -837,14 +837,18 @@ def r_plot_gseaplot_2_10():
 
 # 設定網頁標題
 st.title('Protein Analysis')
+st.header("1. Configure data for analysis (DEP)")
+st.sidebar.subheader("1. Configure data for analysis")
 filename_py, data = upload_file()
 with st.expander("see data"):
     st.write(data)
+
 numCondition_py, condition_py = r_initialize_data(filename_py)
 df_colname_py, df_ncol_py, median_list_py = r_select_condition(numCondition_py, condition_py)
 check_button, experimental_design = draw_distogram_after_select_condition(df_colname_py, df_ncol_py, median_list_py)
 
 if check_button:
+
     experimental_design_condition_py = robjects.r("experimental_design_condition")
     control_py =  st.sidebar.selectbox(options=experimental_design_condition_py, label="選擇控制組")
     contrastOption_py = list(experimental_design_condition_py) #Str Object 轉為list
@@ -852,37 +856,67 @@ if check_button:
     contrast_py =  st.sidebar.selectbox(options=contrastOption_py, label="選擇對照組")
 
     r_normalize_function()
+    st.header('2. Filter on missing values:')
+    st.sidebar.subheader("2. Filter on missing values:")
     r_plot_frequency_1_1()
     r_plot_numbers_filter_missval_1_2()
     r_plot_coverage_1_3()
+    st.header("3. Normalization")
+    st.sidebar.subheader("3. Normalization")
     r_plot_normalization_1_4()
+
+    st.header("4. Impute data for missing values: ")
     r_plot_heatmap_1_5()
+
+    st.header("5. Differential enrichment analysis")
+    st.sidebar.subheader("5. Differential enrichment analysis")
     r_plot_pca_1_6(control_py)
+
     try :
         r_plot_heatmap_dep_1_7()
     except:
         st.write("Error! 需要調整alpha, lfc的值 (如: alpha = 1, lfc = 1)")
 
+    st.header("6. Volcano plots of specific contrasts:")
     r_plot_volcano_1_8(contrast_py)
+
+    st.header("7. Barplots of a protein of interest: ")
+    st.sidebar.subheader("7. Barplots of a protein of interest")
     r_plot_single_1_9()
+
+    st.header("8. Frequency plot of significant proteins and overlap of conditions")
     r_plot_cond_1_10()
 
     # DOSE
-    #r_uniprotAPI()
-    #r_init_DOSE_data()
-    #r_convert_species_gene()
-    r_test_file() # 測試用
+    r_uniprotAPI()
+
+    st.sidebar.subheader("9. Configure data for analysis (DOSE)")
+    r_init_DOSE_data()
+    r_convert_species_gene()
+    #r_test_file() # 測試用
+    st.header("10. Bar Plot (DOSE)")
     r_plot_barplot_2_1()
+    st.header("11. Dot plot")
     r_plot_dotplot_2_2()
     #r_plot_cnetplot_2_3() error
+    st.header("12. Heatmap-like functional classification")
     r_plot_heatplot_2_4()
+    st.header("13. Enrichment Map")
     r_plotenrichment_map_2_5()
+    st.header("14. Biological theme comparison")
     #r_plot_emapplot_2_6() error
+
+    st.header("15. UpSet Plot")
     r_plot_upseplot_2_7()
     #r_plot_upsetplot_with_splider_2_8() error
+
+    st.header("16. ridgeline plot for expression distribution of GSEA result")
     r_plot_ridgeplot_2_9()
+
+    st.header("17. running score and preranked list of GSEA result")
     r_plot_gseaplot_2_10()
 
+    st.sidebar.subheader("18. Download result file")
     st_download_button("dep_output.csv")
     st_download_button("uniprot_entrez.csv")
     st_download_button("dep_output_result.csv")
