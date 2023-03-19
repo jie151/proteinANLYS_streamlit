@@ -39,6 +39,7 @@ robjects.r('''
     library(dplyr)
     library(ggplot2)
     library(httr)
+    Sys.setenv(R_LIBS_USER = path)
     .libPaths(Sys.getenv(path))
     library(biomaRt, lib = path)
     library(clusterProfiler, lib = path)
