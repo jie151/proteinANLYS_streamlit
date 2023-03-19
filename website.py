@@ -45,9 +45,9 @@ robjects.r('''
     library(DEP, lib = path)
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
-    install.packages("rlang", lib = "/usr/lib/R/site-library")
+
     print("&&&&&&&&&&&&&&&")
-    print(.libPaths())
+    .libPaths(Sys.getenv("R_LIBS_USER"))
     print("lib path: ")
     print(packageVersion("rlang", lib = path))
     print("lib: ")
@@ -59,7 +59,7 @@ robjects.r('''
     print("@@@@@@@@@@@@@@")
     print(packageVersion("rlang", lib =  "/usr/lib/R/library" ))  # error no pacakge
     print("&&&&&&&&&&&&&&&")
-    #BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
+    .libPaths(Sys.getenv(path))
     library(NormalyzerDE, lib = path)
     library(SummarizedExperiment, lib = path)
 
