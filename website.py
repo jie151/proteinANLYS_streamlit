@@ -51,7 +51,11 @@ robjects.r('''
     print("lib path: ")
     print(packageVersion("rlang", lib = path))
     print("lib: ")
-    print(packageVersion("rlang"))
+
+
+    print(packageVersion("rlang", lib = "/usr/local/lib/R/site-library"))
+    print(packageVersion("rlang", lib = "/usr/lib/R/site-library"      ))
+    print(packageVersion("rlang", lib =  "/usr/lib/R/library"  ))
     print("&&&&&&&&&&&&&&&")
     #BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
     library(NormalyzerDE, lib = path)
