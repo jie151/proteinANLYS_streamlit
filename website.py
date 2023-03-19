@@ -30,7 +30,6 @@ if not os.path.exists("./library/"):
         BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=TRUE, ask=FALSE)
     ''')
 
-
 # Load package in r
 robjects.r('''
     path = "./library"
@@ -44,15 +43,9 @@ robjects.r('''
     library(DEP, lib = path)
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
-    print("&&&&&&&&&&&&&&&")
-    print("lib path: ")
-    print(packageVersion("rlang", lib = path))
-    print("lib: ")
-    print(packageVersion("rlang"))
-    print("&&&&&&&&&&&&&&&")
-    #BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
     library(NormalyzerDE, lib = path)
     library(SummarizedExperiment, lib = path)
+    BiocManager::install("org.Hs.eg.db", lib=path, force=TRUE, update=TRUE, ask=FALSE)
 ''')
 
 # 在網頁顯示print的內容
