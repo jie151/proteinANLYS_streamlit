@@ -12,9 +12,9 @@ if not os.path.exists("./library/"):
     robjects.r('''
         path = "./library"
         .libPaths(path)
-        #install.packages("https://cran.r-project.org/src/contrib/rlang_1.1.0.tar.gz", repos = NULL, type="source",lib=path)
+
         install.packages("rlang",lib=path)
-        install.packages("rlang")#,lib=path)
+        install.packages("rlang")
         install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
         library(BiocManager, lib = path)
         BiocManager::install("biomaRt", lib = path)
@@ -45,6 +45,7 @@ robjects.r('''
     library(DEP, lib = path)
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
+    install.packages("rlang")
     print("&&&&&&&&&&&&&&&")
     print("lib path: ")
     print(packageVersion("rlang", lib = path))
