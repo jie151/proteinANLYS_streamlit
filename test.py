@@ -344,7 +344,6 @@ def r_normalize_function():
 # Plot a barplot of the protein identification overlap between samples
 def r_plot_frequency_1_1():
     robjects.r(''' save_plot("./file/image/plot1_1.png", plot =  plot_frequency(data_se), , base_height = 4, base_width = 4.5) ''')
-    st.header('2. Filter on missing values:')
     st.image(Image.open('./file/image/plot1_1.png'))
     with st.expander("data"):
         output = st.empty()
@@ -355,7 +354,6 @@ def r_plot_frequency_1_1():
 def r_plot_numbers_filter_missval_1_2():
     # Filter for proteins that are identified in all replicates of at least one condition
     maxReplicate_py = robjects.r("maxReplicate")
-    st.sidebar.subheader("2.Filter on missing values")
     nThr_py = st.sidebar.slider('Filter for proteins that are identified in all replicates of at least one condition: ', min_value = 0,max_value = maxReplicate_py[0] ,value = 0, step=1, format="%d")
 
     robjects.r.assign("nThr", nThr_py)
@@ -371,7 +369,7 @@ def r_plot_coverage_1_3():
     st.image(Image.open('./file/image/plot1_3.png'))
 
 def r_plot_normalization_1_4():
-    st.sidebar.subheader("3. Normalization")
+
     normalizeOption_py = st.sidebar.selectbox(options=["Log2", "Median", "Mean", "VSN", "Quantile", "Cyclic Loess", "RLR", "Global Intensity"], label="選擇正規化方式")
     robjects.r.assign("normalizeOption", normalizeOption_py)
     robjects.r('''
@@ -379,7 +377,7 @@ def r_plot_normalization_1_4():
         pic1 <- plot_normalization(data_filt, data_norm)
         save_plot("./file/image/plot1_4.png", plot =  pic1, base_height = 4, base_width = 4)
     ''')
-    st.header("3. Normalization")
+
     st.image(Image.open('./file/image/plot1_4.png'))
 
 # Plot a heatmap of proteins with missing values
@@ -410,12 +408,11 @@ def r_plot_heatmap_1_5():
         pic1 <- plot_imputation(data_norm, data_imp)
         save_plot("./file/image/plot1_5_3.png", plot =  pic1, base_width = 4, base_height = 4)
     ''')
-    st.header("4. Impute data for missing values: ")
     for i in range(1, 4):
         st.image(Image.open(f'./file/image/plot1_5_{i}.png'))
 
 def r_plot_pca_1_6(control_py):
-    st.sidebar.subheader("5. Differential enrichment analysis")
+
     alpha_py = st.sidebar.slider("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01, format="%f")
     lfc_py = st.sidebar.slider("lfc = log2(value): ", min_value=0.0, max_value=2.0, value=1.5, step=0.1, format="%f")
     robjects.r.assign("control_r", control_py)
@@ -434,7 +431,7 @@ def r_plot_pca_1_6(control_py):
         pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
         dev.off()
     ''')
-    st.header("5. Differential enrichment analysis")
+
     st.image(Image.open('./file/image/plot1_6_1.png'))
     st.image(Image.open('./file/image/plot1_6_2.png'))
 
@@ -467,10 +464,10 @@ def r_plot_volcano_1_8(contrast_py):
         pic <- plot_volcano(dep, contrast = contrastSample, label_size = 2, add_names = TRUE)
         save_plot("./file/image/plot1_8.png", pic)
     ''')
-    st.header("Volcano plots of specific contrasts:")
     st.image(Image.open('./file/image/plot1_8.png'))
 
 def r_plot_single_1_9():
+
     dataGeneName = robjects.r("data_unique$Gene.names")
     dataGeneName = list(dataGeneName)
     dataGeneName = [x for x in dataGeneName if x != '']
@@ -666,6 +663,7 @@ def r_plot_barplot_2_1():
         pic1 <- barplot(edo,x = "Count", color="p.adjust", showCategory=20)+ xlab("Count")
         save_plot("./file/image/plot2_1.png", pic1, base_height = 10, base_aspect_ratio = 1)
     ''')
+
     st.image(Image.open('./file/image/plot2_1.png'))
 
 def r_plot_dotplot_2_2():
@@ -701,7 +699,6 @@ def r_plot_cnetplot_2_3():
     for i in range(1, 8):
         st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
 
-# 2_3 cnet_plot有問題
 def r_plot_heatplot_2_4():
     robjects.r('''
         pic13_1 <- heatplot(edox)
@@ -804,16 +801,21 @@ def r_plot_gseaplot_2_10():
     for i in range(1, 10):
         st.image(Image.open(f"./file/image/plot2_10_{i}.png"))
 
+
 # 設定網頁標題
 st.title('Protein Analysis')
+st.header("1. Configure data for analysis (DEP)")
+st.sidebar.subheader("1. Configure data for analysis")
 filename_py, data = upload_file()
 with st.expander("see data"):
     st.write(data)
+
 numCondition_py, condition_py = r_initialize_data(filename_py)
 df_colname_py, df_ncol_py, median_list_py = r_select_condition(numCondition_py, condition_py)
 check_button, experimental_design = draw_distogram_after_select_condition(df_colname_py, df_ncol_py, median_list_py)
 
 if check_button:
+
     experimental_design_condition_py = robjects.r("experimental_design_condition")
     control_py =  st.sidebar.selectbox(options=experimental_design_condition_py, label="選擇控制組")
     contrastOption_py = list(experimental_design_condition_py) #Str Object 轉為list
@@ -821,37 +823,67 @@ if check_button:
     contrast_py =  st.sidebar.selectbox(options=contrastOption_py, label="選擇對照組")
 
     r_normalize_function()
+    st.header('2. Filter on missing values:')
+    st.sidebar.subheader("2. Filter on missing values:")
     r_plot_frequency_1_1()
     r_plot_numbers_filter_missval_1_2()
     r_plot_coverage_1_3()
+    st.header("3. Normalization")
+    st.sidebar.subheader("3. Normalization")
     r_plot_normalization_1_4()
+
+    st.header("4. Impute data for missing values: ")
     r_plot_heatmap_1_5()
+
+    st.header("5. Differential enrichment analysis")
+    st.sidebar.subheader("5. Differential enrichment analysis")
     r_plot_pca_1_6(control_py)
+
     try :
         r_plot_heatmap_dep_1_7()
     except:
         st.write("Error! 需要調整alpha, lfc的值 (如: alpha = 1, lfc = 1)")
 
+    st.header("6. Volcano plots of specific contrasts:")
     r_plot_volcano_1_8(contrast_py)
+
+    st.header("7. Barplots of a protein of interest: ")
+    st.sidebar.subheader("7. Barplots of a protein of interest")
     r_plot_single_1_9()
+
+    st.header("8. Frequency plot of significant proteins and overlap of conditions")
     r_plot_cond_1_10()
 
     # DOSE
     r_uniprotAPI()
+
+    st.sidebar.subheader("9. Configure data for analysis (DOSE)")
     r_init_DOSE_data()
     r_convert_species_gene()
     #r_test_file() # 測試用
+    st.header("10. Bar Plot (DOSE)")
     r_plot_barplot_2_1()
+    st.header("11. Dot plot")
     r_plot_dotplot_2_2()
     #r_plot_cnetplot_2_3() error
+    st.header("12. Heatmap-like functional classification")
     r_plot_heatplot_2_4()
+    st.header("13. Enrichment Map")
     r_plotenrichment_map_2_5()
+    st.header("14. Biological theme comparison")
     #r_plot_emapplot_2_6() error
+
+    st.header("15. UpSet Plot")
     r_plot_upseplot_2_7()
     #r_plot_upsetplot_with_splider_2_8() error
+
+    st.header("16. ridgeline plot for expression distribution of GSEA result")
     r_plot_ridgeplot_2_9()
+
+    st.header("17. running score and preranked list of GSEA result")
     r_plot_gseaplot_2_10()
 
+    st.sidebar.subheader("18. Download result file")
     st_download_button("dep_output.csv")
     st_download_button("uniprot_entrez.csv")
     st_download_button("dep_output_result.csv")

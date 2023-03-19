@@ -46,9 +46,15 @@ robjects.r('''
     library(DEP, lib = path)
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
+    print("&&&&&&&&&&&&&&")
+    print("rlang")
+    print(packageVersion("rlang", lib = "/usr/lib/R/site-library" ))
+    print(packageVersion("rlang", lib = path ))
 
-    #print(packageVersion("rlang", lib = "/usr/lib/R/site-library" ))
-
+    print("tzdb")
+    print(packageVersion("tzdb", lib = path ))
+    print(packageVersion("tzdb", lib = "/usr/lib/R/site-library" ))
+    print("&&&&&&&&&&&&&&")
     library(NormalyzerDE, lib = path)
     library(SummarizedExperiment, lib = path)
 
