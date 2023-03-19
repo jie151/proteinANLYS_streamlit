@@ -54,7 +54,9 @@ robjects.r('''
 
 
     #print(packageVersion("rlang", lib = "/usr/local/lib/R/site-library")) # error no pacakge
+     print("@@@@@@@@@@@@@@")
     print(packageVersion("rlang", lib = "/usr/lib/R/site-library"      ))
+    print("@@@@@@@@@@@@@@")
     print(packageVersion("rlang", lib =  "/usr/lib/R/library"  ))
     print("&&&&&&&&&&&&&&&")
     #BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
