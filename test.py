@@ -9,12 +9,10 @@ from io import StringIO
 
 # Load package in r
 robjects.r('''
-    print("hihi")
     library(cowplot) # save_plot
     library(dplyr)
     library(ggplot2)
     library(httr)
-
     library(clusterProfiler)
     library(DEP)
     library(DOSE)
@@ -36,14 +34,14 @@ def st_capture(output_func):
         stdout.write = new_write
         yield
 
-def st_download_button(filename):
-    with open( ".\\file\\"+ filename, "rb") as file:
+def st_download_button(filename, label, mime_type):
+    with open( "./file/"+ filename, "rb") as file:
         st.sidebar.download_button(
-            label=f"Download {filename}",
-            data=file,
+            label = label,
+            data = file,
             file_name = filename,
-            mime='text/csv',
-            key=filename
+            mime = mime_type,
+            key = filename
         )
 
 # 儲存檔案
@@ -369,7 +367,6 @@ def r_plot_coverage_1_3():
     st.image(Image.open('./file/image/plot1_3.png'))
 
 def r_plot_normalization_1_4():
-
     normalizeOption_py = st.sidebar.selectbox(options=["Log2", "Median", "Mean", "VSN", "Quantile", "Cyclic Loess", "RLR", "Global Intensity"], label="選擇正規化方式")
     robjects.r.assign("normalizeOption", normalizeOption_py)
     robjects.r('''
@@ -377,7 +374,6 @@ def r_plot_normalization_1_4():
         pic1 <- plot_normalization(data_filt, data_norm)
         save_plot("./file/image/plot1_4.png", plot =  pic1, base_height = 4, base_width = 4)
     ''')
-
     st.image(Image.open('./file/image/plot1_4.png'))
 
 # Plot a heatmap of proteins with missing values
@@ -412,7 +408,6 @@ def r_plot_heatmap_1_5():
         st.image(Image.open(f'./file/image/plot1_5_{i}.png'))
 
 def r_plot_pca_1_6(control_py):
-
     alpha_py = st.sidebar.slider("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01, format="%f")
     lfc_py = st.sidebar.slider("lfc = log2(value): ", min_value=0.0, max_value=2.0, value=1.5, step=0.1, format="%f")
     robjects.r.assign("control_r", control_py)
@@ -431,7 +426,6 @@ def r_plot_pca_1_6(control_py):
         pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
         dev.off()
     ''')
-
     st.image(Image.open('./file/image/plot1_6_1.png'))
     st.image(Image.open('./file/image/plot1_6_2.png'))
 
@@ -467,7 +461,6 @@ def r_plot_volcano_1_8(contrast_py):
     st.image(Image.open('./file/image/plot1_8.png'))
 
 def r_plot_single_1_9():
-
     dataGeneName = robjects.r("data_unique$Gene.names")
     dataGeneName = list(dataGeneName)
     dataGeneName = [x for x in dataGeneName if x != '']
@@ -663,7 +656,6 @@ def r_plot_barplot_2_1():
         pic1 <- barplot(edo,x = "Count", color="p.adjust", showCategory=20)+ xlab("Count")
         save_plot("./file/image/plot2_1.png", pic1, base_height = 10, base_aspect_ratio = 1)
     ''')
-
     st.image(Image.open('./file/image/plot2_1.png'))
 
 def r_plot_dotplot_2_2():
@@ -699,15 +691,20 @@ def r_plot_cnetplot_2_3():
     for i in range(1, 8):
         st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
 
+# 2_3 cnet_plot有問題
 def r_plot_heatplot_2_4():
     robjects.r('''
         pic13_1 <- heatplot(edox)
         pic13_2 <- heatplot(edox, foldChange=geneList)
         save_plot("./file/image/plot2_4_1.png", pic13_1)
         save_plot("./file/image/plot2_4_2.png", pic13_2)
+
+        save_plot("./file/image/plot2_4_1_big.png", pic13_1, base_height = 70, base_aspect_ratio = 0.5,limitsize = FALSE)
+        save_plot("./file/image/plot2_4_2_big.png", pic13_2, base_height = 10, base_aspect_ratio = 3,limitsize = FALSE)
     ''')
     st.image(Image.open('./file/image/plot2_4_1.png'))
     st.image(Image.open('./file/image/plot2_4_2.png'))
+
 
 def r_plotenrichment_map_2_5():
     robjects.r('''
@@ -802,6 +799,8 @@ def r_plot_gseaplot_2_10():
         st.image(Image.open(f"./file/image/plot2_10_{i}.png"))
 
 
+
+
 # 設定網頁標題
 st.title('Protein Analysis')
 st.header("1. Configure data for analysis (DEP)")
@@ -868,6 +867,7 @@ if check_button:
     #r_plot_cnetplot_2_3() error
     st.header("12. Heatmap-like functional classification")
     r_plot_heatplot_2_4()
+    st_download_button("./file/image/plot2_4_2_big.png", "Download plot")
     st.header("13. Enrichment Map")
     r_plotenrichment_map_2_5()
     st.header("14. Biological theme comparison")
@@ -884,6 +884,6 @@ if check_button:
     r_plot_gseaplot_2_10()
 
     st.sidebar.subheader("18. Download result file")
-    st_download_button("dep_output.csv")
-    st_download_button("uniprot_entrez.csv")
-    st_download_button("dep_output_result.csv")
+    st_download_button("dep_output.csv", "Download dep_output.csv" 'text/csv')
+    st_download_button("uniprot_entrez.csv", "Download uniprot_entrez.csv", 'text/csv')
+    st_download_button("dep_output_result.csv", "Download dep_output_result.csv", 'text/csv')

@@ -47,21 +47,9 @@ robjects.r('''
     .libPaths(path)
     library(biomaRt, lib = path)
     library(clusterProfiler, lib = path)
-    print("&&&&&&&&&&&&&&")
-    print("rlang")
-    print(packageVersion("rlang", lib = "/usr/lib/R/site-library" ))
-    print(packageVersion("rlang", lib = path ))
-
-    print("tzdb")
-
-    print(packageVersion("ggupset", lib=path))
-    print(packageVersion("tzdb", lib = path ))
-    #print(packageVersion("tzdb", lib = "/usr/lib/R/site-library" ))
-    print("&&&&&&&&&&&&&&")
     library(DEP, lib = path)
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
-
     library(NormalyzerDE, lib = path)
     library(SummarizedExperiment, lib = path)
 
@@ -79,14 +67,14 @@ def st_capture(output_func):
         stdout.write = new_write
         yield
 
-def st_download_button(filename):
+def st_download_button(filename, label, mime_type):
     with open( "./file/"+ filename, "rb") as file:
         st.sidebar.download_button(
-            label=f"Download {filename}",
-            data=file,
+            label = label,
+            data = file,
             file_name = filename,
-            mime='text/csv',
-            key=filename
+            mime = mime_type,
+            key = filename
         )
 
 # 儲存檔案
@@ -743,9 +731,13 @@ def r_plot_heatplot_2_4():
         pic13_2 <- heatplot(edox, foldChange=geneList)
         save_plot("./file/image/plot2_4_1.png", pic13_1)
         save_plot("./file/image/plot2_4_2.png", pic13_2)
+
+        save_plot("./file/image/plot2_4_1_big.png", pic13_1, base_height = 70, base_aspect_ratio = 0.5,limitsize = FALSE)
+        save_plot("./file/image/plot2_4_2_big.png", pic13_2, base_height = 10, base_aspect_ratio = 3,limitsize = FALSE)
     ''')
     st.image(Image.open('./file/image/plot2_4_1.png'))
     st.image(Image.open('./file/image/plot2_4_2.png'))
+
 
 def r_plotenrichment_map_2_5():
     robjects.r('''
@@ -839,6 +831,9 @@ def r_plot_gseaplot_2_10():
     for i in range(1, 10):
         st.image(Image.open(f"./file/image/plot2_10_{i}.png"))
 
+
+
+
 # 設定網頁標題
 st.title('Protein Analysis')
 st.header("1. Configure data for analysis (DEP)")
@@ -905,6 +900,7 @@ if check_button:
     #r_plot_cnetplot_2_3() error
     st.header("12. Heatmap-like functional classification")
     r_plot_heatplot_2_4()
+    st_download_button("./file/image/plot2_4_2_big.png", "Download plot")
     st.header("13. Enrichment Map")
     r_plotenrichment_map_2_5()
     st.header("14. Biological theme comparison")
@@ -921,6 +917,6 @@ if check_button:
     r_plot_gseaplot_2_10()
 
     st.sidebar.subheader("18. Download result file")
-    st_download_button("dep_output.csv")
-    st_download_button("uniprot_entrez.csv")
-    st_download_button("dep_output_result.csv")
+    st_download_button("dep_output.csv", "Download dep_output.csv" 'text/csv')
+    st_download_button("uniprot_entrez.csv", "Download uniprot_entrez.csv", 'text/csv')
+    st_download_button("dep_output_result.csv", "Download dep_output_result.csv", 'text/csv')
