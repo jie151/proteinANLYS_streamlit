@@ -51,6 +51,7 @@ robjects.r('''
     print(packageVersion("rlang", lib = path ))
 
     print("tzdb")
+    install.packages("ggupset", lib=path)
     print(packageVersion(" ggupset", lib=path))
     print(packageVersion("tzdb", lib = path ))
     #print(packageVersion("tzdb", lib = "/usr/lib/R/site-library" ))
