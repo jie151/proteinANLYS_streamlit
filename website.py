@@ -51,7 +51,7 @@ robjects.r('''
     print(packageVersion("rlang", lib = path ))
 
     print("tzdb")
-    print(packageVersion(" ggupset"))
+    print(packageVersion(" ggupset", lib=path))
     print(packageVersion("tzdb", lib = path ))
     #print(packageVersion("tzdb", lib = "/usr/lib/R/site-library" ))
     print("&&&&&&&&&&&&&&")
