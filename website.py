@@ -80,7 +80,7 @@ def st_capture(output_func):
         yield
 
 def st_download_button(filename):
-    with open( ".\\file\\"+ filename, "rb") as file:
+    with open( "./file/"+ filename, "rb") as file:
         st.sidebar.download_button(
             label=f"Download {filename}",
             data=file,
