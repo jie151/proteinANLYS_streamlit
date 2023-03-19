@@ -44,6 +44,7 @@ robjects.r('''
     library(DOSE, lib = path)
     library(enrichplot, lib = path)
     print("&&&&&&&&&&&&&&&")
+    install.packages("rlang",lib=path)
     print(packageVersion("rlang", lib = path))
     print("&&&&&&&&&&&&&&&")
     #BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
