@@ -14,7 +14,8 @@ if not os.path.exists("./library/"):
     robjects.r('''
         path = "./library"
         .libPaths(path)
-        install.packages("tzdb", type="source")
+
+        install.packages("ggupset", lib=path)
         install.packages("rlang",lib=path)
         install.packages("rlang")
         install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
@@ -51,7 +52,7 @@ robjects.r('''
     print(packageVersion("rlang", lib = path ))
 
     print("tzdb")
-    install.packages("ggupset", lib=path)
+
     print(packageVersion("ggupset", lib=path))
     print(packageVersion("tzdb", lib = path ))
     #print(packageVersion("tzdb", lib = "/usr/lib/R/site-library" ))
