@@ -53,7 +53,7 @@ robjects.r('''
     print("lib: ")
 
 
-    print(packageVersion("rlang", lib = "/usr/local/lib/R/site-library"))
+    #print(packageVersion("rlang", lib = "/usr/local/lib/R/site-library")) # error no pacakge
     print(packageVersion("rlang", lib = "/usr/lib/R/site-library"      ))
     print(packageVersion("rlang", lib =  "/usr/lib/R/library"  ))
     print("&&&&&&&&&&&&&&&")
