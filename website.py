@@ -27,7 +27,7 @@ if not os.path.exists("./library/"):
         BiocManager::install("SummarizedExperiment", lib = path, force=TRUE, update=FALSE, ask=FALSE)
         BiocManager::install("DOSE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
         BiocManager::install("enrichplot", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-        BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
+        BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=TRUE, ask=FALSE)
     ''')
 
 
