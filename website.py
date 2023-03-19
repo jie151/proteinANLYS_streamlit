@@ -16,6 +16,7 @@ if not os.path.exists("./library/"):
         .libPaths(path)
 
         install.packages("ggupset", lib=path)
+        install.packages("ggridges", lib=path)
         install.packages("rlang",lib=path)
         install.packages("rlang")
         install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
