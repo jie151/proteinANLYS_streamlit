@@ -7,8 +7,10 @@ from PIL import Image
 from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 
+os.system("lsb_release -a")
 if not os.path.exists("./library/"):
     os.system("mkdir -m 777 library")
+
     robjects.r('''
         path = "./library"
         .libPaths(path)
@@ -39,8 +41,8 @@ robjects.r('''
     library(dplyr)
     library(ggplot2)
     library(httr)
-    #Sys.setenv(R_LIBS_USER = path)
-    #.libPaths(Sys.getenv(path))
+
+    .libPaths(path)
     library(biomaRt, lib = path)
     library(clusterProfiler, lib = path)
     print("&&&&&&&&&&&&&&")
