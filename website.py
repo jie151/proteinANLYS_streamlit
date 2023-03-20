@@ -55,6 +55,7 @@ robjects.r('''
 
 ''')
 
+
 # 在網頁顯示print的內容
 @contextmanager
 def st_capture(output_func):
@@ -530,7 +531,7 @@ def r_plot_single_1_9():
         ''')
         st.image(Image.open('./file/image/plot1_9.png'))
     else:
-        st.error("Error!! 選擇的蛋白質不能重複")
+        st.error("Error!! 選擇的蛋白質不能重複", icon="🚨")
 
 def r_plot_cond_1_10():
     robjects.r('''
@@ -722,6 +723,14 @@ def r_plot_dotplot_2_2():
 
 def r_plot_cnetplot_2_3():
     robjects.r('''
+        rescale.AsIs <- function(x, ...){
+        dropAsis <- function(x){
+            cls <- class(x)
+            structure(x, class = setdiff(cls, "AsIs"))
+        }
+        scales:::rescale(dropAsis(x), ...)
+        }
+
         pic12_1 <- cnetplot(edox, foldChange=geneList)
         ## categorySize can be scaled by 'pvalue' or 'geneNum'
         pic12_2 <- cnetplot(edox, categorySize="pvalue", foldChange=geneList)
@@ -919,27 +928,29 @@ if check_button:
     r_plot_barplot_2_1()
     st.header("11. Dot plot")
     r_plot_dotplot_2_2()
-    #r_plot_cnetplot_2_3() error
-    st.header("12. Heatmap-like functional classification")
+    st.header("12. Gene-Concept Network")
+    r_plot_cnetplot_2_3()
+    st.header("13. Heatmap-like functional classification")
     r_plot_heatplot_2_4()
 
-    st.header("13. Enrichment Map")
+    st.header("14. Enrichment Map")
     r_plotenrichment_map_2_5()
 
-    st.header("14. Biological theme comparison")
-    #r_plot_emapplot_2_6() error
+    st.header("15. Biological theme comparison")
+    #r_plot_emapplot_2_6() #error compareCluster(data, fun = "enrichKEGG", organism = "hsa", pvalueCutoff = 0.05) : No enrichment found in any of gene cluster, please check your input.
 
-    st.header("15. UpSet Plot")
+    st.header("16. UpSet Plot")
     r_plot_upseplot_2_7()
-    #r_plot_upsetplot_with_splider_2_8() error
+    #Error in check_gene_id(geneList, geneSets) : --> No gene can be mapped....
+    #r_plot_upsetplot_with_splider_2_8() #error
 
-    st.header("16. ridgeline plot for expression distribution of GSEA result")
+    st.header("17. ridgeline plot for expression distribution of GSEA result")
     r_plot_ridgeplot_2_9()
 
-    st.header("17. running score and preranked list of GSEA result")
+    st.header("18. running score and preranked list of GSEA result")
     r_plot_gseaplot_2_10()
     with st.sidebar:
-        st.subheader("18. Download result file")
+        st.subheader("19. Download result file")
         st_download_button("./file/dep_output.csv", "Download dep_output.csv" ,'text/csv')
         st_download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv", 'text/csv')
         st_download_button("./file/dep_output_result.csv", "Download dep_output_result.csv", 'text/csv')
