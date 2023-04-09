@@ -11,6 +11,7 @@ if not os.path.exists("./library/"):
     os.system("mkdir -m 777 library")
 
     robjects.r('''
+    print(version)
         path = "./library"
         .libPaths(path)
 

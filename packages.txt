@@ -1,4 +1,4 @@
-r-base=4.2.3
+r-base
 r-cran-ggplot2
 r-cran-cowplot
 r-cran-httr
