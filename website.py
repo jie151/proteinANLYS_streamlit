@@ -1,60 +1,29 @@
-
+import os
 from rpy2 import robjects
 import streamlit as st
 import pandas as pd
-import os
 from PIL import Image
 from contextlib import contextmanager, redirect_stdout
 from io import StringIO
-
-os.system("lsb_release -a")
-if not os.path.exists("./library/"):
-    os.system("mkdir -m 777 library")
-
-    robjects.r('''
-        path = "./library"
-        .libPaths(path)
-
-        install.packages("ggupset", lib=path)
-        install.packages("ggridges", lib=path)
-        install.packages("rlang",lib=path)
-        install.packages("rlang")
-        install.packages("BiocManager", repos = "http://cran.us.r-project.org", lib = path)
-        library(BiocManager, lib = path)
-        BiocManager::install("biomaRt", lib = path)
-
-        install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source", lib=path)
-        BiocManager::install("clusterProfiler", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-
-        BiocManager::install("mzR", lib=path, force=TRUE, update=FALSE, ask=FALSE)
-        BiocManager::install("DEP", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-        BiocManager::install("SummarizedExperiment", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-        BiocManager::install("DOSE", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-        BiocManager::install("enrichplot", lib = path, force=TRUE, update=FALSE, ask=FALSE)
-        BiocManager::install("NormalyzerDE", lib = path, force=TRUE, update=TRUE, ask=FALSE)
-        BiocManager::install("org.Hs.eg.db", lib = path, force=TRUE, update=TRUE, ask=FALSE)
-    ''')
-
+import base64
+import uuid
+import re
+import sys
 
 # Load package in r
 robjects.r('''
-    path = "./library"
     library(cowplot) # save_plot
     library(dplyr)
     library(ggplot2)
     library(httr)
-
-    .libPaths(path)
-    library(biomaRt, lib = path)
-    library(clusterProfiler, lib = path)
-    library(DEP, lib = path)
-    library(DOSE, lib = path)
-    library(enrichplot, lib = path)
-    library(NormalyzerDE, lib = path)
-    library(SummarizedExperiment, lib = path)
-
+    library(clusterProfiler)
+    library(DEP)
+    library(DOSE)
+    library(enrichplot)
+    library(NormalyzerDE)
+    library(SummarizedExperiment)
+    library(biomaRt)
 ''')
-
 
 # 在網頁顯示print的內容
 @contextmanager
@@ -68,37 +37,71 @@ def st_capture(output_func):
         stdout.write = new_write
         yield
 
-def st_download_button(filename, label, mime_type):
-    with open(filename, "rb") as file:
-        st.download_button(
-            label = label,
-            data = file,
-            file_name = filename,
-            mime = mime_type,
-            key = filename
-        )
+def download_button(download_filename, button_text):
+    # Load file
+    with open(download_filename, 'rb') as f:
+        object_to_download = f.read()
+    b64 = base64.b64encode(object_to_download).decode()
 
-# 儲存檔案
+    button_uuid = str(uuid.uuid4()).replace('-', '')
+    button_id = re.sub('\d+', '', button_uuid)
+
+    custom_css = f"""
+        <style>
+            #{button_id} {{
+                background-color: rgb(255, 255, 255);
+                color: rgb(38, 39, 48);
+                padding: 0.25em 0.38em;
+                position: relative;
+                text-decoration: none;
+                border-radius: 4px;
+                border-width: 1px;
+                border-style: solid;
+                border-color: rgb(230, 234, 241);
+                border-image: initial;
+            }}
+            #{button_id}:hover {{
+                border-color: rgb(246, 51, 102);
+                color: rgb(246, 51, 102);
+            }}
+            #{button_id}:active {{
+                box-shadow: none;
+                background-color: rgb(246, 51, 102);
+                color: white;
+                }}
+        </style> """
+
+    dl_link = custom_css + f'<a download="{download_filename}" id="{button_id}" href="data:file/txt;base64,{b64}">{button_text}</a><br></br>'
+    st.markdown(dl_link, unsafe_allow_html=True)
+
 def save_uploadedfile(uploadedfile):
     with open(os.path.join("uploadFile",uploadedfile.name),"wb") as f:
         f.write(uploadedfile.getbuffer())
 
-# 上傳檔案
 def upload_file():
     # 上傳檔案
     uploaded_file = st.sidebar.file_uploader('選擇您要上傳的csv、txt檔', type=['csv', 'txt'], accept_multiple_files=False)
     if uploaded_file is not None:
         # 將上傳的檔案儲存下來 (由R開啟)
-        filename = "./file/uploadFile/uploadFile.txt"
+        filename = "./uploadFile.txt"
         with open(filename,"wb") as f:
             f.write( uploaded_file.getbuffer())
 
         sep_word = "," if uploaded_file.type == "text/csv" else " "
         data = pd.read_csv(uploaded_file, sep = sep_word, error_bad_lines=False)
     else:
-        filename = "./file/uploadFile/proteinGroups_HsinYuan_Rat.txt"
+        filename = "./proteinGroups_HsinYuan_Rat.txt"
         data = pd.read_csv(filename, sep=" ")
     return filename, data
+
+
+
+# return numCondition_py, condition_py
+@st.cache_data
+def delete_file(filename_py):
+    if os.path.exists("./file/"):
+        os.system("rm -r ./file")
+    os.system("mkdir file ./file/image")
 
 def r_initialize_data(filename_py):
     robjects.r.assign('filename', filename_py)
@@ -137,9 +140,8 @@ def r_initialize_data(filename_py):
     condition_py = robjects.r("condition")
     return numCondition_py, condition_py
 
-def r_select_condition(numCondition_py, condition_py):
-    select = False if numCondition_py[0] > 1 else True
-    option = st.sidebar.selectbox(options=condition_py, label="選擇條件", disabled=select)
+# return df_colname_py, df_ncol_py, median_list_py
+def r_select_condition(option):
 
     robjects.r.assign('conditionName', option)
     robjects.r('''
@@ -164,6 +166,7 @@ def r_select_condition(numCondition_py, condition_py):
 
     return df_colname_py, df_ncol_py, median_list_py
 
+# return condition_replicate_list
 def generate_default_group(num_selected_col):
     condition_replicate_list = []
     num_category = 1
@@ -179,7 +182,11 @@ def generate_default_group(num_selected_col):
             condition_replicate_list.append([chr(65+i), j])
     return condition_replicate_list
 
-def r_experimental_design_file():
+def r_experimental_design_file(experimental_design):
+    experimental_design = experimental_design[(experimental_design.state != "N")]
+    experimental_design = experimental_design.drop("state", axis=1)
+    experimental_design.to_csv("./file/experimental_design.csv", index=False)
+    st.write("experimental_design: ",experimental_design)
 
     with st.expander("data Info. "):
         output = st.empty()
@@ -218,14 +225,12 @@ def r_experimental_design_file():
             ''')
 
 def draw_distogram_after_select_condition(df_colname_py, df_ncol_py, median_list_py):
-    experimental_design = pd.DataFrame(columns=["state","label","condition","replicate"], index=range(1, 11)).fillna("N") #創一個dataframe, 預設填N
-    with st.expander("選擇欄位"):
+    with st.expander("Select the set of columns you want to analyze"):
         # 把圖分成有選擇與沒選擇分別顯示
         cols = st.columns(3)
         outliers_val_py = robjects.r("outliers_val")
         # 有選擇的欄位編號
         selected_col_id_list = []
-
         for i in range(0, df_ncol_py[0]):
             check_value = True if median_list_py[i] not in outliers_val_py else False
 
@@ -239,31 +244,28 @@ def draw_distogram_after_select_condition(df_colname_py, df_ncol_py, median_list
                     draw_hist(id)
                     dev.off()
                 ''')
+            cols[i % 3].text(f"median: {round(median_list_py[i], 3)}")
             cols[ i % 3 ].image(Image.open('./file/image/histogram.png'))
-        # 根據欄位數，預設分組與輸入值
-        condition_replicate_list = generate_default_group(len(selected_col_id_list))
+        return selected_col_id_list
 
-        with st.sidebar.expander("input condition, replicate"):
-            for index, col_id in enumerate(selected_col_id_list):
+def generate_experimental_design_inputCondition(selected_col_id_list):
+    experimental_design = pd.DataFrame(columns=["state","label","condition","replicate"], index=range(1, 11)).fillna("N") #創一個dataframe, 預設填N
+    # 根據欄位數，預設分組與輸入值
+    condition_replicate_list = generate_default_group(len(selected_col_id_list))
 
-                experimental_design.at[col_id + 1, 'state'] = "T"
-                experimental_design.at[col_id + 1, 'label'] = df_colname_py[col_id]
-                st.write(df_colname_py[col_id])
-                condition_textInput = st.text_input('condition', key= f"condition{col_id}", value=condition_replicate_list[index][0])
-                replicate_textInput = st.text_input('replicate', key= f"replicate{col_id}", value=condition_replicate_list[index][1])
-                if condition_textInput:
-                    experimental_design.at[col_id + 1, 'condition'] = condition_textInput
-                if replicate_textInput:
-                    experimental_design.at[col_id + 1, 'replicate'] = replicate_textInput
+    with st.sidebar.expander("Select property columns"):
+        for index, col_id in enumerate(selected_col_id_list):
+            experimental_design.at[col_id + 1, 'state'] = "T"
+            experimental_design.at[col_id + 1, 'label'] = df_colname_py[col_id]
+            st.write(df_colname_py[col_id])
+            condition_textInput = st.text_input('condition', key= f"condition{col_id}", value=condition_replicate_list[index][0])
+            replicate_textInput = st.text_input('replicate', key= f"replicate{col_id}", value=condition_replicate_list[index][1])
+            if condition_textInput:
+                experimental_design.at[col_id + 1, 'condition'] = condition_textInput
+            if replicate_textInput:
+                experimental_design.at[col_id + 1, 'replicate'] = replicate_textInput
 
-    check_button = st.sidebar.checkbox('欄位選擇完成', value=True)
-    if check_button:
-        experimental_design = experimental_design[(experimental_design.state != "N")]
-        experimental_design = experimental_design.drop("state", axis=1)
-        experimental_design.to_csv("./file/experimental_design.csv", index=False)
-        st.write("experimental_design: ",experimental_design)
-        r_experimental_design_file()
-    return check_button, experimental_design
+    return experimental_design
 
 def r_normalize_function():
     robjects.r('''
@@ -373,38 +375,27 @@ def r_normalize_function():
             }
     ''')
 
-# Plot a barplot of the protein identification overlap between samples
 def r_plot_frequency_1_1():
     robjects.r(''' save_plot("./file/image/plot1_1.png", plot =  plot_frequency(data_se), , base_height = 4, base_width = 4.5) ''')
     st.write(" *Plot a barplot of the protein identification overlap between samples")
+
     st.image(Image.open('./file/image/plot1_1.png'))
     with st.expander("data"):
         output = st.empty()
         with st_capture(output.code):
             robjects.r(''' print(plot_frequency(data_se, plot= FALSE)) ''')
 
-# Plot a barplot of the number of identified proteins per samples
-def r_plot_numbers_filter_missval_1_2():
-    # Filter for proteins that are identified in all replicates of at least one condition
-    maxReplicate_py = robjects.r("maxReplicate")
-    nThr_py = st.sidebar.slider('Filter for proteins that are identified in all replicates of at least one condition: ', min_value = 0,max_value = maxReplicate_py[0] ,value = 0, step=1, format="%d")
-
+def r_plot_numbers_filter_missval_1_2(nThr_py):
     robjects.r.assign("nThr", nThr_py)
     robjects.r('''
         data_filt <- filter_missval(data_se, thr = nThr) #讓使用者選0~4(重複)
         save_plot("./file/image/plot1_2.png", plot =  plot_numbers(data_filt), base_height = 4, base_width = 4.5)
     ''')
-    st.write(" *Plot a barplot of the number of identified proteins per samples")
-    st.image(Image.open('./file/image/plot1_2.png'))
 
-# Plot a barplot of the protein identification overlap between samples
 def r_plot_coverage_1_3():
     robjects.r(''' save_plot("./file/image/plot1_3.png", plot =  plot_coverage(data_filt), base_height = 4, base_width = 4) ''')
-    st.write(" *Plot a barplot of the protein identification overlap between samples")
-    st.image(Image.open('./file/image/plot1_3.png'))
 
-def r_plot_normalization_1_4():
-    normalizeOption_py = st.sidebar.selectbox(options=["Log2", "Median", "Mean", "VSN", "Quantile", "Cyclic Loess", "RLR", "Global Intensity"], label="選擇正規化方式")
+def r_plot_normalization_1_4(normalizeOption_py):
     robjects.r.assign("normalizeOption", normalizeOption_py)
     robjects.r('''
         data_norm <- normalize_proteiNorm(data_filt, normalizeOption)
@@ -412,10 +403,6 @@ def r_plot_normalization_1_4():
         save_plot("./file/image/plot1_4.png", plot =  pic1, base_height = 4, base_width = 4)
     ''')
 
-    st.write(" Visualize normalization by boxplots for all samples before and after normalization")
-    st.image(Image.open('./file/image/plot1_4.png'))
-
-# Plot a heatmap of proteins with missing values
 def r_plot_heatmap_1_5():
     robjects.r('''
         png(file = "./file/image/plot1_5_1.png")
@@ -426,9 +413,6 @@ def r_plot_heatmap_1_5():
         png(file = "./file/image/plot1_5_2.png")
         pic1 <- plot_detect(data_filt)
         dev.off()
-
-        # All possible imputation methods are printed in an error, if an invalid function name is given.
-        #impute(data_norm, fun = "")
 
         # Impute missing data using random draws from a Gaussian distribution centered around a minimal value (for MNAR)
         data_imp <- impute(data_norm, fun = "MinProb", q = 0.01)
@@ -443,16 +427,9 @@ def r_plot_heatmap_1_5():
         pic1 <- plot_imputation(data_norm, data_imp)
         save_plot("./file/image/plot1_5_3.png", plot =  pic1, base_width = 4, base_height = 4)
     ''')
-    image_label_list = ["*Plot a heatmap of proteins with missing values",
-                        "*Plot intensity distributions and cumulative fraction of proteins with and without missing values",
-                        "*Plot intensity distributions before and after imputation"]
-    for i in range(1, 4):
-        st.write(f"{image_label_list[i-1]}")
-        st.image(Image.open(f'./file/image/plot1_5_{i}.png'))
 
-def r_plot_pca_1_6(control_py):
-    alpha_py = st.sidebar.slider("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01, format="%f")
-    lfc_py = st.sidebar.slider("lfc = log2(value): ", min_value=0.0, max_value=2.0, value=1.5, step=0.1, format="%f")
+
+def r_plot_pca_1_6(control_py, alpha_py, lfc_py):
     robjects.r.assign("control_r", control_py)
     robjects.r.assign("alpha_r", alpha_py)
     robjects.r.assign("lfc_r", lfc_py)
@@ -469,11 +446,6 @@ def r_plot_pca_1_6(control_py):
         pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
         dev.off()
     ''')
-    image_label_list = ["*Plot the first and second principal components",
-                        "*Plot the Pearson correlation matrix"]
-    for i in range(1, 3):
-        st.write(image_label_list[i-1])
-        st.image(Image.open(f'./file/image/plot1_6_{i}.png'))
 
 def r_plot_heatmap_dep_1_7():
     robjects.r('''
@@ -490,13 +462,9 @@ def r_plot_heatmap_dep_1_7():
                     k = 6, col_limit = 10, show_row_names = FALSE)
         dev.off()
     ''')
-    image_label_list = ["*Plot a heatmap of all significant proteins with the data centered per protein",
-                        "*Plot a heatmap of all significant proteins (rows) and the tested contrasts (columns)"]
-    for i in range(1, 3):
-        st.write(image_label_list[i-1])
-        st.image(Image.open(f'./file/image/plot1_7_{i}.png'))
 
-def r_plot_volcano_1_8(contrast_py):
+@st.cache_data
+def r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py):
     robjects.r.assign("contrast_r", contrast_py)
     robjects.r('''
         contrastSample <- paste(contrast_r, "_vs_", control_r)
@@ -509,29 +477,26 @@ def r_plot_volcano_1_8(contrast_py):
     ''')
     st.image(Image.open('./file/image/plot1_8.png'))
 
-def r_plot_single_1_9():
-    dataGeneName = robjects.r("data_unique$Gene.names")
-    dataGeneName = list(dataGeneName)
-    dataGeneName = [x for x in dataGeneName if x != '']
+@st.cache_data
+def r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py):
 
-    num_protein = st.sidebar.slider('Barplots of a protein of interest: ', min_value = 1, max_value = 20 ,value = 1, step=1, format="%d")
     protein_type = "contrast" if num_protein > 1 else "centered"
-
-    proteinData_py = []
-    for i in range(0, num_protein):
-        proteinData_py.append( st.sidebar.selectbox(options=dataGeneName, index=i, label="選擇蛋白質", key=f"protein{i}") )
 
     # 確認選擇的蛋白質有無重複
     if len(proteinData_py) == len(set(proteinData_py)):
-        robjects.r.assign("protein_type_r", protein_type)
-        robjects.r.assign("proteinData", proteinData_py)
-        robjects.r('''
-            pic1 <- plot_single(dep, proteins = unlist( proteinData) , type = protein_type_r)
-            save_plot("./file/image/plot1_9.png", pic1)
-        ''')
-        st.image(Image.open('./file/image/plot1_9.png'))
+        try:
+            robjects.r.assign("protein_type_r", protein_type)
+            robjects.r.assign("proteinData", proteinData_py)
+            robjects.r('''
+                pic1 <- plot_single(dep, proteins = unlist( proteinData) , type = protein_type_r)
+                save_plot("./file/image/plot1_9.png", pic1)
+            ''')
+            st.image(Image.open('./file/image/plot1_9.png'))
+        except Exception as e:
+            st.error(str(e), icon="🚨")
+
     else:
-        st.error("Error!! 選擇的蛋白質不能重複", icon="🚨")
+        st.error("Error!! The proteins selected cannot be duplicated", icon="🚨")
 
 def r_plot_cond_1_10():
     robjects.r('''
@@ -547,7 +512,20 @@ def r_plot_cond_1_10():
         dev.off()
 
     ''')
-    st.image(Image.open('./file/image/plot1_10.png'))
+
+@st.cache_data
+def cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py):
+    r_plot_frequency_1_1()
+    r_plot_numbers_filter_missval_1_2(nThr_py)
+    r_plot_coverage_1_3()
+    r_plot_normalization_1_4(normalizeOption_py)
+    r_plot_heatmap_1_5()
+
+@st.cache_data
+def cache_DEP_data2(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py):
+    r_plot_pca_1_6(control_py, alpha_py, lfc_py)
+    r_plot_heatmap_dep_1_7()
+    r_plot_cond_1_10()
 
 
 def r_uniprotAPI():
@@ -598,14 +576,6 @@ def r_uniprotAPI():
     ''')
 
 def r_init_DOSE_data():
-    species_py = robjects.r("species")
-    species_list = ["mouse", "rat", "human"]
-    species_index = [index for index, species in enumerate(species_list) if species == species_py[0]]
-
-    species_py_new = st.sidebar.selectbox(options=species_list, index=species_index[0], label="選擇物種:")
-
-    if species_py[0] != species_py_new:
-        robjects.r.assign("species", species_py_new)
 
     robjects.r('''
         dep_output_data = read.csv(file = "./file/dep_output.csv", header=TRUE, fileEncoding ="UTF-8")
@@ -616,37 +586,55 @@ def r_init_DOSE_data():
         numRatio <- length(ratioCol)
     ''')
 
-    ratioColname_py = robjects.r("ratioColname")
-    rationName_py = st.sidebar.selectbox(label= "Ratio: ", options= ratioColname_py)
-    robjects.r.assign("ratioName", rationName_py)
-
     try:
         robjects.r('''
             # convert uniprot -> entrez
             ID_string <- paste(dep_output_data$ID, collapse=",")
             resultsTable <- generate_uniprot_resultTable(ID_string)
-
-            uniprot_entrez <- resultsTable[-c(1),]
-            #去除重複 (因為uniprot可能會有多個entrez => 排序後選最小的)
-            uniprot_entrez[, 2] <- as.numeric(uniprot_entrez[, 2])
-            uniprot_entrez <- uniprot_entrez [ order(uniprot_entrez$ID_uniprot, uniprot_entrez$GeneID_entrez),]
-            uniprot_entrez <- uniprot_entrez[!duplicated(uniprot_entrez$ID_uniprot),]
-            write.csv(uniprot_entrez, file="./file/uniprot_entrez.csv")
         ''')
-    except:
-        st.error('與uriprot.org網站連接失敗(Entrez -> GeneID), 請重新載入網頁', icon="🚨")
+    except Exception as e:
+        st.error(f'與uriprot.org網站連接失敗(Entrez -> GeneID), 請重新載入網頁, {str(e)}', icon="🚨")
+        sys.exit(0)
 
-def r_convert_species_gene():
+    robjects.r('''
+        uniprot_entrez <- resultsTable[-c(1),]
+        #去除重複 (因為uniprot可能會有多個entrez => 排序後選最小的)
+        uniprot_entrez[, 2] <- as.numeric(uniprot_entrez[, 2])
+        uniprot_entrez <- uniprot_entrez [ order(uniprot_entrez$ID_uniprot, uniprot_entrez$GeneID_entrez),]
+        uniprot_entrez <- uniprot_entrez[!duplicated(uniprot_entrez$ID_uniprot),]
+        write.csv(uniprot_entrez, file="./file/uniprot_entrez.csv")
+    ''')
+
+@st.cache_data
+def r_connect_ensembl_DB(species_py_new):
+    robjects.r.assign("species", species_py_new)
     robjects.r('''
         if(species != "human"){
             human <- useMart(biomart="ensembl", dataset="hsapiens_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
-            print("******not human******")
+            print("******connect to ensembl (human)******")
             if(species == "mouse"){
                 mouse <- useMart("ensembl", dataset = "mmusculus_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
+                print("******connect to ensembl => mouse******")
+            }else{
+                rat <- useMart("ensembl", dataset = "rnorvegicus_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
+                print("******connect to ensembl => rat******")
+            }
+        }
+    ''')
+
+
+def r_convert_species_gene(ratioName_py):
+    robjects.r.assign("ratioName", ratioName_py)
+    robjects.r('''
+        if(species != "human"){
+            #human <- useMart(biomart="ensembl", dataset="hsapiens_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
+            print("******not human******")
+            if(species == "mouse"){
+                #mouse <- useMart("ensembl", dataset = "mmusculus_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
                 human_mouse_rat <- getLDS(mart=mouse, attributes=c("entrezgene_id"), filters="entrezgene_id" , values=uniprot_entrez[,"GeneID_entrez"], attributesL= c("entrezgene_id"), martL = human, uniqueRows=T ) #values=uniprots_ID
                 print("******species => mouse******")
             }else{
-                rat <- useMart("ensembl", dataset = "rnorvegicus_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
+                #rat <- useMart("ensembl", dataset = "rnorvegicus_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
                 human_mouse_rat <- getLDS(mart=rat, attributes=c("entrezgene_id"), filters="entrezgene_id" , values=uniprot_entrez[,"GeneID_entrez"], attributesL= c("entrezgene_id"), martL = human, uniqueRows=T ) #values=uniprots_ID
                 print("******species => rat******")
             }
@@ -684,32 +672,13 @@ def r_convert_species_gene():
         edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
 
     ''')
-def r_test_file():
-    robjects.r('''
-        data = read.csv("./file/dep_output_result.csv", header=TRUE, fileEncoding ="UTF-8")
-        print(colnames(data))
-        geneList = data[,ratioName] #-log(pValue)
-
-        ## feature 2: named vector
-        names(geneList) = as.character(data[, 'human_entrez'])
-
-        ## feature 3: decreasing orde
-        geneList = sort(geneList, decreasing = TRUE)
-        print(head(geneList))
-
-        de <- names(geneList)[abs(log(geneList)) > 1]
-        edo <- enrichDGN(de)
-        edo2 <- gseDO(geneList, pvalueCutoff=1)
-        edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
-
-    ''')
 
 def r_plot_barplot_2_1():
     robjects.r('''
         pic1 <- barplot(edo,x = "Count", color="p.adjust", showCategory=20)+ xlab("Count")
         save_plot("./file/image/plot2_1.png", pic1, base_height = 10, base_aspect_ratio = 1)
     ''')
-    st.image(Image.open('./file/image/plot2_1.png'))
+    #st.image(Image.open('./file/image/plot2_1.png'))
 
 def r_plot_dotplot_2_2():
     robjects.r('''
@@ -718,8 +687,6 @@ def r_plot_dotplot_2_2():
         save_plot("./file/image/plot2_2_1.png", pic11_1, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_2_2.png", pic11_2, base_height = 10, base_aspect_ratio = 1)
     ''')
-    st.image(Image.open('./file/image/plot2_2_1.png'))
-    st.image(Image.open('./file/image/plot2_2_2.png'))
 
 def r_plot_cnetplot_2_3():
     robjects.r('''
@@ -749,10 +716,7 @@ def r_plot_cnetplot_2_3():
         save_plot("./file/image/plot2_3_7.png", pic12_7, base_height = 10, base_aspect_ratio = 1)
 
     ''')
-    for i in range(1, 8):
-        st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
 
-# 2_3 cnet_plot有問題
 def r_plot_heatplot_2_4():
     robjects.r('''
         pic13_1 <- heatplot(edox)
@@ -763,10 +727,6 @@ def r_plot_heatplot_2_4():
         save_plot("./file/image/heatplot_1.png", pic13_1, base_height = 10, base_aspect_ratio = 3,limitsize = FALSE)
         save_plot("./file/image/heatplot_2.png", pic13_2, base_height = 10, base_aspect_ratio = 3,limitsize = FALSE)
     ''')
-    for i in range(1, 3):
-        st.image(Image.open(f'./file/image/plot2_4_{i}.png'))
-        st_download_button(f"./file/image/heatplot_{i}.png", f"Download heatplot_{i}.png", "image/png")
-
 
 def r_plotenrichment_map_2_5():
     robjects.r('''
@@ -780,177 +740,279 @@ def r_plotenrichment_map_2_5():
         save_plot("./file/image/plot2_5_3.png", pic14_3, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_5_4.png", pic14_4, base_height = 10, base_aspect_ratio = 1)
     ''')
-    for i in range(1, 5):
-        st.image(Image.open(f'./file/image/plot2_5_{i}.png'))
 
 def r_plot_emapplot_2_6():
-    robjects.r('''
-            library(R.utils)
-            R.utils::setOption("clusterProfiler.download.method","auto")
+    output = st.empty()
+    with st_capture(output.code):
+        robjects.r('''
             xx <- compareCluster(data, fun="enrichKEGG",
-            organism="hsa", pvalueCutoff=0.05) #pvalueCutoff正常為0.05
+                                organism="hsa", pvalueCutoff=0.05) #pvalueCutoff正常為0.05
+            xx <- pairwise_termsim(xx)
+            pic15_1 <- emapplot(xx)
+            pic15_2 <- emapplot(xx, legend_n=2)
+            pic15_3 <- emapplot(xx, pie="count")
+            pic15_4 <- emapplot(xx, pie="count", cex_category=1.5, layout="kk")
 
+            save_plot("./file/image/plot2_6_1.png", pic15_1, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_6_2.png", pic15_2, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_6_3.png", pic15_3, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_6_4.png", pic15_4, base_height = 10, base_aspect_ratio = 1)
     ''')
-    for i in range(1, 5):
-        st.image(Image.open(f'./file/image/plot2_6{i}.png'))
 
 def r_plot_upseplot_2_7():
     robjects.r('''
         save_plot("./file/image/plot2_7.png", upsetplot(edo), base_height = 10, base_aspect_ratio = 1.5)
     ''')
-    st.image(Image.open("./file/image/plot2_7.png"))
 
-def r_plot_upsetplot_with_splider_2_8():
-    pvalue_2_8_py = st.sidebar.slider("pvalue: ", min_value=0.001, max_value=1.0, step=0.001, value=0.05)
+
+@st.cache_data
+def r_plot_upsetplot_with_splider_2_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py):
     robjects.r.assign("pvalue_2_8", pvalue_2_8_py)
     robjects.r('''
-        kk2 <- gseKEGG(geneList = geneList, organism = 'hsa', minGSSize = 120, pvalueCutoff = pvalue_2_8, verbose = FALSE)
+        kk2 <- gseKEGG(geneList = geneList,
+                       organism = 'hsa',
+                        nPerm = 1000,
+                       minGSSize = 120,
+                       pvalueCutoff = pvalue_2_8,
+                       verbose = FALSE)
         if (length(kk2[,2]) < 1) {
             print("no term enriched under specific pvalueCutoff")
         }else {
-            pic16_2 <- upsetplot(kk2, n = 10)
+            pic16_2 <- upsetplot(kk2)
             save_plot("./file/image/plot2_8.png", pic16_2, base_height = 10, base_aspect_ratio = 1.5)
         }
     ''')
-    st.image(Image.open("./file/image/plot2_8.png"))
 
 def r_plot_ridgeplot_2_9():
     robjects.r('''
         pic17 <- ridgeplot(edo2) + xlab("expression distributions of enriched genes (log2FC)")
         save_plot("./file/image/plot2_9.png", pic17, base_height = 12, base_aspect_ratio = 0.65)
     ''')
-    st.image(Image.open("./file/image/plot2_9.png"))
 
-def r_plot_gseaplot_2_10():
-    robjects.r('''
-        pic18_1 <- gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Description[1])
-        pic18_2 <- gseaplot(edo2, geneSetID = 1, by = "preranked", title = edo2$Description[1])
-        pic18_3 <- gseaplot(edo2, geneSetID = 1, title = edo2$Description[1])
-
-        #cowplot::plot_grid(pic9_1, pic9_2, pic9_3, ncol=1, labels=LETTERS[1:3])
-        pic18_4 <- gseaplot2(edo2, geneSetID = 1, title = edo2$Description[1])
-
-        pic18_5 <- gseaplot2(edo2, geneSetID = 1:3)
-        pic18_6 <- gseaplot2(edo2, geneSetID = 1:3, pvalue_table = TRUE,
-                color = c("#E495A5", "#86B875", "#7DB0DD"), ES_geom = "dot")
-
-        pic18_7 <- gseaplot2(edo2, geneSetID = 1:3, subplots = 1) + xlab("Rank")
-        pic18_8 <- gseaplot2(edo2, geneSetID = 1:3, subplots = 1:2) + xlab("Rank")
-        #pic9_7_8 <- cowplot::plot_grid(pic9_7, pic9_8, ncol=1, labels=LETTERS[1:2])
-
-        pic18_9 <- gsearank(edo2, 1, title = edo2[1, "Description"])
-
-        pic18_10 <- lapply(1:3, function(i){
-            anno <- edo2[i, c("NES", "pvalue", "p.adjust")]
-            lab <- paste0(names(anno), "=",  round(anno, 3), collapse="\n")
-            gsearank(edo2, i, edo2[i, 2]) + xlab("Rank")+
-            annotate("text", 5000, edo2[i, "enrichmentScore"]* .75, label =lab, hjust=0, vjust=0)})
-
-        save_plot("./file/image/plot2_10_1.png", pic18_1, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_10_2.png", pic18_2, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_10_3.png", pic18_3, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_10_4.png", pic18_4, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_10_5.png", pic18_5, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_10_6.png", pic18_6, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_10_7.png", pic18_7, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_10_8.png", pic18_8, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_10_9.png", pic18_9, base_height = 10, base_aspect_ratio = 1)
-
-    ''')
-    for i in range(1, 10):
-        st.image(Image.open(f"./file/image/plot2_10_{i}.png"))
+def r_plot_gseaplot_2_10(ratioName_py):
+    os.system(f"Rscript pic18.r {ratioName_py}")
 
 
+@st.cache_data
+def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py):
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!draw_dose_pic!!!!")
+    r_init_DOSE_data()
+    r_convert_species_gene(ratioName_py)
 
+    r_plot_barplot_2_1()
+    r_plot_dotplot_2_2()
+    r_plot_cnetplot_2_3()
+    r_plot_heatplot_2_4()
+    r_plotenrichment_map_2_5()
+    r_plot_emapplot_2_6()
+    r_plot_upseplot_2_7()
+    r_plot_ridgeplot_2_9()
+    r_plot_gseaplot_2_10(ratioName_py)
 
 # 設定網頁標題
+
 st.title('Protein Analysis')
 st.header("1. Configure data for analysis (DEP)")
-st.sidebar.subheader("1. Configure data for analysis")
+st.sidebar.header("0. Upload File")
 filename_py, data = upload_file()
+delete_file(filename_py)
 with st.expander("see data"):
     st.write(data)
 
+css = r'''
+   <style>
+        [data-testid="stForm"] {border: 0px}
+    </style>
+'''
+st.markdown(css, unsafe_allow_html=True)
+
+
+st.sidebar.header("1. Configure data for analysis")
 numCondition_py, condition_py = r_initialize_data(filename_py)
-df_colname_py, df_ncol_py, median_list_py = r_select_condition(numCondition_py, condition_py)
-check_button, experimental_design = draw_distogram_after_select_condition(df_colname_py, df_ncol_py, median_list_py)
 
-if check_button:
+select = False if numCondition_py[0] > 1 else True
+option = st.sidebar.selectbox(options=condition_py, label="Select condition", disabled=select)
 
+df_colname_py, df_ncol_py, median_list_py = r_select_condition(option)
+selected_col_id_list = draw_distogram_after_select_condition(df_colname_py, df_ncol_py, median_list_py)
+
+if 'CONFIG' not in st.session_state:
+    st.session_state.CONFIG =  False
+
+def change_configure_state(status):
+    st.session_state.CONFIG  = status
+
+
+def config_data():
+
+    experimental_design = generate_experimental_design_inputCondition(selected_col_id_list)
+    r_experimental_design_file(experimental_design)
     experimental_design_condition_py = robjects.r("experimental_design_condition")
-    control_py =  st.sidebar.selectbox(options=experimental_design_condition_py, label="選擇控制組")
+    control_py =  st.sidebar.selectbox(options=experimental_design_condition_py, label="Control:")
     contrastOption_py = list(experimental_design_condition_py) #Str Object 轉為list
     contrastOption_py.remove(control_py[0]) #移除control
-    contrast_py =  st.sidebar.selectbox(options=contrastOption_py, label="選擇對照組")
+    contrast_py =  st.sidebar.selectbox(options=contrastOption_py, label="Contrast:")
 
-    r_normalize_function()
-    st.header('2. Filter on missing values:')
-    st.sidebar.subheader("2. Filter on missing values:")
-    r_plot_frequency_1_1()
-    r_plot_numbers_filter_missval_1_2()
-    r_plot_coverage_1_3()
-    st.header("3. Normalization")
-    st.sidebar.subheader("3. Normalization")
-    r_plot_normalization_1_4()
+    ratioColname_py = [ f"{contrast}_vs_{control_py}_ratio" for contrast in contrastOption_py ]
+    ratioName_py = st.sidebar.selectbox(label= "Ratio: ", options= ratioColname_py)
 
-    st.header("4. Impute data for missing values: ")
-    r_plot_heatmap_1_5()
+    species_py = robjects.r("species")
+    species_list = ["mouse", "rat", "human"]
+    species_index = [index for index, species in enumerate(species_list) if species == species_py[0]]
+    species_py_new = st.sidebar.selectbox(options=species_list, index=species_index[0], label="Species:")
 
-    st.header("5. Differential enrichment analysis")
-    st.sidebar.subheader("5. Differential enrichment analysis")
-    r_plot_pca_1_6(control_py)
+    normalizeOption_py = st.sidebar.selectbox(options=["Log2", "Median", "Mean", "VSN", "Quantile", "Cyclic Loess", "RLR", "Global Intensity"], label="Normalize")
 
-    try :
-        r_plot_heatmap_dep_1_7()
-    except:
-        st.error("Error! 需要調整alpha, lfc的值 (如: alpha = 1, lfc = 1)",icon="🚨")
+    st.sidebar.subheader("1-2 Filter on missing values:")
+    # Filter for proteins that are identified in all replicates of at least one condition
+    maxReplicate_py = robjects.r("maxReplicate")
+    nThr_py = st.sidebar.slider('Filter for proteins that are identified in all replicates of at least one condition: ', min_value = 0,max_value = maxReplicate_py[0] ,value = 0, step=1, format="%d")
 
-    st.header("6. Volcano plots of specific contrasts:")
-    r_plot_volcano_1_8(contrast_py)
+    st.sidebar.subheader("1-5. Differential enrichment analysis")
+    alpha_py = st.sidebar.slider("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01, format="%f")
+    lfc_py = st.sidebar.slider("lfc = log2(value): ", min_value=0.0, max_value=2.0, value=1.5, step=0.1, format="%f")
 
-    st.header("7. Barplots of a protein of interest: ")
-    st.sidebar.subheader("7. Barplots of a protein of interest")
-    r_plot_single_1_9()
-
-    try :
-        st.header("8. Frequency plot of significant proteins and overlap of conditions")
-        r_plot_cond_1_10()
-    except:
-        st.error('condition要有三組以上', icon="🚨")
-    # DOSE
-    r_uniprotAPI()
-    st.sidebar.subheader("9. Configure data for analysis (DOSE)")
-
-    r_init_DOSE_data()
-    r_convert_species_gene()
-    #r_test_file() # 測試用
-    st.header("10. Bar Plot (DOSE)")
-    r_plot_barplot_2_1()
-    st.header("11. Dot plot")
-    r_plot_dotplot_2_2()
-    st.header("12. Gene-Concept Network")
-    r_plot_cnetplot_2_3()
-    st.header("13. Heatmap-like functional classification")
-    r_plot_heatplot_2_4()
-
-    st.header("14. Enrichment Map")
-    r_plotenrichment_map_2_5()
-
-    st.header("15. Biological theme comparison")
-    #r_plot_emapplot_2_6() #error compareCluster(data, fun = "enrichKEGG", organism = "hsa", pvalueCutoff = 0.05) : No enrichment found in any of gene cluster, please check your input.
-
-    st.header("16. UpSet Plot")
-    r_plot_upseplot_2_7()
-    #Error in check_gene_id(geneList, geneSets) : --> No gene can be mapped....
-    #r_plot_upsetplot_with_splider_2_8() #error
-
-    st.header("17. ridgeline plot for expression distribution of GSEA result")
-    r_plot_ridgeplot_2_9()
-
-    st.header("18. running score and preranked list of GSEA result")
-    r_plot_gseaplot_2_10()
     with st.sidebar:
-        st.subheader("19. Download result file")
-        st_download_button("./file/dep_output.csv", "Download dep_output.csv" ,'text/csv')
-        st_download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv", 'text/csv')
-        st_download_button("./file/dep_output_result.csv", "Download dep_output_result.csv", 'text/csv')
+        with st.form(key="config_data_form"):
+            c1, c2 = st.columns(2)
+            with c1:
+                if st.form_submit_button("🟢 DONE", on_click=change_configure_state, args=(True,), disabled=st.session_state.CONFIG):
+                    pass
+            with c2:
+                if st.form_submit_button("🔴 RERUN", on_click=change_configure_state, args=(False,), disabled=not st.session_state.CONFIG):
+                    pass
+
+    if st.session_state.CONFIG:
+
+        r_normalize_function()
+
+        st.header('2. Filter on missing values:')
+        # plot 1_1~1_5
+        cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py)
+        # 1_2
+        st.write(" *Plot a barplot of the number of identified proteins per samples")
+        st.image(Image.open('./file/image/plot1_2.png'))
+        # 1_3
+        st.write(" *Plot a barplot of the protein identification overlap between samples")
+        st.image(Image.open('./file/image/plot1_3.png'))
+        # 1_4
+        st.header("3. Normalization")
+        st.write(" Visualize normalization by boxplots for all samples before and after normalization")
+        st.image(Image.open('./file/image/plot1_4.png'))
+
+        st.header("4. Impute data for missing values: ")
+        image_label_list = ["*Plot a heatmap of proteins with missing values",
+                        "*Plot intensity distributions and cumulative fraction of proteins with and without missing values",
+                        "*Plot intensity distributions before and after imputation"]
+        for i in range(1, 4):
+            st.write(f"{image_label_list[i-1]}")
+            st.image(Image.open(f'./file/image/plot1_5_{i}.png'))
+
+        st.header("5. Differential enrichment analysis")
+        # 1_6, 1_7, 1_10
+        cache_DEP_data2(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py)
+        image_label_list = ["*Plot the first and second principal components",
+                        "*Plot the Pearson correlation matrix"]
+        for i in range(1, 3):
+            st.write(image_label_list[i-1])
+            st.image(Image.open(f'./file/image/plot1_6_{i}.png'))
+
+        try :
+            #r_plot_heatmap_dep_1_7(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py)
+            image_label_list = ["*Plot a heatmap of all significant proteins with the data centered per protein",
+                        "*Plot a heatmap of all significant proteins (rows) and the tested contrasts (columns)"]
+            for i in range(1, 3):
+                st.write(image_label_list[i-1])
+                st.image(Image.open(f'./file/image/plot1_7_{i}.png'))
+        except:
+            st.error("Error! 需要調整alpha, lfc的值 (如: alpha = 1, lfc = 1)",icon="🚨")
+
+        st.header("6. Volcano plots of specific contrasts:")
+        r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py)
+
+        st.header("7. Barplots of a protein of interest: ")
+        st.sidebar.subheader("7. Barplots of a protein of interest")
+        dataGeneName = robjects.r("data_unique$Gene.names")
+        dataGeneName = list(dataGeneName)
+        dataGeneName = [x for x in dataGeneName if x != '']
+
+        num_protein = st.sidebar.slider('Barplots of a protein of interest: ', min_value = 1, max_value = 20 ,value = 1, step=1, format="%d")
+        proteinData_py = []
+        for i in range(0, num_protein):
+            proteinData_py.append( st.sidebar.selectbox(options=dataGeneName, index=i, label="protein", key=f"protein{i}") )
+        r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py)
+
+        st.header("8. Frequency plot of significant proteins and overlap of conditions")
+        try :
+            #r_plot_cond_1_10(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py)
+            st.image(Image.open('./file/image/plot1_10.png'))
+        except:
+            st.error('condition要有三組以上', icon="🚨")
+        # DOSE
+        r_uniprotAPI()
+        r_connect_ensembl_DB(species_py_new)
+        draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py)
+
+
+        st.header("10. Bar Plot (DOSE)")
+        st.image(Image.open('./file/image/plot2_1.png'))
+
+        st.header("11. Dot plot")
+        st.image(Image.open('./file/image/plot2_2_1.png'))
+        st.image(Image.open('./file/image/plot2_2_2.png'))
+
+        #r_plot_dotplot_2_2()
+        st.header("12. Gene-Concept Network")
+        #r_plot_cnetplot_2_3()
+        for i in range(1, 8):
+            st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
+
+        st.header("13. Heatmap-like functional classification")
+        #r_plot_heatplot_2_4()
+        for i in range(1, 3):
+            st.image(Image.open(f'./file/image/plot2_4_{i}.png'))
+            download_button(f"./file/image/heatplot_{i}.png", f"Download heatplot_{i}.png")
+
+        st.header("14. Enrichment Map")
+        #r_plotenrichment_map_2_5()
+        for i in range(1, 5):
+            st.image(Image.open(f'./file/image/plot2_5_{i}.png'))
+
+        st.header("15. Biological theme comparison")
+        #st.warning('有問題，待處理 error compareCluster(data, fun = "enrichKEGG", organism = "hsa", pvalueCutoff = 0.05) : No enrichment found in any of gene cluster, please check your input.')
+        #r_plot_emapplot_2_6() #error compareCluster(data, fun = "enrichKEGG", organism = "hsa", pvalueCutoff = 0.05) : No enrichment found in any of gene cluster, please check your input.
+        for i in range(1, 5):
+            st.image(Image.open(f'./file/image/plot2_6_{i}.png'))
+
+        st.header("16. UpSet Plot")
+        #r_plot_upseplot_2_7()
+        st.image(Image.open("./file/image/plot2_7.png"))
+        #st.warning("有問題，待處理 (gseKEGG: Error in check_gene_id(geneList, geneSets) : --> No gene can be mapped....)")
+
+        st.sidebar.subheader("16. UpSet Plot pvalue")
+        pvalue_2_8_py = st.sidebar.slider("pvalue: ", min_value=0.001, max_value=1.0, step=0.001, value=0.05)
+        r_plot_upsetplot_with_splider_2_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py)
+        if os.path.exists("./file/image/plot2_8.png"):
+            st.image(Image.open("./file/image/plot2_8.png"))
+        else:
+            st.warning("no term enriched under specific pvalueCutoff")
+
+        st.header("17. ridgeline plot for expression distribution of GSEA result")
+        #r_plot_ridgeplot_2_9()
+        st.image(Image.open("./file/image/plot2_9.png"))
+
+        st.header("18. running score and preranked list of GSEA result")
+        #r_plot_gseaplot_2_10()
+        for i in range(1, 11):
+            st.image(Image.open(f"./file/image/plot2_10_{i}.png"))
+
+        with st.sidebar:
+            st.subheader("19. Download result file")
+            download_button("./file/dep_output.csv", "Download dep_output.csv")
+            download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv")
+            download_button("./file/dep_output_result.csv", "Download dep_output_result.csv")
+    else:
+        st.cache_data.clear()
+
+
+config_data()

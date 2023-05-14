@@ -1,0 +1,23 @@
+install.packages("ggupset")
+install.packages("ggridges")
+install.packages("rlang")
+install.packages("ggplot2")
+install.packages("cowplot")
+install.packages("dplyr")
+install.packages("httr")
+
+install.packages("BiocManager", repos = "http://cran.us.r-project.org")
+library(BiocManager)
+BiocManager::install("biomaRt", force=TRUE, update=FALSE, ask=FALSE)
+
+install.packages("https://cran.r-project.org/src/contrib/Archive/rvcheck/rvcheck_0.1.8.tar.gz",repos = NULL,type = "source")
+BiocManager::install("clusterProfiler", force=TRUE, update=FALSE, ask=FALSE)
+
+BiocManager::install("mzR", force=TRUE, update=FALSE, ask=FALSE)
+BiocManager::install("DEP", force=TRUE, update=FALSE, ask=FALSE)
+BiocManager::install("SummarizedExperiment", force=TRUE, update=FALSE, ask=FALSE)
+BiocManager::install("DOSE", force=TRUE, update=FALSE, ask=FALSE)
+BiocManager::install("enrichplot", force=TRUE, update=FALSE, ask=FALSE)
+BiocManager::install("nloptr", force=TRUE, update=FALSE, ask=FALSE)
+BiocManager::install("NormalyzerDE", force=TRUE, update=TRUE, ask=FALSE)
+BiocManager::install("org.Hs.eg.db", force=TRUE, update=TRUE, ask=FALSE)
