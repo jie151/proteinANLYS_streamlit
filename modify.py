@@ -1,4 +1,9 @@
 import os
+
+
+os.environ['R_HOME']= 'C:\\Program Files\\R\\R-4.2.3'
+os.environ['PATH'] += os.pathsep + 'C:\\Program Files\\R\\R-4.2.3\\bin\\X64\\'
+os.environ['PATH'] += os.pathsep + 'C:\\Program Files\\R\\R-4.2.3\\'
 from rpy2 import robjects
 import streamlit as st
 import pandas as pd
@@ -9,7 +14,7 @@ import base64
 import uuid
 import re
 import sys
-sys.stderr = open("errors.txt", "w")
+
 # Load package in r
 robjects.r('''
     library(cowplot) # save_plot
@@ -98,7 +103,7 @@ def upload_file():
 
 # return numCondition_py, condition_py
 @st.cache_data
-def delete_file(filename_py):
+def delete_file(data):
     if os.path.exists("./file/"):
         os.system("rm -r ./file")
     os.system("mkdir file ./file/image")
@@ -438,6 +443,14 @@ def r_plot_pca_1_6(control_py, alpha_py, lfc_py):
         data_diff <- test_diff(data_imp, type = "control", control = control_r)
         # Denote significant proteins based on user defined cutoffs
         dep <- add_rejections(data_diff, alpha = alpha_r, lfc = log2(lfc_r)) #alpha、lfc調整
+
+        # Generate a results table
+        data_results <- get_results(dep)
+        # Number of significant proteins
+        data_results %>% filter(significant) %>% nrow()
+        write.csv(data_results,"./file/dep_output.csv", row.names = FALSE, quote=F)
+
+
         pic1 <- plot_pca(dep, x = 1, y = 2, n = 500, point_size = 4)
         save_plot("./file/image/plot1_6_1.png", pic1)
 
@@ -500,18 +513,12 @@ def r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_
 
 def r_plot_cond_1_10():
     robjects.r('''
-        # Generate a results table
-        data_results <- get_results(dep)
-        # Number of significant proteins
-        data_results %>% filter(significant) %>% nrow()
-        write.csv(data_results,"./file/dep_output.csv", row.names = FALSE, quote=F)
-
         # Plot a frequency plot of significant proteins for the different conditions
         png(file="./file/image/plot1_10.png")
         pic1 <- plot_cond(dep)
         dev.off()
-
     ''')
+
 
 @st.cache_data
 def cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py):
@@ -525,7 +532,10 @@ def cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py):
 def cache_DEP_data2(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py):
     r_plot_pca_1_6(control_py, alpha_py, lfc_py)
     r_plot_heatmap_dep_1_7()
-    r_plot_cond_1_10()
+    try :
+        r_plot_cond_1_10()
+    except Exception as e:
+        pass
 
 
 def r_uniprotAPI():
@@ -594,6 +604,7 @@ def r_init_DOSE_data():
         ''')
     except Exception as e:
         st.error(f'與uriprot.org網站連接失敗(Entrez -> GeneID), 請重新載入網頁, {str(e)}', icon="🚨")
+        sys.exit(0)
 
     robjects.r('''
         uniprot_entrez <- resultsTable[-c(1),]
@@ -814,7 +825,7 @@ st.title('Protein Analysis')
 st.header("1. Configure data for analysis (DEP)")
 st.sidebar.header("0. Upload File")
 filename_py, data = upload_file()
-delete_file(filename_py)
+delete_file(data)
 with st.expander("see data"):
     st.write(data)
 
@@ -937,8 +948,10 @@ def config_data():
 
         num_protein = st.sidebar.slider('Barplots of a protein of interest: ', min_value = 1, max_value = 20 ,value = 1, step=1, format="%d")
         proteinData_py = []
+
         for i in range(0, num_protein):
             proteinData_py.append( st.sidebar.selectbox(options=dataGeneName, index=i, label="protein", key=f"protein{i}") )
+
         r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py)
 
         st.header("8. Frequency plot of significant proteins and overlap of conditions")
@@ -1010,6 +1023,8 @@ def config_data():
             download_button("./file/dep_output.csv", "Download dep_output.csv")
             download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv")
             download_button("./file/dep_output_result.csv", "Download dep_output_result.csv")
+
+        st.success('DONE!', icon="✅")
     else:
         st.cache_data.clear()
 
