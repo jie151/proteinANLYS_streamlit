@@ -1,4 +1,8 @@
 import os
+os.environ['R_HOME']= 'C:\\Program Files\\R\\R-4.2.3'
+os.environ['PATH'] += os.pathsep + 'C:\\Program Files\\R\\R-4.2.3\\bin\\X64\\'
+os.environ['PATH'] += os.pathsep + 'C:\\Program Files\\R\\R-4.2.3\\'
+
 from rpy2 import robjects
 import streamlit as st
 import pandas as pd
@@ -835,9 +839,6 @@ option = st.sidebar.selectbox(options=condition_py, label="Select condition", di
 
 df_colname_py, df_ncol_py, median_list_py = r_select_condition(option)
 selected_col_id_list = draw_distogram_after_select_condition(df_colname_py, df_ncol_py, median_list_py)
-
-if 'CONFIG' not in st.session_state:
-    st.session_state.CONFIG =  False
 
 def change_configure_state(status):
     st.session_state.CONFIG  = status

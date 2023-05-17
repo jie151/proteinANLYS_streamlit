@@ -1,9 +1,4 @@
 import os
-
-
-os.environ['R_HOME']= 'C:\\Program Files\\R\\R-4.2.3'
-os.environ['PATH'] += os.pathsep + 'C:\\Program Files\\R\\R-4.2.3\\bin\\X64\\'
-os.environ['PATH'] += os.pathsep + 'C:\\Program Files\\R\\R-4.2.3\\'
 from rpy2 import robjects
 import streamlit as st
 import pandas as pd
@@ -85,7 +80,7 @@ def save_uploadedfile(uploadedfile):
 
 def upload_file():
     # 上傳檔案
-    uploaded_file = st.sidebar.file_uploader('選擇您要上傳的csv、txt檔', type=['csv', 'txt'], accept_multiple_files=False)
+    uploaded_file = st.sidebar.file_uploader('Upload a TXT/CSV file', type=['csv', 'txt'], accept_multiple_files=False, disabled= st.session_state.CONFIG)
     if uploaded_file is not None:
         # 將上傳的檔案儲存下來 (由R開啟)
         filename = "./uploadFile.txt"
@@ -421,12 +416,6 @@ def r_plot_heatmap_1_5():
 
         # Impute missing data using random draws from a Gaussian distribution centered around a minimal value (for MNAR)
         data_imp <- impute(data_norm, fun = "MinProb", q = 0.01)
-
-        # Impute missing data using random draws from a manually defined left-shifted Gaussian distribution (for MNAR)
-        #data_imp_man <- impute(data_norm, fun = "man", shift = 1.8, scale = 0.3)
-
-        # Impute missing data using the k-nearest neighbour approach (for MAR)
-        #data_imp_knn <- impute(data_norm, fun = "knn", rowmax = 0.9)
 
         # Plot intensity distributions before and after imputation
         pic1 <- plot_imputation(data_norm, data_imp)
@@ -820,7 +809,8 @@ def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, 
     r_plot_gseaplot_2_10(ratioName_py)
 
 # 設定網頁標題
-
+if 'CONFIG' not in st.session_state:
+    st.session_state.CONFIG =  False
 st.title('Protein Analysis')
 st.header("1. Configure data for analysis (DEP)")
 st.sidebar.header("0. Upload File")
@@ -845,9 +835,6 @@ option = st.sidebar.selectbox(options=condition_py, label="Select condition", di
 
 df_colname_py, df_ncol_py, median_list_py = r_select_condition(option)
 selected_col_id_list = draw_distogram_after_select_condition(df_colname_py, df_ncol_py, median_list_py)
-
-if 'CONFIG' not in st.session_state:
-    st.session_state.CONFIG =  False
 
 def change_configure_state(status):
     st.session_state.CONFIG  = status
