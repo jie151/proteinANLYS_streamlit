@@ -80,7 +80,7 @@ def save_uploadedfile(uploadedfile):
 
 def upload_file():
     # 上傳檔案
-    uploaded_file = st.sidebar.file_uploader('Upload a TXT/CSV file', type=['csv', 'txt'], accept_multiple_files=False, disabled= st.session_state.CONFIG)
+    uploaded_file = st.sidebar.file_uploader('Upload a TXT/CSV file', type=['csv', 'txt'], accept_multiple_files=False)
     if uploaded_file is not None:
         # 將上傳的檔案儲存下來 (由R開啟)
         filename = "./uploadFile.txt"
