@@ -23,6 +23,9 @@ robjects.r('''
     library(NormalyzerDE)
     library(SummarizedExperiment)
     library(biomaRt)
+    #Sys.setenv(JAVA_HOME="usr/lib/jvm/default-java")
+
+
 ''')
 
 # 在網頁顯示print的內容
@@ -87,13 +90,12 @@ def upload_file():
         with open(filename,"wb") as f:
             f.write( uploaded_file.getbuffer())
 
-        sep_word = "," if uploaded_file.type == "text/csv" else " "
-        data = pd.read_csv(uploaded_file, sep = sep_word, error_bad_lines=False)
+        sep_word = "," if uploaded_file.type == "text/csv" else "\t"
+        data = pd.read_csv(uploaded_file, sep = sep_word, error_bad_lines=False, dtype=object)
     else:
         filename = "./proteinGroups_HsinYuan_Rat.txt"
-        data = pd.read_csv(filename, sep=" ")
+        data = pd.read_csv(filename, sep=" ", dtype=object)
     return filename, data
-
 
 
 # return numCondition_py, condition_py
@@ -200,10 +202,11 @@ def r_experimental_design_file(experimental_design):
                     # Make a table of duplicated gene names
                     write.table(data %>% group_by(Gene.names) %>% summarize(frequency = n()) %>%
                         arrange(desc(frequency)) %>% filter(frequency > 1), file = "./file/my_data1.txt", row.names =FALSE)
+
+                    cat("a table of duplicated gene names: (table ", dim(table), "\n")
+                    table <- read.csv(file="./file/my_data1.txt", header=TRUE, fileEncoding ="UTF-8", sep = ' ')
+                    print(head(table, 7))
                 }
-                cat("a table of duplicated gene names: (table ", dim(table), "\n")
-                table <- read.csv(file="./file/my_data1.txt", header=TRUE, fileEncoding ="UTF-8", sep = ' ')
-                print(head(table, 7))
 
                 # Make unique names using the annotation in the "Gene.names" column as primary names and the annotation in "Protein.IDs" as name for those that do not have an gene name.
                 data_unique <- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
@@ -261,6 +264,8 @@ def generate_experimental_design_inputCondition(selected_col_id_list):
             condition_textInput = st.text_input('condition', key= f"condition{col_id}", value=condition_replicate_list[index][0])
             replicate_textInput = st.text_input('replicate', key= f"replicate{col_id}", value=condition_replicate_list[index][1])
             if condition_textInput:
+                if str(condition_textInput)[0].isdigit():
+                    condition_textInput = f"X{condition_textInput}"
                 experimental_design.at[col_id + 1, 'condition'] = condition_textInput
             if replicate_textInput:
                 experimental_design.at[col_id + 1, 'replicate'] = replicate_textInput
@@ -422,7 +427,6 @@ def r_plot_heatmap_1_5():
         save_plot("./file/image/plot1_5_3.png", plot =  pic1, base_width = 4, base_height = 4)
     ''')
 
-
 def r_plot_pca_1_6(control_py, alpha_py, lfc_py):
     robjects.r.assign("control_r", control_py)
     robjects.r.assign("alpha_r", alpha_py)
@@ -469,8 +473,15 @@ def r_plot_heatmap_dep_1_7():
 def r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py):
     robjects.r.assign("contrast_r", contrast_py)
     robjects.r('''
-        contrastSample <- paste(contrast_r, "_vs_", control_r)
-        contrastSample <- gsub(" ", "", contrastSample, fixed = TRUE)
+        contrastSample <- paste(contrast_r, "_vs_", control_r, sep = "")
+        print(contrastSample)
+
+        # contrast_r 也不能以數字開頭
+        row_data <- rowData(dep, use.names = FALSE)
+        if (length(grep(paste(contrastSample, "_diff", sep = ""), colnames(row_data))) == 0) {
+            contrast_r <- paste("X", contrast_r, sep="")
+            contrastSample <- paste("X", contrast_r, "_vs_", control_r, sep = "")
+        }
         print(contrastSample)
 
         # Plot a volcano plot for the contrast "Ubi6 vs Ctrl""
@@ -501,13 +512,36 @@ def r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_
         st.error("Error!! The proteins selected cannot be duplicated", icon="🚨")
 
 def r_plot_cond_1_10():
+
     robjects.r('''
+        cond_list <- plot_cond(dep, plot=FALSE)
+
+        cond_list_colnames <- t(cond_list$counts['conditions'])
+        cond_list_proteins <- t(cond_list$counts['proteins'])
+        cond_list_length <- length(cond_list_colnames)
+
+        for (i in c(1: cond_list_length)){
+            cond_list_colnames[i] = gsub(" ", "&", cond_list_colnames[i] )
+            cond_list_proteins[i] = as.character(cond_list_proteins[i])
+        }
+
         # Plot a frequency plot of significant proteins for the different conditions
         png(file="./file/image/plot1_10.png")
-        pic1 <- plot_cond(dep)
+            pic1 <- plot_cond(dep)
         dev.off()
     ''')
 
+    cond_list_colnames_py = robjects.r("cond_list_colnames")
+    cond_list_proteins_py = robjects.r("cond_list_proteins")
+    cond_list = [cond_list_colnames_py, cond_list_proteins_py]
+    with open("venn_data.txt", "w") as file:
+        for cond_list_data in cond_list:
+            for data in cond_list_data:
+                file.write(data)
+                file.write(",;")
+            file.write("\n")
+
+    os.system(f"Rscript pic1_10_2.r")
 
 @st.cache_data
 def cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py):
@@ -517,14 +551,19 @@ def cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py):
     r_plot_normalization_1_4(normalizeOption_py)
     r_plot_heatmap_1_5()
 
-@st.cache_data
+#@st.cache_data
 def cache_DEP_data2(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py):
     r_plot_pca_1_6(control_py, alpha_py, lfc_py)
-    r_plot_heatmap_dep_1_7()
+    try:
+        r_plot_heatmap_dep_1_7()
+    except Exception as e:
+        pass
+        #st.write(e)
     try :
         r_plot_cond_1_10()
     except Exception as e:
         pass
+        #st.write(e)
 
 
 def r_uniprotAPI():
@@ -656,7 +695,7 @@ def r_convert_species_gene(ratioName_py):
         write.csv(data, file="./file/dep_output_result.csv")
 
         ## feature 1: numeric vector
-        geneList = data[,ratioName] #-log(pValue)
+        geneList = data[,ratioName]
 
         ## feature 2: named vector
         names(geneList) = as.character(data[, 'human_entrez'])
@@ -666,6 +705,8 @@ def r_convert_species_gene(ratioName_py):
         print(head(geneList))
 
         de <- names(geneList)[abs(log(geneList)) > 1]
+        #de <- names(geneList)[abs(geneList) > 2]
+
         edo <- enrichDGN(de)
         edo2 <- gseDO(geneList, pvalueCutoff=1)
         edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
@@ -677,7 +718,6 @@ def r_plot_barplot_2_1():
         pic1 <- barplot(edo,x = "Count", color="p.adjust", showCategory=20)+ xlab("Count")
         save_plot("./file/image/plot2_1.png", pic1, base_height = 10, base_aspect_ratio = 1)
     ''')
-    #st.image(Image.open('./file/image/plot2_1.png'))
 
 def r_plot_dotplot_2_2():
     robjects.r('''
@@ -842,16 +882,20 @@ if 'CONFIG' not in st.session_state:
 def change_configure_state(status):
     st.session_state.CONFIG  = status
 
-
+import string
 def config_data():
 
     experimental_design = generate_experimental_design_inputCondition(selected_col_id_list)
     r_experimental_design_file(experimental_design)
     experimental_design_condition_py = robjects.r("experimental_design_condition")
     control_py =  st.sidebar.selectbox(options=experimental_design_condition_py, label="Control:")
+
     contrastOption_py = list(experimental_design_condition_py) #Str Object 轉為list
-    contrastOption_py.remove(control_py[0]) #移除control
+    contrastOption_py.remove(control_py) #移除control
     contrast_py =  st.sidebar.selectbox(options=contrastOption_py, label="Contrast:")
+
+    control_py = str(control_py)
+    contrast_py = str(contrast_py)
 
     ratioColname_py = [ f"{contrast}_vs_{control_py}_ratio" for contrast in contrastOption_py ]
     ratioName_py = st.sidebar.selectbox(label= "Ratio: ", options= ratioColname_py)
@@ -911,6 +955,7 @@ def config_data():
         st.header("5. Differential enrichment analysis")
         # 1_6, 1_7, 1_10
         cache_DEP_data2(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py)
+
         image_label_list = ["*Plot the first and second principal components",
                         "*Plot the Pearson correlation matrix"]
         for i in range(1, 3):
@@ -918,7 +963,6 @@ def config_data():
             st.image(Image.open(f'./file/image/plot1_6_{i}.png'))
 
         try :
-            #r_plot_heatmap_dep_1_7(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py)
             image_label_list = ["*Plot a heatmap of all significant proteins with the data centered per protein",
                         "*Plot a heatmap of all significant proteins (rows) and the tested contrasts (columns)"]
             for i in range(1, 3):
@@ -946,10 +990,11 @@ def config_data():
 
         st.header("8. Frequency plot of significant proteins and overlap of conditions")
         try :
-            #r_plot_cond_1_10(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py)
             st.image(Image.open('./file/image/plot1_10.png'))
+            st.image(Image.open("./file/image/plot1_10_2.png"))
         except:
             st.error('condition要有三組以上', icon="🚨")
+
         # DOSE
         r_uniprotAPI()
         r_connect_ensembl_DB(species_py_new)
@@ -963,33 +1008,26 @@ def config_data():
         st.image(Image.open('./file/image/plot2_2_1.png'))
         st.image(Image.open('./file/image/plot2_2_2.png'))
 
-        #r_plot_dotplot_2_2()
+
         st.header("12. Gene-Concept Network")
-        #r_plot_cnetplot_2_3()
         for i in range(1, 8):
             st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
 
         st.header("13. Heatmap-like functional classification")
-        #r_plot_heatplot_2_4()
         for i in range(1, 3):
             st.image(Image.open(f'./file/image/plot2_4_{i}.png'))
             download_button(f"./file/image/heatplot_{i}.png", f"Download heatplot_{i}.png")
 
         st.header("14. Enrichment Map")
-        #r_plotenrichment_map_2_5()
         for i in range(1, 5):
             st.image(Image.open(f'./file/image/plot2_5_{i}.png'))
 
         st.header("15. Biological theme comparison")
-        #st.warning('有問題，待處理 error compareCluster(data, fun = "enrichKEGG", organism = "hsa", pvalueCutoff = 0.05) : No enrichment found in any of gene cluster, please check your input.')
-        #r_plot_emapplot_2_6() #error compareCluster(data, fun = "enrichKEGG", organism = "hsa", pvalueCutoff = 0.05) : No enrichment found in any of gene cluster, please check your input.
         for i in range(1, 5):
             st.image(Image.open(f'./file/image/plot2_6_{i}.png'))
 
         st.header("16. UpSet Plot")
-        #r_plot_upseplot_2_7()
         st.image(Image.open("./file/image/plot2_7.png"))
-        #st.warning("有問題，待處理 (gseKEGG: Error in check_gene_id(geneList, geneSets) : --> No gene can be mapped....)")
 
         st.sidebar.subheader("16. UpSet Plot pvalue")
         pvalue_2_8_py = st.sidebar.slider("pvalue: ", min_value=0.001, max_value=1.0, step=0.001, value=0.05)
@@ -1000,11 +1038,10 @@ def config_data():
             st.warning("no term enriched under specific pvalueCutoff")
 
         st.header("17. ridgeline plot for expression distribution of GSEA result")
-        #r_plot_ridgeplot_2_9()
         st.image(Image.open("./file/image/plot2_9.png"))
 
         st.header("18. running score and preranked list of GSEA result")
-        #r_plot_gseaplot_2_10()
+
         for i in range(1, 11):
             st.image(Image.open(f"./file/image/plot2_10_{i}.png"))
 
@@ -1015,8 +1052,15 @@ def config_data():
             download_button("./file/dep_output_result.csv", "Download dep_output_result.csv")
 
         st.success('DONE!', icon="✅")
+
     else:
         st.cache_data.clear()
-
+    robjects.r('''
+        print(dev.list())
+        for (i in dev.list()[1]:dev.list()[length(dev.list())]) {
+            dev.off()
+        }
+        print(dev.list())
+        ''')
 
 config_data()
