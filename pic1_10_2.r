@@ -13,9 +13,11 @@ print(venn_data)
 vd <- euler(venn_data)
 png("./file/image/plot1_10_2.png")
 plot(vd,
-     fills = list(fill = c("#fbb4ae", "#b3cde3", "#ccebc5"), alpha = 0.6),
+     fill = c("dodgerblue", "goldenrod1", "darkorange1", "seagreen3", "orchid3"),
+     alpha = 0.45,
      labels = list(col = "red", font = 8),
      edges = list(col = "black", lex = 2),
-     quantities = TRUE)
+     quantities = TRUE,
+     legend = TRUE)
 
 dev.off()

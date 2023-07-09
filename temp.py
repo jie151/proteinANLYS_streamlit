@@ -431,6 +431,7 @@ def r_plot_pca_1_6(control_py, alpha_py, lfc_py):
     robjects.r.assign("control_r", control_py)
     robjects.r.assign("alpha_r", alpha_py)
     robjects.r.assign("lfc_r", lfc_py)
+
     robjects.r('''
         # Test every sample versus control
         data_diff <- test_diff(data_imp, type = "control", control = control_r)
@@ -452,6 +453,9 @@ def r_plot_pca_1_6(control_py, alpha_py, lfc_py):
         pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
         dev.off()
     ''')
+
+
+    #sys.exit()
 
 def r_plot_heatmap_dep_1_7():
     robjects.r('''
@@ -480,12 +484,12 @@ def r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control
         row_data <- rowData(dep, use.names = FALSE)
         if (length(grep(paste(contrastSample, "_diff", sep = ""), colnames(row_data))) == 0) {
             contrast_r <- paste("X", contrast_r, sep="")
-            contrastSample <- paste("X", contrast_r, "_vs_", control_r, sep = "")
+            contrastSample <- paste("X", contrast_r, "_vs_", control_r, selp = "")
         }
         print(contrastSample)
 
         # Plot a volcano plot for the contrast "Ubi6 vs Ctrl""
-        pic <- plot_volcano(dep, contrast = contrastSample, label_size = 2, add_names = TRUE)
+        pic <- plot_volcano(dep, contrast = contrastSample, label_size = 3, add_names = TRUE,adjusted = FALSE, plot = TRUE)
         save_plot("./file/image/plot1_8.png", pic)
     ''')
     st.image(Image.open('./file/image/plot1_8.png'))
@@ -660,7 +664,6 @@ def r_connect_ensembl_DB(species_py_new):
         }
     ''')
 
-
 def r_convert_species_gene(ratioName_py):
     robjects.r.assign("ratioName", ratioName_py)
     robjects.r('''
@@ -714,10 +717,10 @@ def r_geneList_de_up_down(de_up_down_py, range_py):
         print("r_geneList_de_up_down!!!!")
         if (de_up_down == "up") {
             print("up!")
-            de <- names(geneList)[log(geneList) > range]
+            de <- names(geneList)[geneList > range]
         }else if(de_up_down == "down") {
             print("down!")
-            de <- names(geneList)[log(geneList) < -range]
+            de <- names(geneList)[geneList < -range]
         }else{
             print("de!")
             de <- names(geneList)[abs(log(geneList)) > range]
@@ -1057,6 +1060,7 @@ def config_data():
 
         st.header("12. Gene-Concept Network")
         for i in range(1, 8):
+            st.write(i)
             st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
 
         st.header("13. Heatmap-like functional classification")
@@ -1093,8 +1097,8 @@ def config_data():
 
         with st.sidebar:
             st.subheader("19. Download result file")
-            download_button("./file/dep_output.csv", "Download dep_output.csv")
-            download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv")
+            # download_button("./file/dep_output.csv", "Download dep_output.csv")
+            # download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv")
             download_button("./file/dep_output_result.csv", "Download dep_output_result.csv")
 
         st.success('DONE!', icon="✅")
