@@ -24,8 +24,6 @@ robjects.r('''
     library(SummarizedExperiment)
     library(biomaRt)
     #Sys.setenv(JAVA_HOME="usr/lib/jvm/default-java")
-
-
 ''')
 
 # 在網頁顯示print的內容
@@ -96,7 +94,6 @@ def upload_file():
         filename = "./proteinGroups_HsinYuan_Rat.txt"
         data = pd.read_csv(filename, sep="\t", dtype=object)
     return filename, data
-
 
 # return numCondition_py, condition_py
 @st.cache_data
@@ -196,11 +193,11 @@ def r_experimental_design_file(experimental_design):
         with st_capture(output.code):
             robjects.r('''
                 # Are there any duplicated gene names?
-                cat('* Are there any duplicated gene names? ', data$Gene.names %>% duplicated() %>% any(), "\n")
+                cat('* Are there any duplicated gene names? ', data[, colname_geneNames] %>% duplicated() %>% any(), "\n")
 
-                if ( data$Gene.names %>% duplicated() %>% any() ){
+                if ( data[, colname_geneNames] %>% duplicated() %>% any() ){
                     # Make a table of duplicated gene names
-                    write.table(data %>% group_by(Gene.names) %>% summarize(frequency = n()) %>%
+                    write.table(data %>% group_by_(.dots = colname_geneNames) %>% summarize(frequency = n()) %>%
                         arrange(desc(frequency)) %>% filter(frequency > 1), file = "./file/my_data1.txt", row.names =FALSE)
 
                     cat("a table of duplicated gene names: (table ", dim(table), "\n")
@@ -209,7 +206,7 @@ def r_experimental_design_file(experimental_design):
                 }
 
                 # Make unique names using the annotation in the "Gene.names" column as primary names and the annotation in "Protein.IDs" as name for those that do not have an gene name.
-                data_unique <- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+                data_unique <- make_unique(data, colname_geneNames, colname_proteinIDs, delim = ";")
 
                 # Generate a SummarizedExperiment object using an experimental design
                 LFQ_columns <- grep("Reporter.intensity.corrected.", colnames(data_unique)) # get LFQ column numbers
@@ -759,21 +756,16 @@ def r_plot_cnetplot_2_3():
         }
 
         pic12_1 <- cnetplot(edox,categorySize="geneNum",foldChange=geneList)
-        ## categorySize can be scaled by 'pvalue' or 'geneNum'
-        pic12_2 <- cnetplot(edox, categorySize="pvalue", foldChange=geneList)
-        pic12_3 <- cnetplot(edox, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
-        pic12_4 <- cnetplot(edox, node_label="category")
-        pic12_5 <- cnetplot(edox, node_label="gene")
-        pic12_6 <- cnetplot(edox, node_label="all")
-        pic12_7 <- cnetplot(edox, node_label="none")
+        pic12_2 <- cnetplot(edox, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
+        pic12_3 <- cnetplot(edox, node_label="category")
+        pic12_4 <- cnetplot(edox, node_label="all")
+        pic12_5 <- cnetplot(edox, node_label="none")
 
         save_plot("./file/image/plot2_3_1.png", pic12_1, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_3_2.png", pic12_2, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_3_3.png", pic12_3, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_3_4.png", pic12_4, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_3_5.png", pic12_5, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_3_6.png", pic12_6, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_3_7.png", pic12_7, base_height = 10, base_aspect_ratio = 1)
 
     ''')
 
@@ -881,22 +873,23 @@ st.header("1. Configure data for analysis (DEP)")
 st.sidebar.header("0. Upload File")
 filename_py, data = upload_file()
 
-if 'Gene names' in data.columns and 'Protein IDs' in data.columns:
-    pass
-else:
-    st.error("Error! The uploaded file should contain a column named 'Gene namems' and 'Protein IDs'.")
-    sys.exit()
+# 分析資料要抓檔案中的 "Gene names"與 "Protein IDs"欄位，但不是每個檔都是叫一樣的名稱，
+# 可能因為沒有空格、大小寫就抓不到，所以如果找不到欄位，就讓使用者自己選。
+colname_geneNames_index = 0  if not "Gene names"  in data.columns else data.columns.get_loc("Gene names")
+colname_proteinIDs_index = 0 if not "Protein IDs" in data.columns else data.columns.get_loc("Protein IDs")
+
+colname_proteinIDs_py = st.sidebar.selectbox(label = "select 'Protein IDs'", options = data.columns, index = colname_proteinIDs_index)
+colname_geneNames_py  = st.sidebar.selectbox(label = "select 'Gene names'", options = data.columns, index = colname_geneNames_index)
+
+if colname_proteinIDs_py != "Protein IDs" or colname_geneNames_py != "Gene names":
+    st.sidebar.warning("請確認'Protein IDs'與'Gene names'的欄位名稱選擇是否正確")
+
+robjects.r.assign('colname_proteinIDs', colname_proteinIDs_py.replace(" ", "."))
+robjects.r.assign('colname_geneNames', colname_geneNames_py.replace(" ", "."))
+
 delete_file(data)
 with st.expander("see data"):
     st.write(data)
-
-css = r'''
-   <style>
-        [data-testid="stForm"] {border: 0px}
-    </style>
-'''
-st.markdown(css, unsafe_allow_html=True)
-
 
 st.sidebar.header("1. Configure data for analysis")
 numCondition_py, condition_py = r_initialize_data(filename_py)
@@ -1016,8 +1009,10 @@ def config_data():
 
         st.header("7. Barplots of a protein of interest: ")
         st.sidebar.subheader("1-7. Barplots of a protein of interest")
-        dataGeneName = robjects.r("data_unique$Gene.names")
+
+        dataGeneName = robjects.r("data_unique[, colname_geneNames]")
         dataGeneName = list(dataGeneName)
+
         dataGeneName = [x for x in dataGeneName if x != '']
 
         num_protein = st.sidebar.slider('Barplots of a protein of interest: ', min_value = 1, max_value = 20 ,value = 1, step=1, format="%d")
@@ -1027,7 +1022,7 @@ def config_data():
             proteinData_py.append( st.sidebar.selectbox(options=dataGeneName, index=i, label="protein", key=f"protein{i}") )
 
         r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py)
-
+        sys.exit(0)
         st.header("8. Frequency plot of significant proteins and overlap of conditions")
         try :
             st.image(Image.open('./file/image/plot1_10.png'))
@@ -1059,8 +1054,7 @@ def config_data():
 
 
         st.header("12. Gene-Concept Network")
-        for i in range(1, 8):
-            st.write(i)
+        for i in range(1, 6):
             st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
 
         st.header("13. Heatmap-like functional classification")

@@ -24,8 +24,6 @@ robjects.r('''
     library(SummarizedExperiment)
     library(biomaRt)
     #Sys.setenv(JAVA_HOME="usr/lib/jvm/default-java")
-
-
 ''')
 
 # 在網頁顯示print的內容
@@ -94,9 +92,8 @@ def upload_file():
         data = pd.read_csv(uploaded_file, sep = sep_word, error_bad_lines=False, dtype=object)
     else:
         filename = "./proteinGroups_HsinYuan_Rat.txt"
-        data = pd.read_csv(filename, sep=" ", dtype=object)
+        data = pd.read_csv(filename, sep="\t", dtype=object)
     return filename, data
-
 
 # return numCondition_py, condition_py
 @st.cache_data
@@ -196,11 +193,11 @@ def r_experimental_design_file(experimental_design):
         with st_capture(output.code):
             robjects.r('''
                 # Are there any duplicated gene names?
-                cat('* Are there any duplicated gene names? ', data$Gene.names %>% duplicated() %>% any(), "\n")
+                cat('* Are there any duplicated gene names? ', data[, colname_geneNames] %>% duplicated() %>% any(), "\n")
 
-                if ( data$Gene.names %>% duplicated() %>% any() ){
+                if ( data[, colname_geneNames] %>% duplicated() %>% any() ){
                     # Make a table of duplicated gene names
-                    write.table(data %>% group_by(Gene.names) %>% summarize(frequency = n()) %>%
+                    write.table(data %>% group_by_(.dots = colname_geneNames) %>% summarize(frequency = n()) %>%
                         arrange(desc(frequency)) %>% filter(frequency > 1), file = "./file/my_data1.txt", row.names =FALSE)
 
                     cat("a table of duplicated gene names: (table ", dim(table), "\n")
@@ -209,7 +206,7 @@ def r_experimental_design_file(experimental_design):
                 }
 
                 # Make unique names using the annotation in the "Gene.names" column as primary names and the annotation in "Protein.IDs" as name for those that do not have an gene name.
-                data_unique <- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+                data_unique <- make_unique(data, colname_geneNames, colname_proteinIDs, delim = ";")
 
                 # Generate a SummarizedExperiment object using an experimental design
                 LFQ_columns <- grep("Reporter.intensity.corrected.", colnames(data_unique)) # get LFQ column numbers
@@ -431,6 +428,7 @@ def r_plot_pca_1_6(control_py, alpha_py, lfc_py):
     robjects.r.assign("control_r", control_py)
     robjects.r.assign("alpha_r", alpha_py)
     robjects.r.assign("lfc_r", lfc_py)
+
     robjects.r('''
         # Test every sample versus control
         data_diff <- test_diff(data_imp, type = "control", control = control_r)
@@ -452,6 +450,9 @@ def r_plot_pca_1_6(control_py, alpha_py, lfc_py):
         pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
         dev.off()
     ''')
+
+
+    #sys.exit()
 
 def r_plot_heatmap_dep_1_7():
     robjects.r('''
@@ -480,12 +481,12 @@ def r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control
         row_data <- rowData(dep, use.names = FALSE)
         if (length(grep(paste(contrastSample, "_diff", sep = ""), colnames(row_data))) == 0) {
             contrast_r <- paste("X", contrast_r, sep="")
-            contrastSample <- paste("X", contrast_r, "_vs_", control_r, sep = "")
+            contrastSample <- paste("X", contrast_r, "_vs_", control_r, selp = "")
         }
         print(contrastSample)
 
         # Plot a volcano plot for the contrast "Ubi6 vs Ctrl""
-        pic <- plot_volcano(dep, contrast = contrastSample, label_size = 2, add_names = TRUE)
+        pic <- plot_volcano(dep, contrast = contrastSample, label_size = 3, add_names = TRUE,adjusted = FALSE, plot = TRUE)
         save_plot("./file/image/plot1_8.png", pic)
     ''')
     st.image(Image.open('./file/image/plot1_8.png'))
@@ -660,7 +661,6 @@ def r_connect_ensembl_DB(species_py_new):
         }
     ''')
 
-
 def r_convert_species_gene(ratioName_py):
     robjects.r.assign("ratioName", ratioName_py)
     robjects.r('''
@@ -704,14 +704,32 @@ def r_convert_species_gene(ratioName_py):
         geneList = sort(geneList, decreasing = TRUE)
         print(head(geneList))
 
-        de <- names(geneList)[abs(log(geneList)) > 1]
-        #de <- names(geneList)[abs(geneList) > 2]
+    ''')
 
+def r_geneList_de_up_down(de_up_down_py, range_py):
+
+    robjects.r.assign("de_up_down", de_up_down_py)
+    robjects.r.assign("range", range_py)
+    robjects.r('''
+        print("r_geneList_de_up_down!!!!")
+        if (de_up_down == "up") {
+            print("up!")
+            de <- names(geneList)[geneList > range]
+        }else if(de_up_down == "down") {
+            print("down!")
+            de <- names(geneList)[geneList < -range]
+        }else{
+            print("de!")
+            de <- names(geneList)[abs(log(geneList)) > range]
+        }
+        print("head(de)")
+        print(head(de, 10))
         edo <- enrichDGN(de)
         edo2 <- gseDO(geneList, pvalueCutoff=1)
         edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
 
     ''')
+
 
 def r_plot_barplot_2_1():
     robjects.r('''
@@ -737,22 +755,17 @@ def r_plot_cnetplot_2_3():
         scales:::rescale(dropAsis(x), ...)
         }
 
-        pic12_1 <- cnetplot(edox, foldChange=geneList)
-        ## categorySize can be scaled by 'pvalue' or 'geneNum'
-        pic12_2 <- cnetplot(edox, categorySize="pvalue", foldChange=geneList)
-        pic12_3 <- cnetplot(edox, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
-        pic12_4 <- cnetplot(edox, node_label="category")
-        pic12_5 <- cnetplot(edox, node_label="gene")
-        pic12_6 <- cnetplot(edox, node_label="all")
-        pic12_7 <- cnetplot(edox, node_label="none")
+        pic12_1 <- cnetplot(edox,categorySize="geneNum",foldChange=geneList)
+        pic12_2 <- cnetplot(edox, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
+        pic12_3 <- cnetplot(edox, node_label="category")
+        pic12_4 <- cnetplot(edox, node_label="all")
+        pic12_5 <- cnetplot(edox, node_label="none")
 
         save_plot("./file/image/plot2_3_1.png", pic12_1, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_3_2.png", pic12_2, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_3_3.png", pic12_3, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_3_4.png", pic12_4, base_height = 10, base_aspect_ratio = 1)
         save_plot("./file/image/plot2_3_5.png", pic12_5, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_3_6.png", pic12_6, base_height = 10, base_aspect_ratio = 1)
-        save_plot("./file/image/plot2_3_7.png", pic12_7, base_height = 10, base_aspect_ratio = 1)
 
     ''')
 
@@ -833,10 +846,14 @@ def r_plot_gseaplot_2_10(ratioName_py):
 
 
 @st.cache_data
-def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py):
+def DOSE_data_config(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py):
     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!draw_dose_pic!!!!")
     r_init_DOSE_data()
     r_convert_species_gene(ratioName_py)
+
+@st.cache_data
+def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py):
+    r_geneList_de_up_down(de_up_down_py, range_py)
 
     r_plot_barplot_2_1()
     r_plot_dotplot_2_2()
@@ -855,17 +872,24 @@ st.title('Protein Analysis')
 st.header("1. Configure data for analysis (DEP)")
 st.sidebar.header("0. Upload File")
 filename_py, data = upload_file()
+
+# 分析資料要抓檔案中的 "Gene names"與 "Protein IDs"欄位，但不是每個檔都是叫一樣的名稱，
+# 可能因為沒有空格、大小寫就抓不到，所以如果找不到欄位，就讓使用者自己選。
+colname_geneNames_index = 0  if not "Gene names"  in data.columns else data.columns.get_loc("Gene names")
+colname_proteinIDs_index = 0 if not "Protein IDs" in data.columns else data.columns.get_loc("Protein IDs")
+
+colname_proteinIDs_py = st.sidebar.selectbox(label = "select 'Protein IDs'", options = data.columns, index = colname_proteinIDs_index)
+colname_geneNames_py  = st.sidebar.selectbox(label = "select 'Gene names'", options = data.columns, index = colname_geneNames_index)
+
+if colname_proteinIDs_py != "Protein IDs" or colname_geneNames_py != "Gene names":
+    st.sidebar.warning("請確認'Protein IDs'與'Gene names'的欄位名稱選擇是否正確")
+
+robjects.r.assign('colname_proteinIDs', colname_proteinIDs_py.replace(" ", "."))
+robjects.r.assign('colname_geneNames', colname_geneNames_py.replace(" ", "."))
+
 delete_file(data)
 with st.expander("see data"):
     st.write(data)
-
-css = r'''
-   <style>
-        [data-testid="stForm"] {border: 0px}
-    </style>
-'''
-st.markdown(css, unsafe_allow_html=True)
-
 
 st.sidebar.header("1. Configure data for analysis")
 numCondition_py, condition_py = r_initialize_data(filename_py)
@@ -881,6 +905,15 @@ if 'CONFIG' not in st.session_state:
 
 def change_configure_state(status):
     st.session_state.CONFIG  = status
+
+def clear_cache_draw_dose_pic():
+    #st.sidebar.write("clear!!!")
+    try:
+        #st.sidebar.write("success!!!!!")
+        draw_DOSE_pic.clear()
+    except:
+        pass
+        #st.sidebar.write("error clear!!!")
 
 import string
 def config_data():
@@ -913,8 +946,8 @@ def config_data():
     nThr_py = st.sidebar.slider('Filter for proteins that are identified in all replicates of at least one condition: ', min_value = 0,max_value = maxReplicate_py[0] ,value = 0, step=1, format="%d")
 
     st.sidebar.subheader("1-5. Differential enrichment analysis")
-    alpha_py = st.sidebar.slider("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01, format="%f")
-    lfc_py = st.sidebar.slider("lfc = log2(value): ", min_value=0.0, max_value=2.0, value=1.5, step=0.1, format="%f")
+    alpha_py = st.sidebar.number_input("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01)
+    lfc_py = st.sidebar.number_input("lfc = log2(value): ", min_value=0.0, max_value=2.0, value=1.5, step=0.1)
 
     with st.sidebar:
         with st.form(key="config_data_form"):
@@ -975,9 +1008,11 @@ def config_data():
         r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py)
 
         st.header("7. Barplots of a protein of interest: ")
-        st.sidebar.subheader("7. Barplots of a protein of interest")
-        dataGeneName = robjects.r("data_unique$Gene.names")
+        st.sidebar.subheader("1-7. Barplots of a protein of interest")
+
+        dataGeneName = robjects.r("data_unique[, colname_geneNames]")
         dataGeneName = list(dataGeneName)
+
         dataGeneName = [x for x in dataGeneName if x != '']
 
         num_protein = st.sidebar.slider('Barplots of a protein of interest: ', min_value = 1, max_value = 20 ,value = 1, step=1, format="%d")
@@ -987,7 +1022,7 @@ def config_data():
             proteinData_py.append( st.sidebar.selectbox(options=dataGeneName, index=i, label="protein", key=f"protein{i}") )
 
         r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py)
-
+        sys.exit(0)
         st.header("8. Frequency plot of significant proteins and overlap of conditions")
         try :
             st.image(Image.open('./file/image/plot1_10.png'))
@@ -998,7 +1033,16 @@ def config_data():
         # DOSE
         r_uniprotAPI()
         r_connect_ensembl_DB(species_py_new)
-        draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py)
+        DOSE_data_config(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py)
+
+        st.sidebar.subheader("2. DOSE")
+
+        de_up_down_py = st.sidebar.selectbox(options=['de','up', 'down'], on_change= clear_cache_draw_dose_pic, index=0, label="geneList dataset:")
+        print("de_up_down_py",de_up_down_py)
+
+        range_py = st.sidebar.number_input('range: ', on_change= clear_cache_draw_dose_pic, min_value = 0.0, max_value = 5.0, value = 2.0, step=0.01)
+
+        draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py)
 
 
         st.header("10. Bar Plot (DOSE)")
@@ -1010,7 +1054,7 @@ def config_data():
 
 
         st.header("12. Gene-Concept Network")
-        for i in range(1, 8):
+        for i in range(1, 6):
             st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
 
         st.header("13. Heatmap-like functional classification")
@@ -1030,7 +1074,7 @@ def config_data():
         st.image(Image.open("./file/image/plot2_7.png"))
 
         st.sidebar.subheader("16. UpSet Plot pvalue")
-        pvalue_2_8_py = st.sidebar.slider("pvalue: ", min_value=0.001, max_value=1.0, step=0.001, value=0.05)
+        pvalue_2_8_py = st.sidebar.number_input("pvalue: ", min_value=0.001, max_value=1.0, step=0.001, value=0.05)
         r_plot_upsetplot_with_splider_2_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py)
         if os.path.exists("./file/image/plot2_8.png"):
             st.image(Image.open("./file/image/plot2_8.png"))
@@ -1047,8 +1091,8 @@ def config_data():
 
         with st.sidebar:
             st.subheader("19. Download result file")
-            download_button("./file/dep_output.csv", "Download dep_output.csv")
-            download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv")
+            # download_button("./file/dep_output.csv", "Download dep_output.csv")
+            # download_button("./file/uniprot_entrez.csv", "Download uniprot_entrez.csv")
             download_button("./file/dep_output_result.csv", "Download dep_output_result.csv")
 
         st.success('DONE!', icon="✅")
