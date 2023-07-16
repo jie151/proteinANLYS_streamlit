@@ -224,8 +224,10 @@ def generate_experimental_design_inputCondition(selected_col_id_list):
             condition_textInput = st.text_input('condition', key= f"condition{col_id}", value=condition_replicate_list[index][0])
             replicate_textInput = st.text_input('replicate', key= f"replicate{col_id}", value=condition_replicate_list[index][1])
             if condition_textInput:
-                if str(condition_textInput)[0].isdigit():
-                    condition_textInput = f"X{condition_textInput}"
+                # Make Syntactically Valid Names
+                robjects.r.assign("condition_textInput_r", condition_textInput)
+                condition_textInput = robjects.r("make.names(condition_textInput_r)")[0]
+
                 experimental_design.at[col_id + 1, 'condition'] = condition_textInput
             if replicate_textInput:
                 experimental_design.at[col_id + 1, 'replicate'] = replicate_textInput
@@ -728,6 +730,10 @@ def r_geneList_de_up_down(de_up_down_py, range_py):
         cat("head(geneList)\n", head(geneList), "\n")
         print(head(geneList))
 
+        hist(x=df[,id], breaks=25,
+                    xlim=c(0,max(df)), main=colname[id], # 圖片的名稱
+                    xlab="", ylab="" )
+
         print("r_geneList_de_up_down!!!!")
         if (de_up_down == "up") {
             print("up!")
@@ -740,6 +746,8 @@ def r_geneList_de_up_down(de_up_down_py, range_py):
             de <- names(geneList)[ abs(geneList) > range]
         }
         cat("head(de)\n", head(de, 10), "\n")
+
+
 
         error_occurred <- "T"
         if ( length(de) > 0) {
