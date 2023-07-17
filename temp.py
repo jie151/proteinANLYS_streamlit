@@ -23,6 +23,10 @@ robjects.r('''
     library(NormalyzerDE)
     library(SummarizedExperiment)
     library(biomaRt)
+    library(ReactomePA)
+    library(AnnotationHub)
+    library(MeSHDbi)
+    library(msigdbr)
 ''')
 
 # 在網頁顯示print的內容
@@ -399,110 +403,173 @@ def r_plot_frequency_1_1():
 
 # 用 data_se 畫第一部分(DEP)的圖，生成 data_filt
 def r_plot_numbers_filter_missval_1_2(nThr_py):
+    st.write(" *Plot a barplot of the number of identified proteins per samples")
     robjects.r.assign("nThr", nThr_py)
-    robjects.r('''
-        data_filt <- filter_missval(data_se, thr = nThr) #讓使用者選0~4(重複)
-        save_plot("./file/image/plot1_2.png", plot =  plot_numbers(data_filt), base_height = 4, base_width = 4.5)
-    ''')
+    try:
+        robjects.r('''
+            data_filt <- filter_missval(data_se, thr = nThr) #讓使用者選0~4(重複)
+            save_plot("./file/image/plot1_2.png", plot =  plot_numbers(data_filt), base_height = 4, base_width = 4.5)
+        ''')
+        st.image(Image.open('./file/image/plot1_2.png'))
+    except Exception as e:
+        st.error(f"error! {e}")
 
 # 用 data_filt 畫第一部分(DEP)的圖，生成 data_filt
 def r_plot_coverage_1_3():
-    robjects.r(''' save_plot("./file/image/plot1_3.png", plot =  plot_coverage(data_filt), base_height = 4, base_width = 4) ''')
+    st.write(" *Plot a barplot of the protein identification overlap between samples")
+    try:
+        robjects.r(''' save_plot("./file/image/plot1_3.png", plot =  plot_coverage(data_filt), base_height = 4, base_width = 4) ''')
+        st.image(Image.open('./file/image/plot1_3.png'))
+    except Exception as e:
+        st.error(f"error! {e}")
 
 # 根據選擇的正規化方式，生成 data_norm， 用 data_norm 畫第一部分(DEP)的圖
 def r_plot_normalization_1_4(normalizeOption_py):
+    st.header("3. Normalization")
+    st.write(" Visualize normalization by boxplots for all samples before and after normalization")
     robjects.r.assign("normalizeOption", normalizeOption_py)
-    robjects.r('''
-        data_norm <- normalize_proteiNorm(data_filt, normalizeOption)
-        pic1 <- plot_normalization(data_filt, data_norm)
-        save_plot("./file/image/plot1_4.png", plot =  pic1, base_height = 4, base_width = 4)
-    ''')
+    try:
+        robjects.r('''
+            data_norm <- normalize_proteiNorm(data_filt, normalizeOption)
+            pic1 <- plot_normalization(data_filt, data_norm)
+            save_plot("./file/image/plot1_4.png", plot =  pic1, base_height = 4, base_width = 4)
+        ''')
+        st.image(Image.open('./file/image/plot1_4.png'))
+    except Exception as e:
+        st.error(f"error! {e}")
 
 # 生成 data_imp，並用 data_filt, data_norm, data_imp 畫第一部分(DEP)的圖 (3張 5-1 ~ 5-3)
 def r_plot_heatmap_1_5():
-    robjects.r('''
-        png(file = "./file/image/plot1_5_1.png")
-        pic1 <- plot_missval(data_filt)
-        dev.off()
+    st.header("4. Impute data for missing values: ")
+    image_label_list = ["*Plot a heatmap of proteins with missing values",
+                        "*Plot intensity distributions and cumulative fraction of proteins with and without missing values",
+                        "*Plot intensity distributions before and after imputation"]
 
-        # Plot intensity distributions and cumulative fraction of proteins with and without missing values
-        png(file = "./file/image/plot1_5_2.png")
-        pic1 <- plot_detect(data_filt)
-        dev.off()
+    try:
+        st.write(image_label_list[0])
+        robjects.r('''
+            print("--------------r_plot_heatmap_1_5() start--------------")
+            png(file = "./file/image/plot1_5_1.png")
+            pic1 <- plot_missval(data_filt)
+            dev.off()
+            print("plot1_5_1.png")
+        ''')
+        st.image(Image.open('./file/image/plot1_5_1.png'))
+    except Exception as e:
+        st.error(f"error! plot_missval(data_filt) {e}")
 
-        # Impute missing data using random draws from a Gaussian distribution centered around a minimal value (for MNAR)
-        data_imp <- impute(data_norm, fun = "MinProb", q = 0.01)
+    try:
+        st.write(image_label_list[1])
+        robjects.r('''
+            # Plot intensity distributions and cumulative fraction of proteins with and without missing values
+            png(file = "./file/image/plot1_5_2.png")
+            pic1 <- plot_detect(data_filt)
+            dev.off()
+            print("plot1_5_2.png")
+        ''')
+        st.image(Image.open('./file/image/plot1_5_2.png'))
+    except Exception as e:
+        st.error(f"error! plot_detect(data_filt) {e}")
 
-        # Plot intensity distributions before and after imputation
-        pic1 <- plot_imputation(data_norm, data_imp)
-        save_plot("./file/image/plot1_5_3.png", plot =  pic1, base_width = 4, base_height = 4)
-    ''')
+    try:
+        st.write(image_label_list[2])
+        robjects.r('''
+            # Impute missing data using random draws from a Gaussian distribution centered around a minimal value (for MNAR)
+            data_imp <- impute(data_norm, fun = "MinProb", q = 0.01)
+            print("data_imp")
+
+            # Plot intensity distributions before and after imputation
+            pic1 <- plot_imputation(data_norm, data_imp)
+            save_plot("./file/image/plot1_5_3.png", plot =  pic1, base_width = 4, base_height = 4)
+            print("plot1_5_3.png")
+        ''')
+        st.image(Image.open('./file/image/plot1_5_3.png'))
+    except Exception as e:
+        st.error(f"error! {e}")
+
 
 # 根據選擇的控制組、alpha, lfc值，生成 data_diff、dep、data_results、dep_output.csv，並用 dep 畫第一部分(DEP)的圖 (2張 6-1 ~ 6-2)
 def r_plot_pca_1_6(control_py, alpha_py, lfc_py):
     robjects.r.assign("control_r", control_py)
     robjects.r.assign("alpha_r", alpha_py)
     robjects.r.assign("lfc_r", lfc_py)
+    image_label_list = ["*Plot the first and second principal components", "*Plot the Pearson correlation matrix"]
+    try:
+        robjects.r('''
+            # Test every sample versus control
+            data_diff <- test_diff(data_imp, type = "control", control = control_r)
+            # Denote significant proteins based on user defined cutoffs
+            dep <- add_rejections(data_diff, alpha = alpha_r, lfc = log2(lfc_r)) #alpha、lfc調整
 
-    robjects.r('''
-        # Test every sample versus control
-        data_diff <- test_diff(data_imp, type = "control", control = control_r)
-        # Denote significant proteins based on user defined cutoffs
-        dep <- add_rejections(data_diff, alpha = alpha_r, lfc = log2(lfc_r)) #alpha、lfc調整
+            # Generate a results table
+            data_results <- get_results(dep)
+            # Number of significant proteins
+            data_results %>% filter(significant) %>% nrow()
+            write.csv(data_results,"./file/dep_output.csv", row.names = FALSE, quote=F)
 
-        # Generate a results table
-        data_results <- get_results(dep)
-        # Number of significant proteins
-        data_results %>% filter(significant) %>% nrow()
-        write.csv(data_results,"./file/dep_output.csv", row.names = FALSE, quote=F)
+            pic1 <- plot_pca(dep, x = 1, y = 2, n = 500, point_size = 4)
+            save_plot("./file/image/plot1_6_1.png", pic1)
 
-        pic1 <- plot_pca(dep, x = 1, y = 2, n = 500, point_size = 4)
-        save_plot("./file/image/plot1_6_1.png", pic1)
-
-        # Plot the Pearson correlation matrix
-        png(file="./file/image/plot1_6_2.png")
-        pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
-        dev.off()
-    ''')
+            # Plot the Pearson correlation matrix
+            png(file="./file/image/plot1_6_2.png")
+            pic1 <- plot_cor(dep, significant = FALSE, lower = 0.9, upper = 1, pal = "Reds")
+            dev.off()
+        ''')
+        for i in range(1, 3):
+            st.write(image_label_list[i-1])
+            st.image(Image.open(f'./file/image/plot1_6_{i}.png'))
+    except Exception as e:
+        st.error(f"error! {e}")
 
 # 用 dep 畫第一部分(DEP)的圖 (2張 7-1 ~ 7-2)
 def r_plot_heatmap_dep_1_7():
-    robjects.r('''
-        # Plot a heatmap of all significant proteins with the data centered per protein
-        png(file="./file/image/plot1_7_1.png")
-        pic1 <- plot_heatmap(dep, type = "centered", kmeans = TRUE,
-                    k = 6, col_limit = 4, show_row_names = FALSE,
-                    indicate = c("condition", "replicate"))
-        dev.off()
+    try:
+        robjects.r('''
+            # Plot a heatmap of all significant proteins with the data centered per protein
+            png(file="./file/image/plot1_7_1.png")
+            pic1 <- plot_heatmap(dep, type = "centered", kmeans = TRUE,
+                        k = 6, col_limit = 4, show_row_names = FALSE,
+                        indicate = c("condition", "replicate"))
+            dev.off()
 
-        # Plot a heatmap of all significant proteins (rows) and the tested contrasts (columns)
-        png(file="./file/image/plot1_7_2.png")
-        pic1 <- plot_heatmap(dep, type = "contrast", kmeans = TRUE,
-                    k = 6, col_limit = 10, show_row_names = FALSE)
-        dev.off()
-    ''')
+            # Plot a heatmap of all significant proteins (rows) and the tested contrasts (columns)
+            png(file="./file/image/plot1_7_2.png")
+            pic1 <- plot_heatmap(dep, type = "contrast", kmeans = TRUE,
+                        k = 6, col_limit = 10, show_row_names = FALSE)
+            dev.off()
+        ''')
+        image_label_list = ["*Plot a heatmap of all significant proteins with the data centered per protein",
+                        "*Plot a heatmap of all significant proteins (rows) and the tested contrasts (columns)"]
+        for i in range(1, 3):
+            st.write(image_label_list[i-1])
+            st.image(Image.open(f'./file/image/plot1_7_{i}.png'))
+    except Exception as e:
+        st.error(f"error!, {e} 需要調整alpha, lfc的值 (如: alpha = 1, lfc = 1)", icon="🚨")
 
 # 用 dep 畫第一部分(DEP)的圖
 @st.cache_data
 def r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py):
     robjects.r.assign("contrast_r", contrast_py)
-    robjects.r('''
-        contrastSample <- paste(contrast_r, "_vs_", control_r, sep = "")
-        print(contrastSample)
+    try:
+        robjects.r('''
+            contrastSample <- paste(contrast_r, "_vs_", control_r, sep = "")
+            print(contrastSample)
 
-        # contrast_r 也不能以數字開頭
-        row_data <- rowData(dep, use.names = FALSE)
-        if (length(grep(paste(contrastSample, "_diff", sep = ""), colnames(row_data))) == 0) {
-            contrast_r <- paste("X", contrast_r, sep="")
-            contrastSample <- paste("X", contrast_r, "_vs_", control_r, selp = "")
-        }
-        print(contrastSample)
+            # contrast_r 也不能以數字開頭
+            row_data <- rowData(dep, use.names = FALSE)
+            if (length(grep(paste(contrastSample, "_diff", sep = ""), colnames(row_data))) == 0) {
+                contrast_r <- paste("X", contrast_r, sep="")
+                contrastSample <- paste("X", contrast_r, "_vs_", control_r, selp = "")
+            }
+            print(contrastSample)
 
-        # Plot a volcano plot for the contrast "Ubi6 vs Ctrl""
-        pic <- plot_volcano(dep, contrast = contrastSample, label_size = 3, add_names = TRUE,adjusted = FALSE, plot = TRUE)
-        save_plot("./file/image/plot1_8.png", pic)
-    ''')
-    st.image(Image.open('./file/image/plot1_8.png'))
+            # Plot a volcano plot for the contrast "Ubi6 vs Ctrl""
+            pic <- plot_volcano(dep, contrast = contrastSample, label_size = 3, add_names = TRUE,adjusted = FALSE, plot = TRUE)
+            save_plot("./file/image/plot1_8.png", pic)
+        ''')
+        st.image(Image.open('./file/image/plot1_8.png'))
+    except Exception as e:
+        st.error(f"error! {e}")
 
 # 用 dep、選擇的蛋白質畫第一部分(DEP)的圖，並顯示
 @st.cache_data
@@ -630,15 +697,18 @@ def r_uniprotAPI():
 
 # 呼叫 r_uniprotAPI() 進行轉換
 def r_init_DOSE_data():
+    try:
+        robjects.r('''
+            dep_output_data = read.csv(file = "./file/dep_output.csv", header=TRUE, fileEncoding ="UTF-8")
+            dep_output_data[,'ID'] <- sub("-.*", "", dep_output_data$ID)
 
-    robjects.r('''
-        dep_output_data = read.csv(file = "./file/dep_output.csv", header=TRUE, fileEncoding ="UTF-8")
-        dep_output_data[,'ID'] <- sub("-.*", "", dep_output_data$ID)
-
-        ratioCol <- grep( "ratio$" , colnames(dep_output_data) )
-        ratioColname <- colnames(dep_output_data[ratioCol])
-        numRatio <- length(ratioCol)
-    ''')
+            ratioCol <- grep( "ratio$" , colnames(dep_output_data) )
+            ratioColname <- colnames(dep_output_data[ratioCol])
+            numRatio <- length(ratioCol)
+        ''')
+    except Exception as e:
+        st.error(f'讀取資料有問題, {str(e)}', icon="🚨")
+        sys.exit(0)
 
     try:
         robjects.r('''
@@ -721,18 +791,15 @@ def r_convert_species_gene(ratioName_py):
     ''')
 
 # 讓使用者選擇要分析 up (正數) , down (負數), de (abs) 哪一部分的資料
-def r_geneList_de_up_down(de_up_down_py, range_py):
+def r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py):
 
     robjects.r.assign("de_up_down", de_up_down_py)
     robjects.r.assign("range", range_py)
+    robjects.r.assign("enrichment_analysis_methods", enrichment_analysis_methods_py)
     robjects.r('''
         print("--------------r_geneList_de_up_down(de_up_down_py, range_py) start--------------")
         cat("head(geneList)\n", head(geneList), "\n")
         print(head(geneList))
-
-        hist(x=df[,id], breaks=25,
-                    xlim=c(0,max(df)), main=colname[id], # 圖片的名稱
-                    xlab="", ylab="" )
 
         print("r_geneList_de_up_down!!!!")
         if (de_up_down == "up") {
@@ -740,20 +807,66 @@ def r_geneList_de_up_down(de_up_down_py, range_py):
             de <- names(geneList)[ geneList > range]
         }else if(de_up_down == "down") {
             print("down!")
-            de <- names(geneList)[ geneList < -range]
+            de <- names(geneList)[ geneList < range]
         }else{
             print("de!")
             de <- names(geneList)[ abs(geneList) > range]
         }
         cat("head(de)\n", head(de, 10), "\n")
 
+        print(enrichment_analysis_methods)
 
+        if (enrichment_analysis_methods == "DGN") {
+            # origin
+            print("DGN!")
+            edo <- enrichDGN(de)
+        }else if(enrichment_analysis_methods == "KEGG") {
+            # 7 KEGG enrichment analysis
+            print("KEGG!")
+            edo <- enrichKEGG(gene         = de,
+                            organism     = 'hsa',
+                            pvalueCutoff = 0.05)
+        }else if(enrichment_analysis_methods == "WikiPathways") {
+            # 8 WikiPathways analysis
+            print("WikiPathways!")
+            edo <- enrichWP(gene = de, organism = "Homo sapiens")
+        }else if(enrichment_analysis_methods == "Reactome") {
+            # 9 Reactome enrichment analysis
+            print("Reactome!")
+            edo <- enrichPathway(gene=de, pvalueCutoff = 0.05, readable=TRUE)
+        }else if(enrichment_analysis_methods == "Disease") {
+            # 10 Disease enrichment analysis
+            print("Disease!")
+            edo <- enrichDO(gene          = de,
+                            ont           = "DO",
+                            pvalueCutoff  = 0.05,
+                            pAdjustMethod = "BH",
+                            universe      = names(geneList),
+                            minGSSize     = 5,
+                            maxGSSize     = 500,
+                            qvalueCutoff  = 0.05,
+                            readable      = FALSE)
+        }else if(enrichment_analysis_methods == "MeSH") {
+            # 11 MeSH enrichment analysis
+            print("MeSH!")
+            ah <- AnnotationHub(localHub=TRUE)
+            hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
+            file_hsa <- hsa[[1]]
+            db <- MeSHDbi::MeSHDb(file_hsa)
+            edo <- enrichMeSH(gene=de, MeSHDb = db, database='gendoo', category = 'C')
+        }else{
+            # 12 Universal enrichment analysis
+            print("Universal!")
 
+            C3_t2g <- msigdbr(species = "Homo sapiens", category = "C3") %>%
+                        dplyr::select(gs_name, entrez_gene)
+            edo <- enricher(gene=de, TERM2GENE=C3_t2g)
+        }
+        print("--------------r_geneList_de_up_down(de_up_down_py, range_py) edo--------------")
         error_occurred <- "T"
         if ( length(de) > 0) {
             error_occurred <- "F"
             print("de length > 0")
-            edo <- enrichDGN(de)
             edo2 <- gseDO(geneList, pvalueCutoff=1)
             edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
         }
@@ -932,8 +1045,8 @@ def r_plot_ridgeplot_2_9():
         save_plot("./file/image/plot2_9.png", pic17, base_height = 12, base_aspect_ratio = 0.65)
     ''')
 
-def r_plot_gseaplot_2_10(ratioName_py):
-    os.system(f"Rscript pic18.r {ratioName_py}")
+def r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py):
+    os.system(f"Rscript pic18.r {ratioName_py} {de_up_down_py} {range_py} {enrichment_analysis_methods_py}")
 
 @st.cache_data
 def DOSE_data_config(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py):
@@ -942,8 +1055,8 @@ def DOSE_data_config(experimental_design, nThr_py, normalizeOption_py, control_p
 
 # 畫第二部分(DOSE)的圖 2-1 ~ 2-7, 2-9 ~ 2-10 (2-8因為可以改 pvalue 另外放)
 @st.cache_data
-def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py):
-    r_geneList_de_up_down(de_up_down_py, range_py)
+def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py):
+    r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py)
 
     r_plot_barplot_2_1()
     r_plot_dotplot_2_2()
@@ -953,7 +1066,7 @@ def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, 
     r_plot_emapplot_2_6()
     r_plot_upseplot_2_7()
     r_plot_ridgeplot_2_9()
-    r_plot_gseaplot_2_10(ratioName_py)
+    r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py)
 
 
 # ---------------------------------------------------------設定網頁--------------------------------------------------------
@@ -1055,43 +1168,10 @@ def config_data():
         st.header('2. Filter on missing values:')
         # plot 1_1~1_5
         cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py)
-        # 1_2
-        st.write(" *Plot a barplot of the number of identified proteins per samples")
-        st.image(Image.open('./file/image/plot1_2.png'))
-        # 1_3
-        st.write(" *Plot a barplot of the protein identification overlap between samples")
-        st.image(Image.open('./file/image/plot1_3.png'))
-        # 1_4
-        st.header("3. Normalization")
-        st.write(" Visualize normalization by boxplots for all samples before and after normalization")
-        st.image(Image.open('./file/image/plot1_4.png'))
-
-        st.header("4. Impute data for missing values: ")
-        image_label_list = ["*Plot a heatmap of proteins with missing values",
-                        "*Plot intensity distributions and cumulative fraction of proteins with and without missing values",
-                        "*Plot intensity distributions before and after imputation"]
-        for i in range(1, 4):
-            st.write(f"{image_label_list[i-1]}")
-            st.image(Image.open(f'./file/image/plot1_5_{i}.png'))
 
         st.header("5. Differential enrichment analysis")
         # 1_6, 1_7, 1_10
         cache_DEP_data2(control_py, alpha_py, lfc_py)
-
-        image_label_list = ["*Plot the first and second principal components",
-                        "*Plot the Pearson correlation matrix"]
-        for i in range(1, 3):
-            st.write(image_label_list[i-1])
-            st.image(Image.open(f'./file/image/plot1_6_{i}.png'))
-
-        try :
-            image_label_list = ["*Plot a heatmap of all significant proteins with the data centered per protein",
-                        "*Plot a heatmap of all significant proteins (rows) and the tested contrasts (columns)"]
-            for i in range(1, 3):
-                st.write(image_label_list[i-1])
-                st.image(Image.open(f'./file/image/plot1_7_{i}.png'))
-        except:
-            st.error("Error! 需要調整alpha, lfc的值 (如: alpha = 1, lfc = 1)",icon="🚨")
 
         st.header("6. Volcano plots of specific contrasts:")
         r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py)
@@ -1126,13 +1206,14 @@ def config_data():
 
         #------------------------------------- 2. DOSE -------------------------------------
         st.sidebar.subheader("2. DOSE")
+        enrichment_analysis_methods_py = st.sidebar.selectbox(label = "select enrichment_analysis: ",on_change= clear_cache_draw_dose_pic, options = ["DGN", "KEGG", "WikiPathways", "Reactome","Disease","MeSH", "Universal"])
 
         de_up_down_py = st.sidebar.selectbox(options=['de','up', 'down'], on_change= clear_cache_draw_dose_pic, index=0, label="geneList dataset:")
         print("de_up_down_py",de_up_down_py)
 
-        range_py = st.sidebar.number_input('range: ', on_change= clear_cache_draw_dose_pic, min_value = 0.0, max_value = 5.0, value = 2.0, step=0.01)
+        range_py = st.sidebar.number_input('range: ', on_change= clear_cache_draw_dose_pic, min_value = 0.0, max_value = 5.0, value = 1.5, step=0.01)
 
-        draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py)
+        draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py)
 
 
         st.sidebar.subheader("16. UpSet Plot pvalue")
