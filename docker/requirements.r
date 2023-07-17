@@ -27,5 +27,6 @@ BiocManager::install("org.Hs.eg.db", force=TRUE, update=TRUE, ask=FALSE)
 BiocManager::install("ReactomePA",  force=TRUE, update=TRUE, ask=FALSE)
 BiocManager::install("AnnotationHub", force=TRUE, update=TRUE, ask=FALSE)
 BiocManager::install("MeSHDbi", force=TRUE, update=TRUE, ask=FALSE)
+BiocManager::install("meshes", force=TRUE, update=TRUE, ask=FALSE)
 
 install.packages("msigdbr")
