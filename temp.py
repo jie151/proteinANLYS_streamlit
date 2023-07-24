@@ -25,7 +25,6 @@ robjects.r('''
     library(biomaRt)
     library(ReactomePA)
     library(AnnotationHub)
-    library(MeSHDbi)
     library(msigdbr)
 ''')
 
@@ -214,16 +213,16 @@ def generate_default_group(num_selected_col):
     return condition_replicate_list
 
 # 根據 selected_col_id_list，呼叫 generate_default_group，預設分組與輸入值
-# return experimental_design (選擇欄位的 condition, replicate)
-def generate_experimental_design_inputCondition(selected_col_id_list):
-    experimental_design = pd.DataFrame(columns=["state","label","condition","replicate"], index=range(1, 11)).fillna("N") #創一個dataframe, 預設填N
+# return exp_design (選擇欄位的 condition, replicate)
+def generate_exp_design_inputCondition(selected_col_id_list):
+    exp_design = pd.DataFrame(columns=["state","label","condition","replicate"], index=range(1, 11)).fillna("N") #創一個dataframe, 預設填N
     # 根據欄位數，預設分組與輸入值
     condition_replicate_list = generate_default_group(len(selected_col_id_list))
 
     with st.sidebar.expander("Select property columns"):
         for index, col_id in enumerate(selected_col_id_list):
-            experimental_design.at[col_id + 1, 'state'] = "T"
-            experimental_design.at[col_id + 1, 'label'] = df_colname_py[col_id]
+            exp_design.at[col_id + 1, 'state'] = "T"
+            exp_design.at[col_id + 1, 'label'] = df_colname_py[col_id]
             st.write(df_colname_py[col_id])
             condition_textInput = st.text_input('condition', key= f"condition{col_id}", value=condition_replicate_list[index][0])
             replicate_textInput = st.text_input('replicate', key= f"replicate{col_id}", value=condition_replicate_list[index][1])
@@ -232,17 +231,17 @@ def generate_experimental_design_inputCondition(selected_col_id_list):
                 robjects.r.assign("condition_textInput_r", condition_textInput)
                 condition_textInput = robjects.r("make.names(condition_textInput_r)")[0]
 
-                experimental_design.at[col_id + 1, 'condition'] = condition_textInput
+                exp_design.at[col_id + 1, 'condition'] = condition_textInput
             if replicate_textInput:
-                experimental_design.at[col_id + 1, 'replicate'] = replicate_textInput
-    return experimental_design
+                exp_design.at[col_id + 1, 'replicate'] = replicate_textInput
+    return exp_design
 
-# 根據 experimental_design 生成 experimental_design.csv並顯示在網頁， R: (DEP) data_unique, data_se
-def r_experimental_design_file(experimental_design):
-    experimental_design = experimental_design[(experimental_design.state != "N")]
-    experimental_design = experimental_design.drop("state", axis=1)
-    experimental_design.to_csv("./file/experimental_design.csv", index=False)
-    st.write("experimental_design: ",experimental_design)
+# 根據 exp_design 生成 exp_design.csv並顯示在網頁， R: (DEP) data_unique, data_se
+def r_exp_design_file(exp_design):
+    exp_design = exp_design[(exp_design.state != "N")]
+    exp_design = exp_design.drop("state", axis=1)
+    exp_design.to_csv("./file/exp_design.csv", index=False)
+    st.write("exp_design: ",exp_design)
 
     with st.expander("data Info. "):
         output = st.empty()
@@ -268,13 +267,13 @@ def r_experimental_design_file(experimental_design):
                 # Generate a SummarizedExperiment object using an experimental design
                 LFQ_columns <- grep("Reporter.intensity.corrected.", colnames(data_unique)) # get LFQ column numbers
 
-                experimental_design <- read.csv('./file/experimental_design.csv',header=TRUE ,fileEncoding ="UTF-8")
-                experimental_design$label = gsub(" ", ".", experimental_design$label)
+                exp_design <- read.csv('./file/exp_design.csv',header=TRUE ,fileEncoding ="UTF-8")
+                exp_design$label = gsub(" ", ".", exp_design$label)
 
-                maxReplicate <- max(experimental_design$replicate) # max replicate
-                experimental_design_condition <- unique(experimental_design$condition)
+                maxReplicate <- max(exp_design$replicate) # max replicate
+                exp_design_condition <- unique(exp_design$condition)
 
-                data_se <- make_se(data_unique, LFQ_columns, experimental_design)
+                data_se <- make_se(data_unique, LFQ_columns, exp_design)
 
                 # Let's have a look at the SummarizedExperiment object
                 cat("* the SummarizedExperiment object:  \n")
@@ -402,19 +401,26 @@ def r_plot_frequency_1_1():
             robjects.r(''' print(plot_frequency(data_se, plot= FALSE)) ''')
 
 # 用 data_se 畫第一部分(DEP)的圖，生成 data_filt
-def r_plot_numbers_filter_missval_1_2(nThr_py):
+def r_plot_numbers_filter_missval_1_2(filer_missing_values):
     st.write(" *Plot a barplot of the number of identified proteins per samples")
-    robjects.r.assign("nThr", nThr_py)
+    robjects.r.assign("nThr", filer_missing_values['nThr'])
+    robjects.r.assign("filter_option", filer_missing_values['option'])
+    robjects.r.assign("filter_min", filer_missing_values['min'])
     try:
         robjects.r('''
-            data_filt <- filter_missval(data_se, thr = nThr) #讓使用者選0~4(重複)
+            print("---------------r_plot_numbers_filter_missval_1_2----------------------")
+            cat("option: ", filter_option, "\n")
+            cat("nThr: ", nThr, "\n")
+            cat("min: ", filter_min, "\n")
+            data_filt <- filter_proteins(data_se, type = filter_option, thr = nThr, min = filter_min)
             save_plot("./file/image/plot1_2.png", plot =  plot_numbers(data_filt), base_height = 4, base_width = 4.5)
         ''')
         st.image(Image.open('./file/image/plot1_2.png'))
     except Exception as e:
         st.error(f"error! {e}")
 
-# 用 data_filt 畫第一部分(DEP)的圖，生成 data_filt
+
+# 用 data_filt 畫第一部分(DEP)的圖
 def r_plot_coverage_1_3():
     st.write(" *Plot a barplot of the protein identification overlap between samples")
     try:
@@ -548,19 +554,11 @@ def r_plot_heatmap_dep_1_7():
 
 # 用 dep 畫第一部分(DEP)的圖
 @st.cache_data
-def r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py):
+def r_plot_volcano_1_8(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py):
     robjects.r.assign("contrast_r", contrast_py)
     try:
         robjects.r('''
             contrastSample <- paste(contrast_r, "_vs_", control_r, sep = "")
-            print(contrastSample)
-
-            # contrast_r 也不能以數字開頭
-            row_data <- rowData(dep, use.names = FALSE)
-            if (length(grep(paste(contrastSample, "_diff", sep = ""), colnames(row_data))) == 0) {
-                contrast_r <- paste("X", contrast_r, sep="")
-                contrastSample <- paste("X", contrast_r, "_vs_", control_r, selp = "")
-            }
             print(contrastSample)
 
             # Plot a volcano plot for the contrast "Ubi6 vs Ctrl""
@@ -573,7 +571,7 @@ def r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control
 
 # 用 dep、選擇的蛋白質畫第一部分(DEP)的圖，並顯示
 @st.cache_data
-def r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py):
+def r_plot_single_1_9(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py):
 
     protein_type = "contrast" if num_protein > 1 else "centered"
 
@@ -626,9 +624,9 @@ def r_plot_cond_1_10():
     os.system(f"Rscript pic1_10_2.r")
 
 @st.cache_data
-def cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py):
+def cache_DEP_data1(exp_design, filer_missing_values, normalizeOption_py):
     r_plot_frequency_1_1()
-    r_plot_numbers_filter_missval_1_2(nThr_py)
+    r_plot_numbers_filter_missval_1_2(filer_missing_values)
     r_plot_coverage_1_3()
     r_plot_normalization_1_4(normalizeOption_py)
     r_plot_heatmap_1_5()
@@ -791,11 +789,14 @@ def r_convert_species_gene(ratioName_py):
     ''')
 
 # 讓使用者選擇要分析 up (正數) , down (負數), de (abs) 哪一部分的資料
-def r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py):
+def r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py):
 
     robjects.r.assign("de_up_down", de_up_down_py)
     robjects.r.assign("range", range_py)
     robjects.r.assign("enrichment_analysis_methods", enrichment_analysis_methods_py)
+    robjects.r.assign("universal_enrichment_category", universal_enrichment_category_py)
+    robjects.r.assign("universal_enrichment_subcategory", universal_enrichment_subcategory_py)
+
     robjects.r('''
         print("--------------r_geneList_de_up_down(de_up_down_py, range_py) start--------------")
         cat("head(geneList)\n", head(geneList), "\n")
@@ -846,20 +847,12 @@ def r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_p
                             maxGSSize     = 500,
                             qvalueCutoff  = 0.05,
                             readable      = FALSE)
-        }else if(enrichment_analysis_methods == "MeSH") {
-            # 11 MeSH enrichment analysis
-            print("MeSH!")
-            ah <- AnnotationHub(localHub=TRUE)
-            hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
-            file_hsa <- hsa[[1]]
-            db <- MeSHDbi::MeSHDb(file_hsa)
-            edo <- enrichMeSH(gene=de, MeSHDb = db, database='gendoo', category = 'C')
         }else{
             # 12 Universal enrichment analysis
             print("Universal!")
 
-            C3_t2g <- msigdbr(species = "Homo sapiens", category = "C3") %>%
-                        dplyr::select(gs_name, entrez_gene)
+            C3_t2g <- msigdbr(species = "Homo sapiens", category = universal_enrichment_category, subcategory = universal_enrichment_subcategory) %>%
+                dplyr::select(gs_name, entrez_gene)
             edo <- enricher(gene=de, TERM2GENE=C3_t2g)
         }
         print("--------------r_geneList_de_up_down(de_up_down_py, range_py) edo--------------")
@@ -885,8 +878,8 @@ def r_plot_barplot_2_1():
             save_plot("./file/image/plot2_1.png", pic1, base_height = 10, base_aspect_ratio = 1)
         ''')
         st.image(Image.open('./file/image/plot2_1.png'))
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plot_dotplot_2_2():
     st.header("11. Dot plot")
@@ -899,8 +892,8 @@ def r_plot_dotplot_2_2():
         ''')
         st.image(Image.open('./file/image/plot2_2_1.png'))
         st.image(Image.open('./file/image/plot2_2_2.png'))
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plot_cnetplot_2_3():
     st.header("12. Gene-Concept Network")
@@ -928,8 +921,8 @@ def r_plot_cnetplot_2_3():
         ''')
         for i in range(1, 6):
             st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plot_heatplot_2_4():
     st.header("13. Heatmap-like functional classification")
@@ -946,8 +939,8 @@ def r_plot_heatplot_2_4():
         for i in range(1, 3):
             st.image(Image.open(f'./file/image/plot2_4_{i}.png'))
             download_button(f"./file/image/heatplot_{i}.png", f"Download heatplot_{i}.png")
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plotenrichment_map_2_5():
     st.header("14. Enrichment Map")
@@ -960,32 +953,13 @@ def r_plotenrichment_map_2_5():
             pic14_3 <- emapplot(edo, layout="kk")
             pic14_4 <- emapplot(edo, cex_category=1.5,layout="kk")
 
-            for (i in c(1:4) ){
-                image_name = paste("./file/image/plot2_5_", i, ".png", sep = "")
-                tryCatch(
-                    {
-                        print(image_name)
-                        save_plot(image_name, pic14_1, base_height = 10, base_aspect_ratio = 1)
-                    },
-                    error=function(e) {
-                        message('error!')
-                        print(e)
-                    }
-                )
-            }
-
-            # save_plot("./file/image/plot2_5_1.png", pic14_1, base_height = 10, base_aspect_ratio = 1)
-            # save_plot("./file/image/plot2_5_2.png", pic14_2, base_height = 10, base_aspect_ratio = 1)
-            # save_plot("./file/image/plot2_5_3.png", pic14_3, base_height = 10, base_aspect_ratio = 1)
-            # save_plot("./file/image/plot2_5_4.png", pic14_4, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_5_1.png", pic14_1, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_5_2.png", pic14_2, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_5_3.png", pic14_3, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_5_4.png", pic14_4, base_height = 10, base_aspect_ratio = 1)
         ''')
-        for i in range(1, 5):
-            try:
-                st.image(Image.open(f'./file/image/plot2_5_{i}.png'))
-            except:
-                st.error(f'./file/image/plot2_5_{i}.png')
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plot_emapplot_2_6():
     st.header("15. Biological theme comparison")
@@ -1008,7 +982,7 @@ def r_plot_emapplot_2_6():
         ''')
         for i in range(1, 5):
             st.image(Image.open(f'./file/image/plot2_6_{i}.png'))
-    except Exception as  e:
+    except Exception as e:
         st.error(e)
 
 def r_plot_upseplot_2_7():
@@ -1018,11 +992,11 @@ def r_plot_upseplot_2_7():
             save_plot("./file/image/plot2_7.png", upsetplot(edo), base_height = 10, base_aspect_ratio = 1.5)
         ''')
         st.image(Image.open("./file/image/plot2_7.png"))
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 @st.cache_data
-def r_plot_upsetplot_with_splider_2_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py):
+def r_plot_upsetplot_with_splider_2_8(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py):
     robjects.r.assign("pvalue_2_8", pvalue_2_8_py)
     robjects.r('''
         kk2 <- gseKEGG(geneList = geneList,
@@ -1045,18 +1019,18 @@ def r_plot_ridgeplot_2_9():
         save_plot("./file/image/plot2_9.png", pic17, base_height = 12, base_aspect_ratio = 0.65)
     ''')
 
-def r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py):
-    os.system(f"Rscript pic18.r {ratioName_py} {de_up_down_py} {range_py} {enrichment_analysis_methods_py}")
+def r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py):
+    os.system(f"Rscript pic18.r {ratioName_py} {de_up_down_py} {range_py} {enrichment_analysis_methods_py} {universal_enrichment_category_py} {universal_enrichment_subcategory_py}")
 
 @st.cache_data
-def DOSE_data_config(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py):
+def DOSE_data_config(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py):
     r_init_DOSE_data()
     r_convert_species_gene(ratioName_py)
 
 # 畫第二部分(DOSE)的圖 2-1 ~ 2-7, 2-9 ~ 2-10 (2-8因為可以改 pvalue 另外放)
 @st.cache_data
-def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py):
-    r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py)
+def draw_DOSE_pic(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py):
+    r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py)
 
     r_plot_barplot_2_1()
     r_plot_dotplot_2_2()
@@ -1066,7 +1040,7 @@ def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, 
     r_plot_emapplot_2_6()
     r_plot_upseplot_2_7()
     r_plot_ridgeplot_2_9()
-    r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py)
+    r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py)
 
 
 # ---------------------------------------------------------設定網頁--------------------------------------------------------
@@ -1111,6 +1085,7 @@ if 'CONFIG' not in st.session_state:
 def change_configure_state(status):
     st.session_state.CONFIG  = status
 
+
 def clear_cache_draw_dose_pic():
     try:
         draw_DOSE_pic.clear()
@@ -1120,12 +1095,12 @@ def clear_cache_draw_dose_pic():
 import string
 def config_data():
 
-    experimental_design = generate_experimental_design_inputCondition(selected_col_id_list)
-    r_experimental_design_file(experimental_design)
-    experimental_design_condition_py = robjects.r("experimental_design_condition")
-    control_py =  st.sidebar.selectbox(options=experimental_design_condition_py, label="Control:")
+    exp_design = generate_exp_design_inputCondition(selected_col_id_list)
+    r_exp_design_file(exp_design)
+    exp_design_condition_py = robjects.r("exp_design_condition")
+    control_py =  st.sidebar.selectbox(options=exp_design_condition_py, label="Control:")
 
-    contrastOption_py = list(experimental_design_condition_py) #Str Object 轉為list
+    contrastOption_py = list(exp_design_condition_py) #Str Object 轉為list
     contrastOption_py.remove(control_py) #移除control
     contrast_py =  st.sidebar.selectbox(options=contrastOption_py, label="Contrast:")
 
@@ -1145,7 +1120,16 @@ def config_data():
     st.sidebar.subheader("1-2 Filter on missing values:")
     # Filter for proteins that are identified in all replicates of at least one condition
     maxReplicate_py = robjects.r("maxReplicate")
-    nThr_py = st.sidebar.slider('Filter for proteins that are identified in all replicates of at least one condition: ', min_value = 0,max_value = maxReplicate_py[0] ,value = 0, step=1, format="%d")
+    filer_missing_values = {'option': "condition", "nThr": 0, "min": 0.0}
+
+    filer_missing_values['option'] = st.sidebar.selectbox(options=["condition", "complete", "fraction"], label="Filer options")
+    if (filer_missing_values['option']  == "condition"):
+        filer_missing_values['nThr']  = st.sidebar.slider(' the threshold for the allowed number of missing values in at least one condition:',
+                                          min_value = 0,max_value = maxReplicate_py[0] ,value = 1, step=1, format="%d")
+    elif (filer_missing_values['option']  == "fraction"):
+        filer_missing_values['min']  = st.sidebar.number_input("the threshold for the minimum fraction of valid values allowed for any protein:",
+                                               min_value=0.0, max_value=1.0, value=0.66, step=0.1)
+
 
     st.sidebar.subheader("1-5. Differential enrichment analysis")
     alpha_py = st.sidebar.number_input("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01)
@@ -1167,14 +1151,14 @@ def config_data():
 
         st.header('2. Filter on missing values:')
         # plot 1_1~1_5
-        cache_DEP_data1(experimental_design, nThr_py, normalizeOption_py)
+        cache_DEP_data1(exp_design, filer_missing_values, normalizeOption_py)
 
         st.header("5. Differential enrichment analysis")
         # 1_6, 1_7, 1_10
         cache_DEP_data2(control_py, alpha_py, lfc_py)
 
         st.header("6. Volcano plots of specific contrasts:")
-        r_plot_volcano_1_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py)
+        r_plot_volcano_1_8(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, contrast_py)
 
         st.header("7. Barplots of a protein of interest: ")
         st.sidebar.subheader("1-7. Barplots of a protein of interest")
@@ -1190,7 +1174,7 @@ def config_data():
         for i in range(0, num_protein):
             proteinData_py.append( st.sidebar.selectbox(options=dataGeneName, index=i, label="protein", key=f"protein{i}") )
 
-        r_plot_single_1_9(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py)
+        r_plot_single_1_9(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, num_protein, proteinData_py)
 
         st.header("8. Frequency plot of significant proteins and overlap of conditions")
         try :
@@ -1202,23 +1186,33 @@ def config_data():
         # DOSE
         r_uniprotAPI()
         r_connect_ensembl_DB(species_py_new)
-        DOSE_data_config(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py)
+        DOSE_data_config(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py)
 
         #------------------------------------- 2. DOSE -------------------------------------
         st.sidebar.subheader("2. DOSE")
-        enrichment_analysis_methods_py = st.sidebar.selectbox(label = "select enrichment_analysis: ",on_change= clear_cache_draw_dose_pic, options = ["DGN", "KEGG", "WikiPathways", "Reactome","Disease","MeSH", "Universal"])
+        #選擇 enrichment analysis方式
+        enrichment_analysis_methods_py = st.sidebar.selectbox(label = "select enrichment_analysis: ",on_change= clear_cache_draw_dose_pic, options = ["DGN", "KEGG", "WikiPathways", "Reactome","Disease", "Universal"])
+        universal_enrichment_category_py = 0
+        universal_enrichment_subcategory_py = 0
+        if (enrichment_analysis_methods_py == "Universal"):
+            robjects.r('''
+                collections <- msigdbr_collections()
+            ''')
+            category_subCategory_df = pd.DataFrame(robjects.r("collections[1:2]")).transpose()
+            universal_enrichment_category_py = st.sidebar.selectbox(label = "Category: ", on_change= clear_cache_draw_dose_pic, options = list(dict.fromkeys(category_subCategory_df[0])))
+            universal_enrichment_subcategory_py = st.sidebar.selectbox(label = "Subcategory: ", on_change= clear_cache_draw_dose_pic, options = category_subCategory_df[category_subCategory_df[0] == universal_enrichment_category_py][1])
 
         de_up_down_py = st.sidebar.selectbox(options=['de','up', 'down'], on_change= clear_cache_draw_dose_pic, index=0, label="geneList dataset:")
-        print("de_up_down_py",de_up_down_py)
+        range_py = st.sidebar.number_input('range: ', on_change= clear_cache_draw_dose_pic, min_value = -20.0, max_value = 20.0, value = 1.5, step=0.01)
+        if de_up_down_py == "down" and range_py > 0:
+            st.sidebar.warning("the value of fold change should be less than zero.")
 
-        range_py = st.sidebar.number_input('range: ', on_change= clear_cache_draw_dose_pic, min_value = 0.0, max_value = 5.0, value = 1.5, step=0.01)
-
-        draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py)
+        draw_DOSE_pic(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py)
 
 
         st.sidebar.subheader("16. UpSet Plot pvalue")
         pvalue_2_8_py = st.sidebar.number_input("pvalue: ", min_value=0.001, max_value=1.0, step=0.001, value=0.05)
-        r_plot_upsetplot_with_splider_2_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py)
+        r_plot_upsetplot_with_splider_2_8(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py)
         if os.path.exists("./file/image/plot2_8.png"):
             st.image(Image.open("./file/image/plot2_8.png"))
         else:
@@ -1239,13 +1233,15 @@ def config_data():
         st.success('DONE!', icon="✅")
 
     else:
+        print("CLEAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         st.cache_data.clear()
+        # st.write(st.session_state)
     robjects.r('''
-        print(dev.list())
-        for (i in dev.list()[1]:dev.list()[length(dev.list())]) {
-            dev.off()
-        }
-        print(dev.list())
+            print(dev.list())
+            for (i in dev.list()[1]:dev.list()[length(dev.list())]) {
+                dev.off()
+            }
+            print(dev.list())
         ''')
 
 config_data()

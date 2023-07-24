@@ -4,54 +4,49 @@ library(dplyr)
 library(ggplot2)
 library(httr)
 library(clusterProfiler)
-library(DEP)
 library(DOSE)
 library(enrichplot)
 library(NormalyzerDE)
 library(SummarizedExperiment)
 library(biomaRt)
 
-data <- UbiLength
-data <- data[data$Reverse != "+" & data$Potential.contaminant != "+",]
-data_unique <- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+# ---------範例資料----------
+# data <- UbiLength
+# data <- data[data$Reverse != "+" & data$Potential.contaminant != "+",]
+# data_unique <- make_unique(data, "Gene.names", "Protein.IDs", delim = ";")
+# columns <- grep("LFQ.", colnames(data_unique))
+# exp_design <- UbiLength_ExpDesign
 
-# Make SummarizedExperiment
-columns <- grep("LFQ.", colnames(data_unique))
-exp_design <- UbiLength_ExpDesign
-data <- read.csv(file="2.proteinGroups_injury.txt", header=TRUE, fileEncoding ="UTF-8", sep = '\t')
+# ---------檔案----------
+data <- read.csv(file="1.proteinGroups_Recovery (1).txt", header=TRUE, fileEncoding ="UTF-8", sep = '\t')
+exp_design <- read.csv('1.exp_design.csv',header=TRUE ,fileEncoding ="UTF-8")
+
 cat("file's row * column =", dim(data), "\n")
 colname_proteinIDs <- "Protein.IDs"
 colname_geneNames <- "Gene.names"
 cat('* Are there any duplicated gene names? ', data[, colname_geneNames] %>% duplicated() %>% any(), "\n")
 
-                if ( data[, colname_geneNames] %>% duplicated() %>% any() ){
-                    # Make a table of duplicated gene names
-                    write.table(data %>% group_by_(.dots = colname_geneNames) %>% summarize(frequency = n()) %>%
-                        arrange(desc(frequency)) %>% filter(frequency > 1), file = "./file/my_data1.txt", row.names =FALSE)
+data_unique <- make_unique(data, colname_geneNames, colname_proteinIDs, delim = ";")
+columns <- grep("Reporter.intensity.corrected.", colnames(data_unique)) # get LFQ column numbers
+exp_design$label = gsub(" ", ".", exp_design$label)
 
-                    cat("a table of duplicated gene names: (table ", dim(table), "\n")
-                    table <- read.csv(file="./file/my_data1.txt", header=TRUE, fileEncoding ="UTF-8", sep = ' ')
-                    print(head(table, 7))
-                }
+maxReplicate <- max(exp_design$replicate) # max replicate
+exp_design_condition <- unique(exp_design$condition)
 
-                # Make unique names using the annotation in the "Gene.names" column as primary names and the annotation in "Protein.IDs" as name for those that do not have an gene name.
-                data_unique <- make_unique(data, colname_geneNames, colname_proteinIDs, delim = ";")
+# ----------參數----------
+nThr <- 1
+normalizeOption <- "Log2"
+control_r <- "T0"
+contrast_r <- "T1"
+alpha_r <- 0.05
+lfc_r <- 2
+contrastSample <- paste(contrast_r, "_vs_", control_r, sep = "")
+# ----------參數----------
+data_se <- make_se(data_unique, LFQ_columns, exp_design)
+data_filt <- filter_missval(data_se, thr = nThr) #讓使用者選0~4(重複)
+data_norm <- normalize_proteiNorm(data_filt, normalizeOption)
+data_imp <- impute(data_norm, fun = "MinProb", q = 0.01)
+data_diff <- test_diff(data_imp, type = "control", control = control_r)
+dep <- add_rejections(data_diff, alpha = alpha_r, lfc = log2(lfc_r)) #alpha、lfc調整
 
-                # Generate a SummarizedExperiment object using an experimental design
-                LFQ_columns <- grep("Reporter.intensity.corrected.", colnames(data_unique)) # get LFQ column numbers
-
-                experimental_design <- read.csv('2.exp_design_injury.csv',header=TRUE ,fileEncoding ="UTF-8")
-                experimental_design$label = gsub(" ", ".", experimental_design$label)
-
-                maxReplicate <- max(experimental_design$replicate) # max replicate
-                experimental_design_condition <- unique(experimental_design$condition)
-
-                data_se <- make_se(data_unique, LFQ_columns, experimental_design)
-
-                # Let's have a look at the SummarizedExperiment object
-                cat("* the SummarizedExperiment object:  \n")
-                print(data_se)
-
-proteins_unique <- data_unique
-columns <- LFQ_columns
-expdesign <- experimental_design
+plot_volcano(dep, contrast = contrastSample, label_size = 3, add_names = TRUE,adjusted = FALSE, plot = TRUE)
