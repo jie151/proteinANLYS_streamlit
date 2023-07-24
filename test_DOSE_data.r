@@ -31,7 +31,7 @@ print(head(geneList))
 
 de_up_down <- "de"
 range <- "0.5"
-enrichment_analysis_methods <- "DGN"
+enrichment_analysis_methods <- "Universal"
 
 if (de_up_down == "up") {
     print("up!")
@@ -75,20 +75,11 @@ if (enrichment_analysis_methods == "DGN") {
                     maxGSSize     = 500,
                     qvalueCutoff  = 0.05,
                     readable      = FALSE)
-}else if(enrichment_analysis_methods == "MeSH") {
-    # 11 MeSH enrichment analysis
-    print("MeSH!")
-    ah <- AnnotationHub(localHub=TRUE)
-    hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
-    file_hsa <- hsa[[1]]
-    db <- MeSHDbi::MeSHDb(file_hsa)
-    de <- names(geneList)[1:100]
-    edo <- enrichMeSH(gene=de, MeSHDb = db, database='gendoo', category = 'C')
 }else{
     # 12 Universal enrichment analysis
     print("Universal!")
 
-    C3_t2g <- msigdbr(species = "Homo sapiens", category = "C3") %>%
+    C3_t2g <- msigdbr(species = "Homo sapiens", category = "C2", subcategory = "MIR:MIRDB") %>%
                 dplyr::select(gs_name, entrez_gene)
     edo <- enricher(gene=de, TERM2GENE=C3_t2g)
 }

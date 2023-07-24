@@ -6,16 +6,16 @@ library(clusterProfiler)
 library(enrichplot)
 library(ReactomePA)
 library(AnnotationHub)
-library(MeSHDbi)
 library(msigdbr)
-library(meshes)
 
-print("--------------pic18.r start--------------")
+print("--------------pic2_10.r start--------------")
 Args <- commandArgs(TRUE)
 ratioName <- Args[1]
 de_up_down <- Args[2]
 range <- Args[3]
 enrichment_analysis_methods <- Args[4]
+universal_enrichment_category <- Args[5]
+universal_enrichment_subcategory <- Args[6]
 
 cat("ratioName: ", ratioName, " de_up_down: ", de_up_down, " range: ", range, " enrichment_analysis_methods: ", enrichment_analysis_methods, "\n")
 
@@ -71,19 +71,11 @@ if (enrichment_analysis_methods == "DGN") {
                     maxGSSize     = 500,
                     qvalueCutoff  = 0.05,
                     readable      = FALSE)
-}else if(enrichment_analysis_methods == "MeSH") {
-    # 11 MeSH enrichment analysis
-    print("MeSH!")
-    ah <- AnnotationHub(localHub=TRUE)
-    hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
-    file_hsa <- hsa[[1]]
-    db <- MeSHDbi::MeSHDb(file_hsa)
-    edo <- enrichMeSH(gene=de, MeSHDb = db, database='gendoo', category = 'C')
 }else{
     # 12 Universal enrichment analysis
     print("Universal!")
 
-    C3_t2g <- msigdbr(species = "Homo sapiens", category = "C3") %>%
+     C3_t2g <- msigdbr(species = "Homo sapiens", category = universal_enrichment_category, subcategory = universal_enrichment_subcategory) %>%
                 dplyr::select(gs_name, entrez_gene)
     edo <- enricher(gene=de, TERM2GENE=C3_t2g)
 }

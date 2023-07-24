@@ -25,7 +25,6 @@ robjects.r('''
     library(biomaRt)
     library(ReactomePA)
     library(AnnotationHub)
-    library(MeSHDbi)
     library(msigdbr)
 ''')
 
@@ -791,11 +790,14 @@ def r_convert_species_gene(ratioName_py):
     ''')
 
 # 讓使用者選擇要分析 up (正數) , down (負數), de (abs) 哪一部分的資料
-def r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py):
+def r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py):
 
     robjects.r.assign("de_up_down", de_up_down_py)
     robjects.r.assign("range", range_py)
     robjects.r.assign("enrichment_analysis_methods", enrichment_analysis_methods_py)
+    robjects.r.assign("universal_enrichment_category", universal_enrichment_category_py)
+    robjects.r.assign("universal_enrichment_subcategory", universal_enrichment_subcategory_py)
+
     robjects.r('''
         print("--------------r_geneList_de_up_down(de_up_down_py, range_py) start--------------")
         cat("head(geneList)\n", head(geneList), "\n")
@@ -846,20 +848,12 @@ def r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_p
                             maxGSSize     = 500,
                             qvalueCutoff  = 0.05,
                             readable      = FALSE)
-        }else if(enrichment_analysis_methods == "MeSH") {
-            # 11 MeSH enrichment analysis
-            print("MeSH!")
-            ah <- AnnotationHub(localHub=TRUE)
-            hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
-            file_hsa <- hsa[[1]]
-            db <- MeSHDbi::MeSHDb(file_hsa)
-            edo <- enrichMeSH(gene=de, MeSHDb = db, database='gendoo', category = 'C')
         }else{
             # 12 Universal enrichment analysis
             print("Universal!")
 
-            C3_t2g <- msigdbr(species = "Homo sapiens", category = "C3") %>%
-                        dplyr::select(gs_name, entrez_gene)
+            C3_t2g <- msigdbr(species = "Homo sapiens", category = universal_enrichment_category, subcategory = universal_enrichment_subcategory) %>%
+                dplyr::select(gs_name, entrez_gene)
             edo <- enricher(gene=de, TERM2GENE=C3_t2g)
         }
         print("--------------r_geneList_de_up_down(de_up_down_py, range_py) edo--------------")
@@ -885,8 +879,8 @@ def r_plot_barplot_2_1():
             save_plot("./file/image/plot2_1.png", pic1, base_height = 10, base_aspect_ratio = 1)
         ''')
         st.image(Image.open('./file/image/plot2_1.png'))
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plot_dotplot_2_2():
     st.header("11. Dot plot")
@@ -899,8 +893,8 @@ def r_plot_dotplot_2_2():
         ''')
         st.image(Image.open('./file/image/plot2_2_1.png'))
         st.image(Image.open('./file/image/plot2_2_2.png'))
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plot_cnetplot_2_3():
     st.header("12. Gene-Concept Network")
@@ -928,8 +922,8 @@ def r_plot_cnetplot_2_3():
         ''')
         for i in range(1, 6):
             st.image(Image.open(f"./file/image/plot2_3_{i}.png"))
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plot_heatplot_2_4():
     st.header("13. Heatmap-like functional classification")
@@ -946,8 +940,8 @@ def r_plot_heatplot_2_4():
         for i in range(1, 3):
             st.image(Image.open(f'./file/image/plot2_4_{i}.png'))
             download_button(f"./file/image/heatplot_{i}.png", f"Download heatplot_{i}.png")
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plotenrichment_map_2_5():
     st.header("14. Enrichment Map")
@@ -960,32 +954,13 @@ def r_plotenrichment_map_2_5():
             pic14_3 <- emapplot(edo, layout="kk")
             pic14_4 <- emapplot(edo, cex_category=1.5,layout="kk")
 
-            for (i in c(1:4) ){
-                image_name = paste("./file/image/plot2_5_", i, ".png", sep = "")
-                tryCatch(
-                    {
-                        print(image_name)
-                        save_plot(image_name, pic14_1, base_height = 10, base_aspect_ratio = 1)
-                    },
-                    error=function(e) {
-                        message('error!')
-                        print(e)
-                    }
-                )
-            }
-
-            # save_plot("./file/image/plot2_5_1.png", pic14_1, base_height = 10, base_aspect_ratio = 1)
-            # save_plot("./file/image/plot2_5_2.png", pic14_2, base_height = 10, base_aspect_ratio = 1)
-            # save_plot("./file/image/plot2_5_3.png", pic14_3, base_height = 10, base_aspect_ratio = 1)
-            # save_plot("./file/image/plot2_5_4.png", pic14_4, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_5_1.png", pic14_1, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_5_2.png", pic14_2, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_5_3.png", pic14_3, base_height = 10, base_aspect_ratio = 1)
+            save_plot("./file/image/plot2_5_4.png", pic14_4, base_height = 10, base_aspect_ratio = 1)
         ''')
-        for i in range(1, 5):
-            try:
-                st.image(Image.open(f'./file/image/plot2_5_{i}.png'))
-            except:
-                st.error(f'./file/image/plot2_5_{i}.png')
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 def r_plot_emapplot_2_6():
     st.header("15. Biological theme comparison")
@@ -1008,7 +983,7 @@ def r_plot_emapplot_2_6():
         ''')
         for i in range(1, 5):
             st.image(Image.open(f'./file/image/plot2_6_{i}.png'))
-    except Exception as  e:
+    except Exception as e:
         st.error(e)
 
 def r_plot_upseplot_2_7():
@@ -1018,8 +993,8 @@ def r_plot_upseplot_2_7():
             save_plot("./file/image/plot2_7.png", upsetplot(edo), base_height = 10, base_aspect_ratio = 1.5)
         ''')
         st.image(Image.open("./file/image/plot2_7.png"))
-    except Exception as e:
-        st.error(e)
+    except:
+        st.error("No significant terms were enriched")
 
 @st.cache_data
 def r_plot_upsetplot_with_splider_2_8(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py):
@@ -1045,8 +1020,8 @@ def r_plot_ridgeplot_2_9():
         save_plot("./file/image/plot2_9.png", pic17, base_height = 12, base_aspect_ratio = 0.65)
     ''')
 
-def r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py):
-    os.system(f"Rscript pic18.r {ratioName_py} {de_up_down_py} {range_py} {enrichment_analysis_methods_py}")
+def r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py):
+    os.system(f"Rscript pic18.r {ratioName_py} {de_up_down_py} {range_py} {enrichment_analysis_methods_py} {universal_enrichment_category_py} {universal_enrichment_subcategory_py}")
 
 @st.cache_data
 def DOSE_data_config(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py):
@@ -1055,8 +1030,8 @@ def DOSE_data_config(experimental_design, nThr_py, normalizeOption_py, control_p
 
 # 畫第二部分(DOSE)的圖 2-1 ~ 2-7, 2-9 ~ 2-10 (2-8因為可以改 pvalue 另外放)
 @st.cache_data
-def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py):
-    r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py)
+def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py):
+    r_geneList_de_up_down(de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py)
 
     r_plot_barplot_2_1()
     r_plot_dotplot_2_2()
@@ -1066,7 +1041,7 @@ def draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, 
     r_plot_emapplot_2_6()
     r_plot_upseplot_2_7()
     r_plot_ridgeplot_2_9()
-    r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py)
+    r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py)
 
 
 # ---------------------------------------------------------設定網頁--------------------------------------------------------
@@ -1145,7 +1120,7 @@ def config_data():
     st.sidebar.subheader("1-2 Filter on missing values:")
     # Filter for proteins that are identified in all replicates of at least one condition
     maxReplicate_py = robjects.r("maxReplicate")
-    nThr_py = st.sidebar.slider('Filter for proteins that are identified in all replicates of at least one condition: ', min_value = 0,max_value = maxReplicate_py[0] ,value = 0, step=1, format="%d")
+    nThr_py = st.sidebar.slider('Filter for proteins that are identified in all replicates of at least one condition: ', min_value = 0,max_value = maxReplicate_py[0] ,value = 1, step=1, format="%d")
 
     st.sidebar.subheader("1-5. Differential enrichment analysis")
     alpha_py = st.sidebar.number_input("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01)
@@ -1206,14 +1181,24 @@ def config_data():
 
         #------------------------------------- 2. DOSE -------------------------------------
         st.sidebar.subheader("2. DOSE")
-        enrichment_analysis_methods_py = st.sidebar.selectbox(label = "select enrichment_analysis: ",on_change= clear_cache_draw_dose_pic, options = ["DGN", "KEGG", "WikiPathways", "Reactome","Disease","MeSH", "Universal"])
+        #選擇 enrichment analysis方式
+        enrichment_analysis_methods_py = st.sidebar.selectbox(label = "select enrichment_analysis: ",on_change= clear_cache_draw_dose_pic, options = ["DGN", "KEGG", "WikiPathways", "Reactome","Disease", "Universal"])
+        universal_enrichment_category_py = 0
+        universal_enrichment_subcategory_py = 0
+        if (enrichment_analysis_methods_py == "Universal"):
+            robjects.r('''
+                collections <- msigdbr_collections()
+            ''')
+            category_subCategory_df = pd.DataFrame(robjects.r("collections[1:2]")).transpose()
+            universal_enrichment_category_py = st.sidebar.selectbox(label = "Category: ", on_change= clear_cache_draw_dose_pic, options = list(dict.fromkeys(category_subCategory_df[0])))
+            universal_enrichment_subcategory_py = st.sidebar.selectbox(label = "Subcategory: ", on_change= clear_cache_draw_dose_pic, options = category_subCategory_df[category_subCategory_df[0] == universal_enrichment_category_py][1])
 
         de_up_down_py = st.sidebar.selectbox(options=['de','up', 'down'], on_change= clear_cache_draw_dose_pic, index=0, label="geneList dataset:")
-        print("de_up_down_py",de_up_down_py)
+        range_py = st.sidebar.number_input('range: ', on_change= clear_cache_draw_dose_pic, min_value = -20.0, max_value = 20.0, value = 1.5, step=0.01)
+        if de_up_down_py == "down" and range_py > 0:
+            st.sidebar.warning("the value of fold change should be less than zero.")
 
-        range_py = st.sidebar.number_input('range: ', on_change= clear_cache_draw_dose_pic, min_value = 0.0, max_value = 5.0, value = 1.5, step=0.01)
-
-        draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py)
+        draw_DOSE_pic(experimental_design, nThr_py, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py)
 
 
         st.sidebar.subheader("16. UpSet Plot pvalue")
