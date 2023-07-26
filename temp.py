@@ -409,9 +409,9 @@ def r_plot_numbers_filter_missval_1_2(filer_missing_values):
     try:
         robjects.r('''
             print("---------------r_plot_numbers_filter_missval_1_2----------------------")
-            cat("option: ", filter_option, "\n")
-            cat("nThr: ", nThr, "\n")
-            cat("min: ", filter_min, "\n")
+            cat("option:", filter_option, "\n")
+            cat("nThr:", nThr, "\n")
+            cat("min:", filter_min, "\n")
             data_filt <- filter_proteins(data_se, type = filter_option, thr = nThr, min = filter_min)
             save_plot("./file/image/plot1_2.png", plot =  plot_numbers(data_filt), base_height = 4, base_width = 4.5)
         ''')
@@ -1085,6 +1085,10 @@ if 'CONFIG' not in st.session_state:
 def change_configure_state(status):
     st.session_state.CONFIG  = status
 
+def clear_cache():
+    st.cache_data.clear()
+def clear_cache_DEP_data2():
+    cache_DEP_data2().clear()
 
 def clear_cache_draw_dose_pic():
     try:
@@ -1098,42 +1102,42 @@ def config_data():
     exp_design = generate_exp_design_inputCondition(selected_col_id_list)
     r_exp_design_file(exp_design)
     exp_design_condition_py = robjects.r("exp_design_condition")
-    control_py =  st.sidebar.selectbox(options=exp_design_condition_py, label="Control:")
+    control_py =  st.sidebar.selectbox(options=exp_design_condition_py, on_change=clear_cache_DEP_data2, label="Control:")
 
     contrastOption_py = list(exp_design_condition_py) #Str Object 轉為list
     contrastOption_py.remove(control_py) #移除control
-    contrast_py =  st.sidebar.selectbox(options=contrastOption_py, label="Contrast:")
+    contrast_py =  st.sidebar.selectbox(options=contrastOption_py, on_change=clear_cache, label="Contrast:")
 
     control_py = str(control_py)
     contrast_py = str(contrast_py)
 
     ratioColname_py = [ f"{contrast}_vs_{control_py}_ratio" for contrast in contrastOption_py ]
-    ratioName_py = st.sidebar.selectbox(label= "Ratio: ", options= ratioColname_py)
+    ratioName_py = st.sidebar.selectbox(label= "Ratio: ", on_change=clear_cache, options= ratioColname_py)
 
     species_py = robjects.r("species")
     species_list = ["mouse", "rat", "human"]
     species_index = [index for index, species in enumerate(species_list) if species == species_py[0]]
-    species_py_new = st.sidebar.selectbox(options=species_list, index=species_index[0], label="Species:")
+    species_py_new = st.sidebar.selectbox(options=species_list, on_change=clear_cache, index=species_index[0], label="Species:")
 
-    normalizeOption_py = st.sidebar.selectbox(options=["Log2", "Median", "Mean", "VSN", "Quantile", "Cyclic Loess", "RLR", "Global Intensity"], label="Normalize")
+    normalizeOption_py = st.sidebar.selectbox(options=["Log2", "Median", "Mean", "VSN", "Quantile", "Cyclic Loess", "RLR", "Global Intensity"], on_change=clear_cache, label="Normalize")
 
     st.sidebar.subheader("1-2 Filter on missing values:")
     # Filter for proteins that are identified in all replicates of at least one condition
     maxReplicate_py = robjects.r("maxReplicate")
     filer_missing_values = {'option': "condition", "nThr": 0, "min": 0.0}
 
-    filer_missing_values['option'] = st.sidebar.selectbox(options=["condition", "complete", "fraction"], label="Filer options")
+    filer_missing_values['option'] = st.sidebar.selectbox(options=["condition", "complete", "fraction"], on_change=clear_cache, label="Filer options")
     if (filer_missing_values['option']  == "condition"):
         filer_missing_values['nThr']  = st.sidebar.slider(' the threshold for the allowed number of missing values in at least one condition:',
-                                          min_value = 0,max_value = maxReplicate_py[0] ,value = 1, step=1, format="%d")
+                                          min_value = 0,max_value = maxReplicate_py[0], on_change=clear_cache ,value = 1, step=1, format="%d")
     elif (filer_missing_values['option']  == "fraction"):
         filer_missing_values['min']  = st.sidebar.number_input("the threshold for the minimum fraction of valid values allowed for any protein:",
-                                               min_value=0.0, max_value=1.0, value=0.66, step=0.1)
+                                               min_value=0.0, max_value=1.0, on_change=clear_cache, value=0.66, step=0.1)
 
 
     st.sidebar.subheader("1-5. Differential enrichment analysis")
-    alpha_py = st.sidebar.number_input("alpha: ",min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01)
-    lfc_py = st.sidebar.number_input("lfc = log2(value): ", min_value=0.0, max_value=2.0, value=1.5, step=0.1)
+    alpha_py = st.sidebar.number_input("alpha:", on_change=clear_cache_DEP_data2, min_value = 0.0,max_value = 1.0 ,value = 1.0, step=0.01)
+    lfc_py = st.sidebar.number_input("lfc = log2(value):", on_change=clear_cache_DEP_data2, min_value=0.0, max_value=2.0, value=1.5, step=0.1)
 
     with st.sidebar:
         with st.form(key="config_data_form"):
