@@ -34,7 +34,8 @@ WORKDIR /app
 ADD requirements.txt .
 ADD requirements.r .
 ADD website.py .
-ADD pic18.r .
+ADD pic1_10_2.r .
+ADD pic2_10.r .
 ADD proteinGroups_HsinYuan_Rat.txt .
 
 # installing python libraries
