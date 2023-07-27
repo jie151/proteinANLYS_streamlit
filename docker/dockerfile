@@ -41,12 +41,13 @@ ADD proteinGroups_HsinYuan_Rat.txt .
 # installing python libraries
 RUN pip3 install -r requirements.txt
 
-RUN apt-get update && apt-get upgrade
+RUN apt-get update
+RUN apt-get upgrade -y
 RUN apt-get install -y r-base-core r-base-dev libcurl4-openssl-dev libssl-dev
 RUN apt-get update && apt-get upgrade
 RUN apt-get install -y libcairo2-dev libxt-dev libnetcdf-dev libgdal-dev libnlopt-dev
 RUN apt install -y cmake
-
+RUN apt-get install -y default-jdk
 # installing r libraries
 RUN Rscript requirements.r
 
