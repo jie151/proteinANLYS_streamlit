@@ -967,6 +967,7 @@ def r_plot_emapplot_2_6():
         output = st.empty()
         with st_capture(output.code):
             robjects.r('''
+                print("--------------r_plot_emapplot_2_6() start--------------")
                 xx <- compareCluster(data, fun="enrichKEGG",
                                     organism="hsa", pvalueCutoff=0.05) #pvalueCutoff正常為0.05
                 xx <- pairwise_termsim(xx)
@@ -989,6 +990,7 @@ def r_plot_upseplot_2_7():
     st.header("16. UpSet Plot")
     try:
         robjects.r('''
+            print("--------------r_plot_upseplot_2_7() start--------------")
             save_plot("./file/image/plot2_7.png", upsetplot(edo), base_height = 10, base_aspect_ratio = 1.5)
         ''')
         st.image(Image.open("./file/image/plot2_7.png"))
@@ -999,6 +1001,7 @@ def r_plot_upseplot_2_7():
 def r_plot_upsetplot_with_splider_2_8(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py):
     robjects.r.assign("pvalue_2_8", pvalue_2_8_py)
     robjects.r('''
+        print("--------------r_plot_upsetplot_with_splider_2_8() start--------------")
         kk2 <- gseKEGG(geneList = geneList,
                        organism = 'hsa',
                         #nPerm = 1000,
@@ -1015,12 +1018,13 @@ def r_plot_upsetplot_with_splider_2_8(exp_design, filer_missing_values, normaliz
 
 def r_plot_ridgeplot_2_9():
     robjects.r('''
+        print("--------------r_plot_ridgeplot_2_9() start--------------")
         pic17 <- ridgeplot(edo2) + xlab("expression distributions of enriched genes (log2FC)")
         save_plot("./file/image/plot2_9.png", pic17, base_height = 12, base_aspect_ratio = 0.65)
     ''')
 
 def r_plot_gseaplot_2_10(ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py):
-    os.system(f"Rscript pic18.r {ratioName_py} {de_up_down_py} {range_py} {enrichment_analysis_methods_py} {universal_enrichment_category_py} {universal_enrichment_subcategory_py}")
+    os.system(f"Rscript pic2_10.r {ratioName_py} {de_up_down_py} {range_py} {enrichment_analysis_methods_py} {universal_enrichment_category_py} {universal_enrichment_subcategory_py}")
 
 @st.cache_data
 def DOSE_data_config(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py):
