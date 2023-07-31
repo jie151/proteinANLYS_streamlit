@@ -14,15 +14,15 @@ docker run -p 8501:8501 protein_anlys_streamlit:latest
 ```
 ***
 ## 檔案介紹(/docker/)
-- **pic1_10_2.r**
-畫DEP部分的 venn diagram
-(另外放一個檔的原因: 用rpy2執行，要用rJava會有問題...)
-- **pic2_10.r**
-畫 18. running score and preranked list of GSEA result的圖
-(另外放的原因: 用rpy2執行，無法儲存正確的檔案)
-- **website.py**
-畫其他的所有圖，並顯示
-- **requirements.r, requirements.txt**
-需要安裝的 R, python package
-- **proteinGroups_HsinYuan_Rat.txt**
-範例資料
+- **pic1_10_2.r**</br>
+畫DEP部分的 venn diagram</br>
+(另外放一個檔的原因: 用rpy2執行，要用rJava會有問題...)</br>
+- **pic2_10.r**</br>
+畫 18. running score and preranked list of GSEA result的圖</br>
+(另外放的原因: 用rpy2執行，無法儲存正確的檔案)</br>
+- **website.py**</br>
+畫其他的所有圖，並顯示</br>
+- **requirements.r, requirements.txt**</br>
+需要安裝的 R, python package</br>
+- **proteinGroups_HsinYuan_Rat.txt**</br>
+範例資料</br>
