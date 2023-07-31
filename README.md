@@ -1,6 +1,6 @@
 # proteinANLYS_streamlit
 ***
-## Set Up 
+# Set Up 
 - build docker image
 ```sh
 git clone https://github.com/jie151/proteinANLYS_streamlit.git
@@ -13,7 +13,7 @@ docker run -p 8501:8501 protein_anlys_streamlit:latest
 還沒把最新的傳上去
 ```
 ***
-## 檔案介紹(/docker/)
+# 檔案介紹(/docker/)
 - **pic1_10_2.r**</br>
 畫DEP部分的 venn diagram</br>
 (另外放一個檔的原因: 用rpy2執行，要用rJava會有問題...)</br>
