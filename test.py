@@ -6,7 +6,7 @@ os.environ['PATH'] += os.pathsep + 'C:\\Program Files\\R\\R-4.2.3\\bin\\X64\\'
 os.environ['PATH'] += os.pathsep + 'C:\\Program Files\\R\\R-4.2.3\\'
 
 import os
-from rpy2 import robjects
+
 import streamlit as st
 import pandas as pd
 from PIL import Image
@@ -18,6 +18,7 @@ import re
 import sys
 import time
 
+import threading
 
 
 def get_session_id():
@@ -35,14 +36,21 @@ def st_capture(output_func):
         stdout.write = new_write
         yield
 
-session_id = get_session_id()
-robjects.r.assign("id", session_id)
-for i in range(1, 10):
-    time.sleep(1)
 
-    st.write(f"{i}. {session_id}")
 
-    output = st.empty()
+def long_r_function() :
+    session_id = get_script_run_ctx().session_id
+    from rpy2 import robjects
+    robjects.r.assign("id", session_id)
 
-    with st_capture(output.code):
-        robjects.r("print(id)")
+    for i in range(1, 10):
+        time.sleep(1)
+
+        st.write(f"{i}. {session_id}")
+
+        output = st.empty()
+
+        with st_capture(output.code):
+            robjects.r("print(id)")
+
+long_r_function()

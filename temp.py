@@ -963,11 +963,11 @@ def r_plotenrichment_map_2_5():
 
 def r_plot_emapplot_2_6():
     st.header("15. Biological theme comparison")
+    print("--------------r_plot_emapplot_2_6() start--------------")
     try:
         output = st.empty()
         with st_capture(output.code):
             robjects.r('''
-                print("--------------r_plot_emapplot_2_6() start--------------")
                 xx <- compareCluster(data, fun="enrichKEGG",
                                     organism="hsa", pvalueCutoff=0.05) #pvalueCutoff正常為0.05
                 xx <- pairwise_termsim(xx)
