@@ -958,6 +958,8 @@ def r_plotenrichment_map_2_5():
             save_plot("./file/image/plot2_5_3.png", pic14_3, base_height = 10, base_aspect_ratio = 1)
             save_plot("./file/image/plot2_5_4.png", pic14_4, base_height = 10, base_aspect_ratio = 1)
         ''')
+        for i in range(1,5):
+            st.image(Image.open(f"./file/image/plot2_5_{i}.png"))
     except:
         st.error("No significant terms were enriched")
 

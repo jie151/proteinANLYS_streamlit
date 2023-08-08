@@ -16,11 +16,22 @@ library(MeSHDbi)
 library(msigdbr)
 library(meshes)
 
+# ----------參數----------
+# Args <- commandArgs(TRUE)
+# id       <- Args[1]
+# species  <- Args[2]
+# ratioName <- Args[3]
+# ----------參數----------
+id <- "test"
+species <- "human"
+ratioName <- "B_vs_A_ratio"
+
+
 # data <- read.csv('/app/file/dep_output_result.csv',header=TRUE ,fileEncoding ="UTF-8")
 data <- read.csv('./_file_dep_output_result (1).csv',header=TRUE ,fileEncoding ="UTF-8")
 
 ## feature 1: numeric vector
-geneList = data[, "B_vs_A_ratio"]
+geneList = data[, "ratioName"]
 
 ## feature 2: named vector
 names(geneList) = as.character(data[, 'human_entrez'])
