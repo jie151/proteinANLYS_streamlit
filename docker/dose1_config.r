@@ -3,7 +3,6 @@ library(httr)
 library(dplyr)
 library(msigdbr)
 source("uniprotAPI.r")
-# source("C:/Users/jie/Desktop/pyEnv/web_proteinAnls/code/docker/uniprotAPI.r")
 
 print("--------------dose1_config.r start--------------")
 # ----------參數----------
@@ -12,9 +11,7 @@ id       <- Args[1]
 species  <- Args[2]
 ratioName <- Args[3]
 # ----------參數----------
-# id <- "test"
-# species <- "human"
-# ratioName <- "B_vs_A_ratio"
+
 collections <- msigdbr_collections()
 write.table(collections, file=paste("./file/", id, "/msigdbr_collections.csv", sep=""), sep=",",  row.names=FALSE)
 

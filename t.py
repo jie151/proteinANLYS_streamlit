@@ -302,6 +302,74 @@ def cache_DEP_data3(filename_py, session_id, species_py_new, colname_geneNames_p
 @st.cache_data
 def DOSE_data_config(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, session_id, species, ratioName_py):
     os.system(f"Rscript dose1_config.r {session_id} {species} {ratioName_py}")
+    try:
+        with open(f"./file/{session_id}/dep_output_result.csv", "r") as file:
+            print("dep_output_result.csv created!")
+    except Exception as e:
+        st.error(f'與uriprot.org網站連接失敗(Entrez -> GeneID), 請重新載入網頁, {str(e)}', icon="🚨")
+        sys.exit()
+
+@st.cache_data
+def draw_DOSE_pic(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py, pvalue_2_8_py):
+    os.system(f"Rscript dose2_plot.r {session_id} {ratioName_py} {de_up_down_py} {range_py} {enrichment_analysis_methods_py} {universal_enrichment_category_py} {universal_enrichment_subcategory_py} {pvalue_2_8_py}")
+
+    st.header("10. Bar Plot (DOSE)")
+    try:
+        st.image(Image.open(f"./file/{session_id}/image/plot2_1.png"))
+    except:
+        st.error("No significant terms were enriched")
+    st.header("11. Dot plot")
+    try:
+        st.image(Image.open(f"./file/{session_id}/image/plot2_2_1.png"))
+        st.image(Image.open(f"./file/{session_id}/image/plot2_2_2.png"))
+    except:
+        st.error("No significant terms were enriched")
+    st.header("12. Gene-Concept Network")
+    try:
+        for i in range(1, 6):
+            st.image(Image.open(f"./file/{session_id}/image/plot2_3_{i}.png"))
+    except:
+        st.error("No significant terms were enriched")
+    st.header("13. Heatmap-like functional classification")
+    try:
+        for i in range(1, 3):
+            st.image(Image.open(f'./file/{session_id}/image/plot2_4_{i}.png'))
+            download_button(f"./file/{session_id}/heatplot_{i}.png", f"Download heatplot_{i}.png")
+    except:
+        st.error("No significant terms were enriched")
+    st.header("14. Enrichment Map")
+    try:
+        for i in range(1,5):
+            st.image(Image.open(f"./file/{session_id}/image/plot2_5_{i}.png"))
+    except:
+        st.error("No significant terms were enriched")
+    st.header("15. Biological theme comparison")
+    try:
+        for i in range(1, 5):
+            st.image(Image.open(f"./file/{session_id}/image/plot2_6_{i}.png"))
+    except Exception as e:
+        st.error(e)
+    st.header("16. UpSet Plot")
+    try:
+        st.image(Image.open(f"./file/{session_id}/image/plot2_7.png"))
+    except:
+        st.error("No significant terms were enriched")
+    try:
+        st.image(Image.open(f"./file/{session_id}/image/plot2_8.png"))
+    except:
+        st.warning("no term enriched under specific pvalueCutoff")
+    st.header("17. ridgeline plot for expression distribution of GSEA result")
+    try:
+        st.image(Image.open(f"./file/{session_id}/image/plot2_9.png"))
+    except Exception as e:
+        st.error(e)
+
+    st.header("18. running score and preranked list of GSEA result")
+    for i in range(1, 11):
+        try:
+            st.image(Image.open(f"./file/{session_id}/image/plot2_10_{i}.png"))
+        except Exception as e:
+            st.error(e)
 
 # ---------------------------------------------------------設定網頁--------------------------------------------------------
 # 設定網頁標題
@@ -454,38 +522,26 @@ def config_data():
         enrichment_analysis_methods_py = st.sidebar.selectbox(label = "select enrichment_analysis: ",on_change= clear_cache_draw_dose_pic, options = ["DGN", "KEGG", "WikiPathways", "Reactome","Disease", "Universal"])
         universal_enrichment_category_py = 0
         universal_enrichment_subcategory_py = 0
-        sys.exit()
+
         if (enrichment_analysis_methods_py == "Universal"):
-            robjects.r('''
-                collections <- msigdbr_collections()
-            ''')
-            category_subCategory_df = pd.DataFrame(robjects.r("collections[1:2]")).transpose()
-            universal_enrichment_category_py = st.sidebar.selectbox(label = "Category: ", on_change= clear_cache_draw_dose_pic, options = list(dict.fromkeys(category_subCategory_df[0])))
-            universal_enrichment_subcategory_py = st.sidebar.selectbox(label = "Subcategory: ", on_change= clear_cache_draw_dose_pic, options = category_subCategory_df[category_subCategory_df[0] == universal_enrichment_category_py][1])
+            msigdbr_collections = pd.read_csv(f"./file/{session_id}/msigdbr_collections.csv", sep=",", dtype=object).fillna("")
+
+            universal_enrichment_category_py = st.sidebar.selectbox(label = "Category: ", on_change= clear_cache_draw_dose_pic, options = list(dict.fromkeys(msigdbr_collections["gs_cat"])))
+            subcategory_options = msigdbr_collections[msigdbr_collections["gs_cat"] == universal_enrichment_category_py]["gs_subcat"]
+            subcategory_select_disable = False
+            if len(subcategory_options) == 1:
+                subcategory_select_disable = True
+            universal_enrichment_subcategory_py = st.sidebar.selectbox(label = "Subcategory: ", disabled = subcategory_select_disable,on_change= clear_cache_draw_dose_pic, options = subcategory_options)
 
         de_up_down_py = st.sidebar.selectbox(options=['de','up', 'down'], on_change= clear_cache_draw_dose_pic, index=0, label="geneList dataset:")
         range_py = st.sidebar.number_input('range: ', on_change= clear_cache_draw_dose_pic, min_value = -20.0, max_value = 20.0, value = 1.5, step=0.01)
         if de_up_down_py == "down" and range_py > 0:
             st.sidebar.warning("the value of fold change should be less than zero.")
 
-        draw_DOSE_pic(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py)
-
-
         st.sidebar.subheader("16. UpSet Plot pvalue")
         pvalue_2_8_py = st.sidebar.number_input("pvalue: ", min_value=0.001, max_value=1.0, step=0.001, value=0.05)
-        r_plot_upsetplot_with_splider_2_8(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, pvalue_2_8_py)
-        if os.path.exists(f"./file/{session_id}/image/plot2_8.png"):
-            st.image(Image.open(f"./file/{session_id}/image/plot2_8.png"))
-        else:
-            st.warning("no term enriched under specific pvalueCutoff")
+        draw_DOSE_pic(exp_design, filer_missing_values, normalizeOption_py, control_py, alpha_py, lfc_py, ratioName_py, de_up_down_py, range_py, enrichment_analysis_methods_py, universal_enrichment_category_py, universal_enrichment_subcategory_py, pvalue_2_8_py)
 
-        st.header("17. ridgeline plot for expression distribution of GSEA result")
-        st.image(Image.open(f"./file/{session_id}/image/plot2_9.png"))
-
-        st.header("18. running score and preranked list of GSEA result")
-
-        for i in range(1, 11):
-            st.image(Image.open(f"./file/{session_id}/image/plot2_10_{i}.png"))
 
         with st.sidebar:
             st.subheader("19. Download result file")
@@ -497,12 +553,6 @@ def config_data():
         print("CLEAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         st.cache_data.clear()
         # st.write(st.session_state)
-    # robjects.r('''
-    #         print(dev.list())
-    #         for (i in dev.list()[1]:dev.list()[length(dev.list())]) {
-    #             dev.off()
-    #         }
-    #         print(dev.list())
-    #     ''')
+
 
 config_data()

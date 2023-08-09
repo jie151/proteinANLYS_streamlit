@@ -96,7 +96,7 @@ def task(v):
 if __name__ == '__main__':
     num_workers = 2
     id = get_session_id()
-    jobs = [id, 2, 3, 4, 5, 6, 7, 8, 9]
+    jobs = [id]
     processed_jobs = []
 
     start = st.button('start work')

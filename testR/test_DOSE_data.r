@@ -23,8 +23,14 @@ library(meshes)
 # ratioName <- Args[3]
 # ----------參數----------
 id <- "test"
-species <- "human"
+species <- "rat"
 ratioName <- "B_vs_A_ratio"
+de_up_down <- "de"
+range <- 1.5
+enrichment_analysis_methods <- "DGN"
+universal_enrichment_category <- "C1"
+universal_enrichment_subcategory <- ""
+pvalue_2_8 <- 0.05
 
 
 # data <- read.csv('/app/file/dep_output_result.csv',header=TRUE ,fileEncoding ="UTF-8")

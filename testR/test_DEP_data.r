@@ -2,7 +2,6 @@ library(DEP)
 library(cowplot) # save_plot
 library(dplyr)
 library(ggplot2)
-# library(clusterProfiler)
 library(NormalyzerDE)
 library(SummarizedExperiment)
 # source("normalize_function.r")
@@ -26,17 +25,17 @@ lfc_r <- as.numeric(Args[13])
 # ----------參數----------
 
 # ----------參數----------
-filename <- "1.proteinGroups_Recovery (1).txt"
+filename <- "./file/test/proteinGroups_HsinYuan_Rat.txt"
 id       <- "test"
-species  <- "human"
+species  <- "rat"
 colname_geneNames  <- "Gene.names"
 colname_proteinIDs <- "Protein.IDs"
 normalizeOption    <- "Log2"
 nThr <- 1
 filter_option <- "condition"
 filter_min    <- 0.66
-control_r <- "T0"
-contrast_r <- "T1"
+control_r <- "A"
+contrast_r <- "B"
 alpha_r <- 0.05
 lfc_r <- 2
 # ----------參數----------

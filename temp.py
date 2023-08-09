@@ -958,6 +958,8 @@ def r_plotenrichment_map_2_5():
             save_plot("./file/image/plot2_5_3.png", pic14_3, base_height = 10, base_aspect_ratio = 1)
             save_plot("./file/image/plot2_5_4.png", pic14_4, base_height = 10, base_aspect_ratio = 1)
         ''')
+        for i in range(1,5):
+            st.image(Image.open(f"./file/image/plot2_5_{i}.png"))
     except:
         st.error("No significant terms were enriched")
 
@@ -1207,6 +1209,7 @@ def config_data():
                 collections <- msigdbr_collections()
             ''')
             category_subCategory_df = pd.DataFrame(robjects.r("collections[1:2]")).transpose()
+
             universal_enrichment_category_py = st.sidebar.selectbox(label = "Category: ", on_change= clear_cache_draw_dose_pic, options = list(dict.fromkeys(category_subCategory_df[0])))
             universal_enrichment_subcategory_py = st.sidebar.selectbox(label = "Subcategory: ", on_change= clear_cache_draw_dose_pic, options = category_subCategory_df[category_subCategory_df[0] == universal_enrichment_category_py][1])
 
