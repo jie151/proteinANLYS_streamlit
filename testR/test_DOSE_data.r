@@ -34,7 +34,7 @@ pvalue_2_8 <- 0.05
 
 
 # data <- read.csv('/app/file/dep_output_result.csv',header=TRUE ,fileEncoding ="UTF-8")
-data <- read.csv('./_file_dep_output_result (1).csv',header=TRUE ,fileEncoding ="UTF-8")
+data <- read.csv('./file/test/dep_output_result.csv',header=TRUE ,fileEncoding ="UTF-8")
 
 ## feature 1: numeric vector
 geneList = data[, "ratioName"]

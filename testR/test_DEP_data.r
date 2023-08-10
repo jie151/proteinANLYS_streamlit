@@ -4,7 +4,6 @@ library(dplyr)
 library(ggplot2)
 library(NormalyzerDE)
 library(SummarizedExperiment)
-# source("normalize_function.r")
 source("C:/Users/jie/Desktop/pyEnv/web_proteinAnls/code/docker/normalize_function.r")
 print("--------------pic1_1_to_1_5.r start--------------")
 # ----------參數----------

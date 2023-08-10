@@ -18,7 +18,7 @@ range <- as.numeric(Args[4])
 enrichment_analysis_methods <- Args[5]
 universal_enrichment_category <- Args[6]
 universal_enrichment_subcategory <- Args[7]
-pvalue_2_8 <- as.numeric(Args[8])
+
 # ----------參數----------
 
 data <- read.csv(file=paste("./file/", id, "/dep_output_result.csv", sep=""), header=TRUE, fileEncoding ="UTF-8", sep = ',')
@@ -31,7 +31,6 @@ names(geneList) = as.character(data[, 'human_entrez'])
 ## feature 3: decreasing orde
 geneList = sort(geneList, decreasing = TRUE)
 print(head(geneList))
-
 
 r_geneList_de_up_down <- function(de_up_down, range, enrichment_analysis_methods, universal_enrichment_category, universal_enrichment_subcategory){
     print("--------------r_geneList_de_up_down(de_up_down_py, range_py) start--------------")
@@ -94,27 +93,7 @@ r_geneList_de_up_down <- function(de_up_down, range, enrichment_analysis_methods
     return (edo)
 }
 
-edo <- r_geneList_de_up_down(de_up_down, range, enrichment_analysis_methods, universal_enrichment_category, universal_enrichment_subcategory)
-edo2 <- gseDO(geneList, pvalueCutoff=1)
-edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
-
-
-draw_plot2_8 <- function(geneList, pvalue_2_8) {
-    print("--------------r_plot_upsetplot_with_splider_2_8() start--------------")
-    kk2 <- gseKEGG( geneList = geneList,
-                    organism = 'hsa',
-                    minGSSize = 120,
-                    pvalueCutoff = pvalue_2_8,
-                    verbose = FALSE)
-    if (length(kk2[,2]) < 1) {
-        print("no term enriched under specific pvalueCutoff")
-    }else {
-        pic16_2 <- upsetplot(kk2)
-        save_plot(paste("./file/", id, "/image/plot2_8.png", sep=""), pic16_2, base_height = 10, base_aspect_ratio = 1.5)
-   }
-}
-
-draw_plot2_1_to_2_9 <- function(edo, edo2, edox, geneList, pvalue_2_8) {
+draw_plot2_1_to_2_7_2_9 <- function(edo, edo2, edox, geneList) {
     # plot2_1
     pic_name <- paste("./file/", id, "/image/plot2_1.png", sep="")
     tryCatch(
@@ -250,16 +229,6 @@ draw_plot2_1_to_2_9 <- function(edo, edo2, edox, geneList, pvalue_2_8) {
             print(e)
         }
     )
-    # plot2_8
-    tryCatch(
-        {
-            draw_plot2_8(geneList, pvalue_2_8)
-        },
-        error = function(e) {
-            message("Error!!!!! plot2_8.png ")
-            print(e)
-        }
-    )
     # plot2_9
     tryCatch(
         {
@@ -273,9 +242,11 @@ draw_plot2_1_to_2_9 <- function(edo, edo2, edox, geneList, pvalue_2_8) {
     )
     # plot2_10
 }
+edo <- r_geneList_de_up_down(de_up_down, range, enrichment_analysis_methods, universal_enrichment_category, universal_enrichment_subcategory)
+edo2 <- gseDO(geneList, pvalueCutoff=1)
+edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
 
-draw_plot2_1_to_2_9(edo, edo2, edox, geneList, pvalue_2_8)
-
+draw_plot2_1_to_2_7_2_9(edo, edo2, edox, geneList)
 
 pic18_1 <- gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Description[1])
 pic18_2 <- gseaplot(edo2, geneSetID = 1, by = "preranked", title = edo2$Description[1])

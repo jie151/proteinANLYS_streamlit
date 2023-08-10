@@ -11,13 +11,12 @@ print("--------------pic1_1_to_1_5.r start--------------")
 Args <- commandArgs(TRUE)
 filename <- Args[1]
 id       <- Args[2]
-species  <- Args[3]
-colname_geneNames  <- Args[4]
-colname_proteinIDs <- Args[5]
-normalizeOption    <- Args[6]
-filter_option <- Args[7]
-nThr          <- as.numeric(Args[8])
-filter_min    <- as.numeric(Args[9])
+colname_geneNames  <- Args[3]
+colname_proteinIDs <- Args[4]
+normalizeOption    <- Args[5]
+filter_option <- Args[6]
+nThr          <- as.numeric(Args[7])
+filter_min    <- as.numeric(Args[8])
 
 # ----------參數----------
 

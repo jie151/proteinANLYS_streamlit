@@ -13,17 +13,16 @@ print("--------------dep2_1_6.r start--------------")
 Args <- commandArgs(TRUE)
 filename <- Args[1]
 id       <- Args[2]
-species  <- Args[3]
-colname_geneNames  <- Args[4]
-colname_proteinIDs <- Args[5]
-normalizeOption    <- Args[6]
-filter_option <- Args[7]
-nThr          <- as.numeric(Args[8])
-filter_min    <- as.numeric(Args[9])
-control_r <- Args[10]
-contrast_r <- Args[11]
-alpha_r <- as.numeric(Args[12])
-lfc_r <- as.numeric(Args[13])
+colname_geneNames  <- Args[3]
+colname_proteinIDs <- Args[4]
+normalizeOption    <- Args[5]
+filter_option <- Args[6]
+nThr          <- as.numeric(Args[7])
+filter_min    <- as.numeric(Args[8])
+control_r <- Args[9]
+contrast_r <- Args[10]
+alpha_r <- as.numeric(Args[11])
+lfc_r <- as.numeric(Args[12])
 
 cat("!!!!control: ", control_r, "\n")
 
