@@ -9,7 +9,7 @@ docker build -t protein_anlys_streamlit:latest .
 docker run -p 8501:8501 protein_anlys_streamlit:latest
 ```
 - pull docker image
-```sh
+```
 還沒把最新的傳上去
 ```
 ## Set Up (ubuntu:18.04)
@@ -17,7 +17,7 @@ docker run -p 8501:8501 protein_anlys_streamlit:latest
 ubuntu:18:04
 python3.10.4
 R 4.3.1, Bioconductor version 3.17 (BiocManager 1.30.21.1)
-```sh
+```
 
 1. python3.10.4 (virtualenv)
 ```
@@ -32,11 +32,11 @@ apt-get install python3-pip -y
 python3 -m pip install --upgrade pip
 
 pip3 install -r requirements.txt
-```sh
+```
 2. R 4.3.1
 ```
 
-```sh
+```
 
 2.
 ***
