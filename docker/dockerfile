@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential&& apt-get install -y wget
 
-# install R 4.2.3
+# install R 4.3.1
 RUN apt update -qq
 
 RUN apt install -y --no-install-recommends software-properties-common dirmngr
@@ -34,8 +34,14 @@ WORKDIR /app
 ADD requirements.txt .
 ADD requirements.r .
 ADD website.py .
-ADD pic1_10_2.r .
-ADD pic2_10.r .
+ADD dep1_to_1_5.r .
+ADD dep2_1_6_to_1_8_1_10.r .
+ADD dep3_1_9.r .
+ADD dose1_config.r .
+ADD dose2_plot.r .
+ADD dose3_plot2_8.r .
+ADD normalize_function.r .
+ADD uniprotAPI.r .
 ADD proteinGroups_HsinYuan_Rat.txt .
 
 # installing python libraries
