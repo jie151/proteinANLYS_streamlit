@@ -40,9 +40,9 @@ if ( data[, colname_geneNames] %>% duplicated() %>% any() ){
     write.table(data %>% group_by_(.dots = colname_geneNames) %>% summarize(frequency = n()) %>%
         arrange(desc(frequency)) %>% filter(frequency > 1), file = "./file/my_data1.txt", row.names =FALSE)
 
-    cat("a table of duplicated gene names: (table ", dim(table), "\n")
-    table <- read.csv(file="./file/my_data1.txt", header=TRUE, fileEncoding ="UTF-8", sep = ' ')
-    print(head(table, 7))
+    # cat("a table of duplicated gene names: (table ", dim(table), "\n")
+    # table <- read.csv(file="./file/my_data1.txt", header=TRUE, fileEncoding ="UTF-8", sep = ' ')
+    # print(head(table, 7))
 }
 
 

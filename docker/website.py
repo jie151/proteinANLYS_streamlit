@@ -70,7 +70,7 @@ def save_uploadedfile(uploadedfile):
 
 def upload_file():
     if not os.path.exists(f"/app/file/{session_id}/"):
-        st.write(session_id)
+        # st.write(session_id)
         os.system(f"mkdir /app/file/{session_id}/")
 
     # 上傳檔案
@@ -228,6 +228,7 @@ def generate_exp_design_inputCondition(selected_col_id_list, data_colname):
 @st.cache_data
 def cache_DEP_data1(filename_py, session_id, colname_geneNames_py, colname_proteinIDs_py, filer_missing_values, normalizeOption_py):
     os.system(f"Rscript dep1_to_1_5.r {filename_py} {session_id} {colname_geneNames_py} {colname_proteinIDs_py} {normalizeOption_py} {filer_missing_values['option']} {filer_missing_values['nThr']} {filer_missing_values['min']}")
+
     # plot1_1
     try:
         st.write(" *Plot a barplot of the protein identification overlap between samples")
