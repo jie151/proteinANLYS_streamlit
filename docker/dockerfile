@@ -16,10 +16,14 @@ RUN add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_r
 RUN apt install -y --no-install-recommends r-base
 
 # install Python 3.10.4
-RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update
-RUN apt-get install -y  python3.10
-
-RUN apt install python3.10 python3-venv python3.10-venv python3-dev -y
+RUN apt update && sudo apt install zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev libbz2-dev pkg-config -y
+RUN wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tgz
+RUN tar -xf Python-3.10.*.tgz
+RUN cd Python-3.10.4/
+RUN ./configure --enable-optimizations
+RUN make -j $(nproc)
+RUN make altinstall
+RUN sudo apt install python3-venv python3-dev python3-pip -y
 RUN python3.10 -m venv myvenv
 
 ENV PATH=/myvenv/bin:$PATH
