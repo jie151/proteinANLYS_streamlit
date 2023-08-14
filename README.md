@@ -10,13 +10,13 @@ docker run -p 8501:8501 protein_anlys_streamlit:latest
 ```
 - pull docker image
 ```
-docker pull cguwebproteinanls/protein_anlys_stremalit:rscript
+docker pull cguwebproteinanls/protein_anlys_stremalit:latest
 ```
 ## Set Up (ubuntu:18.04)
 ```
 ubuntu:18:04
 python3.10.4
-R 4.3.1, Bioconductor version 3.17
+R 4.3.1, Bioconductor version 3.17ㄎ
 ```
 1. R (4.2~4.3都可以)
 ```
