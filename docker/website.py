@@ -69,9 +69,11 @@ def save_uploadedfile(uploadedfile):
         f.write(uploadedfile.getbuffer())
 # 使用者上傳檔案，若有會儲存起來、無則使用預設檔案
 def upload_file():
-    if not os.path.exists(f"/app/file/{session_id}/"):
+    if not os.path.exists("./file/"):
+        os.system("mkdir file")
+    if not os.path.exists(f"./file/{session_id}/"):
         # st.write(session_id)
-        os.system(f"mkdir /app/file/{session_id}/")
+        os.system(f"mkdir ./file/{session_id}/")
     # 上傳檔案
     uploaded_file = st.sidebar.file_uploader('Upload a TXT/CSV file', type=['csv', 'txt'], accept_multiple_files=False)
     if uploaded_file is not None:
